@@ -231,6 +231,7 @@ lm(cars$dist~cars$speed)
 summary(lm(cars$dist~cars$speed))
 ```
 
+
 #### Brief Explanation
 
 * `head(cars)`: The first 6 rows of the pre-installed data `cars`.
@@ -241,7 +242,16 @@ summary(lm(cars$dist~cars$speed))
   - `cars$dist`, `cars$[[2]]`, `cars[,2]` are same
 * `abline(lm(cars$dist~cars$speed))`: Add a regression line of a linear model
 * `lm(cars$dist~cars$speed)`: The equation of the regression line
-* `summary(lm(cars$dist~cars$speed: The summary of the linear regression model
+* `summary(lm(cars$dist~cars$speed)`: The summary of the linear regression model
+
+
+```{r}
+hist(cars$dist)
+```
+
+```{r}
+hist(cars$speed)
+```
 
 #### View and help
 
@@ -253,6 +263,9 @@ summary(lm(cars$dist~cars$speed))
 
 * `?datasets`
 * `library(help = "datasets")`
+
+* `data()` shows all data already attached and available.
+
 
 ### Practicum
 
@@ -293,6 +306,18 @@ plot(iris$Sepal.Length, iris$Sepal.Width)
 3. Bottom Left: Console, Terminal, Render, Background Jobs
 4. Bottom Right: Files, Plots, Packages, Help, Viewer, Presentation
 
+
+#### Set up
+
+* Highly recommend to set the language to be "English".
+* Create "data" directory.
+
+```{r warning=FALSE}
+Sys.setenv(LANG = "en")
+dir.create("data")
+```
+
+
 #### Three Ways to Run Codes
 
 1. Console - Bottom Left Pane
@@ -300,162 +325,261 @@ plot(iris$Sepal.Length, iris$Sepal.Width)
 3. R Notebook, R Markdown - pull down menu under File
 
 
+### Second Way: R Script
+
+#### Examples: R Scripts in Moodle
+
+* `basics.R`
+* `coronavirus.R`
+
+1. Copy a script in Moodle: _{file name}.R_
+2. In RStudio (create Project in RStudio) choose File > New File > R Script and paste it.
+3. Choose File > Save with a name; e.g. _{file names}_ (.R will be added automatically)
+
+To run a code: at the cursor press *Ctrl+Shift+Enter* (Win) or *Cmd+Shift+Enter* (Mac). 
+
+
 ### Packages
 
 R packages are extensions to the R statistical programming language. R packages contain code, data, and documentation in a standardised collection format that can be installed by users of R, typically via a centralised software repository such as CRAN (the Comprehensive R Archive Network).
 
+#### Installation and attachement
 
+You can install packages by "Install Packages..." under "Tool" in the top menu.
 
-#### Basic Reference
+* `install.packages("tidyverse")`
+* `install.packages("rmarkdown")`
 
-[An Introduction to R](https://cran.rstudio.com)
+### Third Way: R Notebook
 
+Choose R Notebook from the pull down File menu in the top bar.
 
+### Edit YAML
 
+**Default* is as follows**
 
-### The First EDA using coronavirus.R
-
-* Pre-installed datasets
-* R Script
-  - To access shortcuts, type Option + Shift + K on a Mac, or Alt + Shift + K on Linux and Windows.
-
-![EDA (A diagram from R4DS by H.W. and G.G.)](./data/data-science.png)
-
-
-
-### Basics of Fundamentals of Statistics
-
-#### R Commands Related to R Basics
-
-* Fundamentals of Statistics: statistical measurements such as 
-  - mean: `mean()` or `mean(x, na.rm = TRUE)`
-  - median: `median()` or `median(x, na.rm = TRUE)`
-  - quantile: `quantile()` or `quantile(x, na.rm = TRUE)`
-  - variance: `var()` or `var(x, na.rm = TRUE)`
-  - standard deviation: `sd()`
-  - covariance: `cov()`
-  - correlation: `cor()` 
-* summary()
-
-### Summary
-
-:::{.block}
-#### Please check the following
-
-* Installation of R
-* Installation of R Studio 
-* Login to RStudio.cloud
-* swirl: R Programming 
-  - Try 1, 3, 4, 5, 6, 7, 12, 15
-* R Script
-  - basics.R - try similar commands
-  - coronavirus.R - try different Regions and Periods
-  
-#### coronavirus.R
-
-The script and its outputs.
-__coronavirus.csv__ is too large
-
-```{r cash = TRUE}
-# https://coronavirus.jhu.edu/map.html
-# JHU Covid-19 global time series data
-# See R pakage coronavirus at: https://github.com/RamiKrispin/coronavirus
-# Data taken from: https://github.com/RamiKrispin/coronavirus/tree/master/csv
-# Last Updated
-Sys.Date()
-
-## Download and read csv (comma separated value) file
-coronavirus <- read.csv("https://github.com/RamiKrispin/coronavirus/raw/master/csv/coronavirus.csv")
-# write.csv(coronavirus, "data/coronavirus.csv")
-
-## Summaries and structures of the data
-head(coronavirus)
-str(coronavirus)
-coronavirus$date <- as.Date(coronavirus$date)
-str(coronavirus)
-
-range(coronavirus$date)
-unique(coronavirus$country)
-unique(coronavirus$type)
-
-## Set Country
-COUNTRY <- "Japan"
-df0 <- coronavirus[coronavirus$country == COUNTRY,]
-head(df0)
-tail(df0)
-(pop <- df0$population[1])
-df <- df0[c(1,6,7,13)]
-str(df)
-head(df)
-### alternatively,
-head(df0[c("date", "type", "cases", "population")])
-###
-
-## Set types
-df_confirmed <- df[df$type == "confirmed",]
-df_death <- df[df$type == "death",]
-df_recovery <- df[df$data_type == "recovery",]
-head(df_confirmed)
-head(df_death)
-head(df_recovery)
-
-## Histogram
-plot(df_confirmed$date, df_confirmed$cases, type = "h")
-plot(df_death$date, df_death$cases, type = "h")
-# plot(df_recovered$date, df_recovered$cases, type = "h") # no data for recovery
-
-## Scatter plot and correlation
-plot(df_confirmed$cases, df_death$cases, type = "p")
-cor(df_confirmed$cases, df_death$cases)
-
-
-## In addition set a period
-start_date <- as.Date("2021-07-01")
-end_date <- Sys.Date() 
-df_date <- df[df$date >=start_date & df$date <= end_date,]
-##
-
-## Set types
-df_date_confirmed <- df_date[df_date$type == "confirmed",]
-df_date_death <- df_date[df_date$type == "death",]
-df_date_recovery <- df_date[df_date$data_type == "recovery",]
-head(df_date_confirmed)
-head(df_date_death)
-head(df_date_recovery)
-
-## Histogram
-plot(df_date_confirmed$date, df_date_confirmed$cases, type = "h")
-plot(df_date_death$date, df_date_death$cases, type = "h")
-# plot(df_date_recovered$date, df_date_recovered$cases, type = "h") # no data for recovery
-
-plot(df_date_confirmed$cases, df_date_death$cases, type = "p")
-cor(df_date_confirmed$cases, df_date_death$cases)
-
-### Q0. Change the values of the location and the period and see the outcomes.
-### Q1. What is the correlation between df_confirmed$cases and df_death$cases?
-### Q2. Do we have a larger correlation value if we shift the dates to implement the time-lag?
-### Q3. Do you have any other questions to explore?
-
-#### Extra
-plot(df_confirmed$date, df_confirmed$cases, type = "h", 
-     main = paste("Comfirmed Cases in",COUNTRY), 
-     xlab = "Date", ylab = "Number of Cases")
+```
+---
+title: "R Notebook"
+output: html_notebook
+---
 ```
 
-:::
+**Template**
+
+```
+---
+title: "Title of R Notebook"
+author: "ID and Your Name"
+date: "`r Sys.Date()`" 
+output: 
+  html_notebook:
+#    number_sections: yes
+#    toc: true
+#    toc_float: true
+---
+```
+
+* Don't change the format. Indention matters.
+* The statement after \# is ignored.
+* Date is automatically inserted when you compile the file.
+* You can replace "`r Sys.Date()`" by "2022-12-14" or in any date format surrounded by double quotation marks.
+* Section numbers: - default is `number_sections: no`.
+* Table of contents, `toc: true` - default is `toc: false`.
+* Floating table of contents in HTML output, `toc_float: true` - default is `toc_float: false`
+
+### Create a Code Chunk to Attach Packages
+
+Insert Chunk in Code pull down menu in the top bar, or use the <kbd>C</kbd> button on top. You can use shortcut keys listed under Tools in the top bar.
+
+```{r}
+library(tidyverse)
+```
+
+
+## First Example
+
+### Importing data
+
+Let us assign the `iris` data in the pre-installed package `datasets` to `df_iris`. You can give any name starting from an alphabet, though there are some rules. 
+
+```{r}
+df_iris <- datasets::iris
+class(df_iris)
+```
+
+The class of data `iris` is `data.frame`, the basic data class of R. You can assign the same data as a `tibble`, the data class of `tidyverse` as follows.
+
+```{r}
+tbl_iris <- as_tibble(datasets::iris)
+class(tbl_iris)
+```
+
+* `df_iris <- iris` can replace  `df_iris <- datasets::iris` because the package `datasets` is installed and attached as default. Since you may have other data called `iris` included in a different package or you may have changed `iris` before, it is safer to specify the name of the package with the name of the data.
+* Within R Notebook or in Console, you may get different output, and `tf_iris` and `tbl_iris` behave differently. It is because of the default settings of R Markdown. 
+
+### Look at the data
+
+#### Several ways to view the data.
+
+The `View` command open up a window to show the contents of the data and you can use the filter as well.
+```{r viewiris, eval = FALSE}
+View(df_iris)
+```
+
+The following simple command also shows the data. 
+```{r dfiris}
+df_iris
+```
+
+The output within R Notebook is a tibble style. Try the same command in Console.
+```{r slice10iris}
+slice(df_iris, 1:10)
+```
+
+
+```{r one2ten}
+1:10
+```
+`
+
+
+#### Data Structure
+
+Let us look at the structure of the data. You can try `str(df_iris)` on Console or by adding a code chunk in R Notebook introducing later.
+
+```{r glimpse:eiris}
+glimpse(df_iris)
+```
+There are six types of data in R; Double, Integer, Character, Logical, Raw, Complex.
+
+The names after $ are column names. If you call `df_iris$Species`, you have the Species column. Species is in the 5th collumn, `typeof(df_iris[[5]])` does the same as the next. `df_iris[2,4] = ``r df_iris[2,4]` is the fourth entry of Sepal.Width.
+```{r}
+typeof(df_iris$Species)
+```
+
+```{r}
+class(df_iris$Species)
+```
+
+For `factors = fct` see [the R Document](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/factor) or an explanation in [Factor in R: Categorical Variable & Continuous Variables](https://www.guru99.com/r-factor-categorical-continuous.html).
+
+```{r}
+typeof(df_iris$Sepal.Length)
+class(df_iris$Sepal.Length)
+```
+
+
+**Q1.** What are the differences of`df_iris`, `slice(df_iris, 1:10)` and `glimpse(df_iris)` above?
+
+**Q2.** What are the differences of`df_iris`, `slice(df_iris, 1:10)` and `glimpse(df_iris)` in the console?
+
+#### Summary of the Data
+
+The following is very convenient to get the summary information of a data.
+```{r}
+summary(df_iris)
+```
+Minimum, 1st Quadrant (25%),  Median, Mean, 3rd Quadrant (75%), Maximum, and the count of each factor.
+
+### Visualizing Data
+
+#### Scatter Plot
+
+We use `ggplot` to draw graphs. The scatter plot is a projection of data with two variables $x$ and $y$. 
+```
+ggplot(data = <data>, aes(x = <column name for x>, y = <column name for y>)) +
+  geom_point()
+```
+
+```{r}
+ggplot(data = df_iris, aes(x = Sepal.Length, y = Sepal.Width)) +
+  geom_point()
+```
+#### Scatter Plot with Labels
+
+Add title and labels adding `labs()`. See [
+Modify axis, legend, and plot labels](https://ggplot2.tidyverse.org/reference/labs.html).
+```
+ggplot(data = <data>, aes(x = <column name for x>, y = <column name for y>)) +
+  geom_point() +
+  labs(title = "Title", x = "Label for x", y = "Label for y")
+```
+```{r}
+ggplot(data = df_iris, aes(x = Sepal.Length, y = Sepal.Width)) +
+  geom_point() + 
+  labs(title = "Scatter Plot of Sepal Data of Iris", x = "Sepal Length", y = "Sepal Width")
+```
+
+#### Scatter Plot with Colors
+
+Add different colors automatically to each spieces. See [Colour related aesthetics: colour, fill, and alpha](https://ggplot2.tidyverse.org/reference/aes_colour_fill_alpha.html). Can you see each group?
+```{r}
+ggplot(data = df_iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) +
+  geom_point()
+```
+
+```{r}
+ggplot(data = df_iris, aes(x = Sepal.Length, y = Sepal.Width, shape = Species)) +
+  geom_point()
+```
+
+#### Boxplot
+
+The boxplot compactly displays the distribution of a continuous variable. See [A box and whiskers plot (in the style of Tukey)](https://ggplot2.tidyverse.org/reference/geom_boxplot.html).
+```{r}
+ggplot(data = df_iris, aes(x = Species, y = Sepal.Length)) +
+  geom_boxplot()
+```
+
+#### Histogram
+
+Visualize the distribution of a single continuous variable by dividing the x axis into bins and counting the number of observations in each bin. Histograms (geom_histogram()) display the counts with bars. See [Histograms and frequency polygons](https://ggplot2.tidyverse.org/reference/geom_histogram.html).
+```{r}
+ggplot(data = df_iris, aes(x = Sepal.Length)) +
+  geom_histogram()
+```
+Change the number of bins by `bins =` `<number>`.
+```{r}
+ggplot(data = df_iris, aes(x = Sepal.Length)) +
+  geom_histogram(bins = 10)
+```
+
+### Data Modeling 
+
+We will not get into the mathematical models and hypothesis testings. The following is a simple linear regression model and the graph of the fitted line.
+```{r}
+ggplot(data = df_iris, aes(x = Sepal.Length, y = Sepal.Width)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+## Comments on Week 2
 
 #### Helpful Resources
 
-* Cheet Sheet in RStudio: https://www.rstudio.com/resources/cheatsheets/  
+* Cheat Sheet in RStudio: https://www.rstudio.com/resources/cheatsheets/  
   - [RStudio IED](https://raw.githubusercontent.com/rstudio/cheatsheets/main/rstudio-ide.pdf)
   - [Base R Cheat Sheet](https://github.com/rstudio/cheatsheets/raw/main/base-r.pdf)
 * 'Quick R' by DataCamp: https://www.statmethods.net/management
 
+* [An Introduction to R](https://cran.rstudio.com)
+
 
 :::{.alertblock}
-#### Assignment 1 and Assignment 2: Questions and a Quiz in Moodle
+#### Practicum
 
-Please complete assignments in Moodle by 2021-12-21
+* Posit Primers: The Basics: https://posit.cloud/learn/primers/1
+  - Complete Visualization Basics and Programming Basics
+
+#### Assignments - See Moodle
+
+1. Assignment Week 2-1: Introduction Plus Forum  
+  - Due: Tuesday, 20 December 2022, 11:59 PM
+
+2. Assignment Week 2-2: Quiz 1 on R Basics 
+  - Due: Tuesday, 20 December 2022, 11:59 PM
+
 :::
 
 
@@ -530,22 +654,9 @@ When you are at the R prompt (>):
 
 You will encounter the message like ‘Would you like to receive credit for completing this course on Coursera.org?’ at the end of each course. This is for `coursera` courses. Select 'NO'. 
 
-## Let's Try R Basics
+## More on R Script: Examples
 
-### R Basics
-
-Let's Try R on R Studio and/or R Studio Cloud
-
-### R Scripts
-
-1. Copy a script in Moodle: `basics.R`
-2. In RStudio (Workspace in RStudio.cloud, Project in RStudio) choose File > New File > R Script and paste it.
-3. Choose File > Save with a name; e.g. basics (.R will be added automatically)
-
-
-### More on R Script: Examples
-
-#### R Scripts in Moodle
+### R Scripts in Moodle
 
 * basics.R
 * coronavirus.R
@@ -554,18 +665,8 @@ Let's Try R on R Studio and/or R Studio Cloud
 2. In RStudio (Workspace in RStudio.cloud, Project in RStudio) choose File > New File > R Script and paste it.
 3. Choose File > Save with a name; e.g. _{file names}_ (.R will be added automatically)
 
-### Practicum: R Studio Cloud (or R Studio) and R basics
 
-#### Let's Try R Basics
-
-* R Studio Cloud
-  - Create an account
-  - Create a Project
-* R Studio Basics
-* R Basics
-* basics.R
-
-#### Basics.R
+### `basics.R`
 
 The script with the outputs.
 
@@ -634,7 +735,7 @@ b <- 5:10
 
 identical(a,b)
 
-seq(5,10,2) # same ase seq(from = 5, to = 10, by = 2)
+seq(5,10,2) # same as seq(from = 5, to = 10, by = 2)
 
 c1 <- seq(0,100, by = 10)
 
@@ -790,3 +891,145 @@ hist(cars$dist)
 hist(cars$dist, breaks = seq(0,120, 10))
 ```
 
+
+### coronavirus.R
+
+The script and its outputs.
+__coronavirus.csv__ is very large
+
+```{r cash = TRUE}
+# https://coronavirus.jhu.edu/map.html
+# JHU Covid-19 global time series data
+# See R pakage coronavirus at: https://github.com/RamiKrispin/coronavirus
+# Data taken from: https://github.com/RamiKrispin/coronavirus/tree/master/csv
+# Last Updated
+Sys.Date()
+
+## Download and read csv (comma separated value) file
+coronavirus <- read.csv("https://github.com/RamiKrispin/coronavirus/raw/master/csv/coronavirus.csv")
+# write.csv(coronavirus, "data/coronavirus.csv")
+
+## Summaries and structures of the data
+head(coronavirus)
+str(coronavirus)
+coronavirus$date <- as.Date(coronavirus$date)
+str(coronavirus)
+
+range(coronavirus$date)
+unique(coronavirus$country)
+unique(coronavirus$type)
+
+## Set Country
+COUNTRY <- "Japan"
+df0 <- coronavirus[coronavirus$country == COUNTRY,]
+head(df0)
+tail(df0)
+(pop <- df0$population[1])
+df <- df0[c(1,6,7,13)]
+str(df)
+head(df)
+### alternatively,
+head(df0[c("date", "type", "cases", "population")])
+###
+
+## Set types
+df_confirmed <- df[df$type == "confirmed",]
+df_death <- df[df$type == "death",]
+df_recovery <- df[df$data_type == "recovery",]
+head(df_confirmed)
+head(df_death)
+head(df_recovery)
+
+## Histogram
+plot(df_confirmed$date, df_confirmed$cases, type = "h")
+plot(df_death$date, df_death$cases, type = "h")
+# plot(df_recovered$date, df_recovered$cases, type = "h") # no data for recovery
+
+## Scatter plot and correlation
+plot(df_confirmed$cases, df_death$cases, type = "p")
+cor(df_confirmed$cases, df_death$cases)
+
+
+## In addition set a period
+start_date <- as.Date("2021-07-01")
+end_date <- Sys.Date() 
+df_date <- df[df$date >=start_date & df$date <= end_date,]
+##
+
+## Set types
+df_date_confirmed <- df_date[df_date$type == "confirmed",]
+df_date_death <- df_date[df_date$type == "death",]
+df_date_recovery <- df_date[df_date$data_type == "recovery",]
+head(df_date_confirmed)
+head(df_date_death)
+head(df_date_recovery)
+
+## Histogram
+plot(df_date_confirmed$date, df_date_confirmed$cases, type = "h")
+plot(df_date_death$date, df_date_death$cases, type = "h")
+# plot(df_date_recovered$date, df_date_recovered$cases, type = "h") # no data for recovery
+
+plot(df_date_confirmed$cases, df_date_death$cases, type = "p")
+cor(df_date_confirmed$cases, df_date_death$cases)
+
+### Q0. Change the values of the location and the period and see the outcomes.
+### Q1. What is the correlation between df_confirmed$cases and df_death$cases?
+### Q2. Do we have a larger correlation value if we shift the dates to implement the time-lag?
+### Q3. Do you have any other questions to explore?
+
+#### Extra
+plot(df_confirmed$date, df_confirmed$cases, type = "h", 
+     main = paste("Comfirmed Cases in",COUNTRY), 
+     xlab = "Date", ylab = "Number of Cases")
+```
+
+:::
+
+## `gapminder` Package
+
+### Hans Rosling (1948 – 2017)
+
+> Hans Rosling was a Swedish physician, academic, and public speaker. He was a professor of international health at Karolinska Institute[4] and was the co-founder and chairman of the Gapminder Foundation, which developed the Trendalyzer software system. ([wikipedia](https://en.wikipedia.org/wiki/Hans_Rosling))
+
+* Books: 
+  - Factfulness: Ten Reasons We're Wrong About The World - And Why Things Are Better Than You Think, 2018
+  - How I Learned to Understand the World: A Memoir, 2020
+* Gapminder: https://www.gapminder.org
+  - [You are probably wrong about: Upgrade Your World View](https://upgrader.gapminder.org)
+  - [Bubble Chart](https://www.gapminder.org/tools/#$state$time$value=2020;;&chart-type=bubbles): Income vs Life Expectancy over time, 1800 - 2020
+    + How many variables?
+* Videos: [The best stats you’ve ever seen, Hans Rosling](http://www.edtech.events/the-best-stats-youve-ever-seen-hans-rosling/)
+
+### Factfulness is ... \hfill _From the book_
+
+recognizing when a decision feels urgent and remembering that it rarely is.
+
+To control the urgency instinct, take small steps.
+
+* Take a breath. When your urgency instinct is triggered, your other instincts kick in and your analysis shuts down. Ask for more time and more information. It’s rarely now or never and it’s rarely either/or.
+* Insist on the data. If something is urgent and important, it should be measured. Beware of data that is relevant but inaccurate, or accurate but irrelevant. Only relevant and accurate data is useful.
+* Beware of fortune-tellers. Any prediction about the future is uncertain. Be wary of predictions that fail to acknowledge that. Insist on a full range of scenarios, never just the best or worst case. Ask how often such predictions have been right before.
+* Be wary of drastic action. Ask what the side effects will be. Ask how the idea has been tested. Step-by-step practical improvements, and evaluation of their impact, are less dramatic but usually more effective.
+
+```{r}
+# install.packages("gapminder")
+library(gapminder)
+```
+```{r}
+df <- gapminder
+df
+```
+
+```{r}
+glimpse(df)
+```
+
+```{r}
+summary(df)
+```
+
+### Questions
+
+* List questions based on this data.
+* What do you want to see? 
+* What kind of chart do you want to construct?
