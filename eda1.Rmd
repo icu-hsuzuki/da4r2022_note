@@ -1,10 +1,13 @@
 ---
-title: "&nbsp;" #"Exploratory Data Analysis I"
+title: "Exploratory Data Analysis I"#"&nbsp;" #
 #author: "Hiroshi Suzuki"
 #date: "2022-12-13" #"`r Sys.Date()`" 
 output: 
   html_notebook:
     number_sections: yes
+  ioslides_presentation:
+    widescreen: true
+    smaller: true
 #    toc: true
 #    toc_float: true
 ---
@@ -12,7 +15,9 @@ output:
 
 ## R with R Studio and/or R Studio.cloud
 
-### Course Contents
+---
+
+### Course Contents 
 
   1. 2022-12-07: Introduction: About the course　[lead by TK]
     - An introduction to open and public data, and data science
@@ -34,8 +39,8 @@ output:
     -Analyzing data and communications
   10. 2023-02-22: Project Presentation
 
+---
 
-  
 ### Learning Resources
 
 #### Textbooks and References
@@ -55,6 +60,7 @@ output:
 * {swirl} Learn R, in R: https://swirlstats.com
   - Designed and developed by a team at Johns Hopkins University for `coursera` courses
 
+---
 
 ### Posit Primers created by `learnr`
 
@@ -75,6 +81,7 @@ output:
 5. Iterate -- [r4ds: Program](https://r4ds.had.co.nz/program-intro.html#program-intro)
 6. Write Functions -- [r4ds: Program](https://r4ds.had.co.nz/program-intro.html#program-intro)
 :::
+---
 
 ### Data Science and EDA
 
@@ -86,7 +93,7 @@ output:
 * Impact Decision Making
 * Maintain & Improve Overtime
 
-
+---
 
 ### What is R?
 
@@ -98,12 +105,16 @@ output:
 
 * A **GNU package**, the official R software environment is written primarily in C, Fortran, and R itself (thus, it is partially self-hosting) and is freely available under the GNU General Public License. 
 
+---
+
 #### History of R and more
 
 "R Programming for Data Science" by Roger Peng
 
 * [Chapter 2. History and Overview of R](https://bookdown.org/rdpeng/rprogdatascience/history-and-overview-of-r.html)
 * [Overview and History of R: Youtube video](https://www.youtube.com/watch?v=STihTnVSZnI&feature=youtu.be)
+
+---
 
 ### Why R? -- Responses by Hadley Wickham
 
@@ -113,14 +124,17 @@ output:
 * R is not just a programming language, but it is also an interactive environment for doing data science. 
 * To support interaction, R is a much more flexible language than many of its peers. 
 
+---
+
 #### Why R today?
 
 When you talk about choosing programming languages, I always say you shouldn’t pick them based on technical merits, but rather pick them based on the community. And I think the R community is like really, really strong, vibrant, free, welcoming, and embraces a wide range of domains. So, if there are like people like you using R, then your life is going to be much easier. That’s the first reason. 
 
 **Interview**: ["Advice to Young (and Old) Programmers, H. Wickham"](https://www.r-bloggers.com/2018/08/advice-to-young-and-old-programmers-a-conversation-with-hadley-wickham/)
 
+---
 
-### What is RStudio? https://rstudio.com
+### What is RStudio? https://posit.com
 
 > RStudio is an integrated development environment, or IDE, for R programming. 
 
@@ -128,7 +142,7 @@ When you talk about choosing programming languages, I always say you shouldn’t
 
 RStudio is an integrated development environment (IDE) for R, a programming language for statistical computing and graphics. It is available in two formats: RStudio Desktop is a regular desktop application while RStudio Server runs on a remote server and allows accessing RStudio using a web browser.
 
-
+---
 
 ### Installation of R and R Studio
 
@@ -143,6 +157,8 @@ A new major version of R comes out once a year, and there are 2-3 minor releases
 Download and install it from http://www.rstudio.com/download. 
 
 RStudio is updated a couple of times a year. When a new version is available, RStudio will let you know.
+
+---
 
 ### R Studio
 
@@ -161,6 +177,7 @@ Or,
 
 _In this way the working directory of the session is set to the project directory and R can search releted files without difficulty_ (`getwd()`, `setwd()`)
 
+---
 
 ### Posit Cloud
 
@@ -175,6 +192,8 @@ RStudio Cloud is a lightweight, cloud-based solution that allows anyone to do, s
 * Up to 1 CPU per project
 * Up to 1 hour background execution time
 
+---
+
 #### How to Start Posit Cloud
 
 1. Go to https://posit.cloud/
@@ -183,11 +202,13 @@ RStudio Cloud is a lightweight, cloud-based solution that allows anyone to do, s
 3. New Project: _Project Name_
 4. R Console
 
+
+
 ## Let's Get Started
 
 Start RStudio and create a project, or login to Posit Cloud and create a project.
 
-
+---
 
 ### The First Examples
 
@@ -199,9 +220,13 @@ Input the following codes into Console in the left bottom pane.
 head(cars)
 ```
 
+---
+
 ```{r}
 str(cars)
 ```
+
+---
 
 * Two more:
 
@@ -209,28 +234,42 @@ str(cars)
 summary(cars)
 ```
 
+---
 
-```{r}
+```{r eval=FALSE}
 plot(cars)
 ```
 
+```{r cars_plot, echo=FALSE}
+plot(cars)
+```
+
+---
+
 * And three more:
 
-```{r}
+```{r eval=FALSE}
+plot(cars) # cars: Speed and Stopping Distances of Cars
+abline(lm(cars$dist~cars$speed))
+```
+```{r echo=FALSE}
 plot(cars) # cars: Speed and Stopping Distances of Cars
 abline(lm(cars$dist~cars$speed))
 ```
 
+---
 
 ```{r}
 lm(cars$dist~cars$speed)
 ```
 
+---
 
 ```{r}
 summary(lm(cars$dist~cars$speed))
 ```
 
+---
 
 #### Brief Explanation
 
@@ -244,14 +283,25 @@ summary(lm(cars$dist~cars$speed))
 * `lm(cars$dist~cars$speed)`: The equation of the regression line
 * `summary(lm(cars$dist~cars$speed)`: The summary of the linear regression model
 
+---
 
-```{r}
+```{r, eval=FALSE}
+hist(cars$dist)
+```
+```{r, echo=FALSE}
 hist(cars$dist)
 ```
 
-```{r}
+---
+
+```{r, eval=FALSE}
 hist(cars$speed)
 ```
+```{r, echo=FALSE}
+hist(cars$speed)
+```
+
+---
 
 #### View and help
 
@@ -266,6 +316,7 @@ hist(cars$speed)
 
 * `data()` shows all data already attached and available.
 
+---
 
 ### Practicum
 
@@ -277,21 +328,33 @@ Pick a data in the datasets package and try
 
 and some more.
 
+---
+
 #### `iris`
 
 ```{r}
 head(iris)
 ```
+---
+
 ```{r}
 str(iris)
 ```
+
+---
+
 ```{r}
 summary(iris)
 ```
 
+---
+
 Can you plot?
 
-```{r}
+```{r eval=FALSE}
+plot(iris$Sepal.Length, iris$Sepal.Width)
+```
+```{r echo=FALSE}
 plot(iris$Sepal.Length, iris$Sepal.Width)
 ```
 
@@ -306,17 +369,19 @@ plot(iris$Sepal.Length, iris$Sepal.Width)
 3. Bottom Left: Console, Terminal, Render, Background Jobs
 4. Bottom Right: Files, Plots, Packages, Help, Viewer, Presentation
 
+---
 
 #### Set up
 
 * Highly recommend to set the language to be "English".
 * Create "data" directory.
 
-```{r warning=FALSE}
+```{r warning=FALSE, eval=FALSE}
 Sys.setenv(LANG = "en")
 dir.create("data")
 ```
 
+---
 
 #### Three Ways to Run Codes
 
@@ -324,6 +389,7 @@ dir.create("data")
 2. R Script - pull down menu under File
 3. R Notebook, R Markdown - pull down menu under File
 
+---
 
 ### Second Way: R Script
 
@@ -338,6 +404,7 @@ dir.create("data")
 
 To run a code: at the cursor press *Ctrl+Shift+Enter* (Win) or *Cmd+Shift+Enter* (Mac). 
 
+---
 
 ### Packages
 
@@ -349,6 +416,8 @@ You can install packages by "Install Packages..." under "Tool" in the top menu.
 
 * `install.packages("tidyverse")`
 * `install.packages("rmarkdown")`
+
+---
 
 ### Third Way: R Notebook
 
@@ -364,6 +433,8 @@ title: "R Notebook"
 output: html_notebook
 ---
 ```
+
+---
 
 **Template**
 
@@ -387,6 +458,8 @@ output:
 * Section numbers: - default is `number_sections: no`.
 * Table of contents, `toc: true` - default is `toc: false`.
 * Floating table of contents in HTML output, `toc_float: true` - default is `toc_float: false`
+
+---
 
 ### Create a Code Chunk to Attach Packages
 
@@ -418,14 +491,19 @@ class(tbl_iris)
 * `df_iris <- iris` can replace  `df_iris <- datasets::iris` because the package `datasets` is installed and attached as default. Since you may have other data called `iris` included in a different package or you may have changed `iris` before, it is safer to specify the name of the package with the name of the data.
 * Within R Notebook or in Console, you may get different output, and `tf_iris` and `tbl_iris` behave differently. It is because of the default settings of R Markdown. 
 
+---
+
 ### Look at the data
 
 #### Several ways to view the data.
 
 The `View` command open up a window to show the contents of the data and you can use the filter as well.
+
 ```{r viewiris, eval = FALSE}
 View(df_iris)
 ```
+
+---
 
 The following simple command also shows the data. 
 ```{r dfiris}
@@ -433,6 +511,9 @@ df_iris
 ```
 
 The output within R Notebook is a tibble style. Try the same command in Console.
+
+---
+
 ```{r slice10iris}
 slice(df_iris, 1:10)
 ```
@@ -442,7 +523,7 @@ slice(df_iris, 1:10)
 1:10
 ```
 `
-
+---
 
 #### Data Structure
 
@@ -451,9 +532,15 @@ Let us look at the structure of the data. You can try `str(df_iris)` on Console 
 ```{r glimpse:eiris}
 glimpse(df_iris)
 ```
+
 There are six types of data in R; Double, Integer, Character, Logical, Raw, Complex.
 
-The names after $ are column names. If you call `df_iris$Species`, you have the Species column. Species is in the 5th collumn, `typeof(df_iris[[5]])` does the same as the next. `df_iris[2,4] = ``r df_iris[2,4]` is the fourth entry of Sepal.Width.
+The names after $ are column names. If you call `df_iris$Species`, you have the Species column. Species is in the 5th collumn, `typeof(df_iris[[5]])` does the same as the next. 
+
+`df_iris[2,4] = ``r df_iris[2,4]` is the fourth entry of Sepal.Width.
+
+---
+
 ```{r}
 typeof(df_iris$Species)
 ```
@@ -463,6 +550,8 @@ class(df_iris$Species)
 ```
 
 For `factors = fct` see [the R Document](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/factor) or an explanation in [Factor in R: Categorical Variable & Continuous Variables](https://www.guru99.com/r-factor-categorical-continuous.html).
+
+---
 
 ```{r}
 typeof(df_iris$Sepal.Length)
@@ -474,13 +563,19 @@ class(df_iris$Sepal.Length)
 
 **Q2.** What are the differences of`df_iris`, `slice(df_iris, 1:10)` and `glimpse(df_iris)` in the console?
 
+---
+
 #### Summary of the Data
 
 The following is very convenient to get the summary information of a data.
+
 ```{r}
 summary(df_iris)
 ```
+
 Minimum, 1st Quadrant (25%),  Median, Mean, 3rd Quadrant (75%), Maximum, and the count of each factor.
+
+---
 
 ### Visualizing Data
 
@@ -491,64 +586,96 @@ We use `ggplot` to draw graphs. The scatter plot is a projection of data with tw
 ggplot(data = <data>, aes(x = <column name for x>, y = <column name for y>)) +
   geom_point()
 ```
-
-```{r}
+```
 ggplot(data = df_iris, aes(x = Sepal.Length, y = Sepal.Width)) +
   geom_point()
 ```
-#### Scatter Plot with Labels
 
-Add title and labels adding `labs()`. See [
-Modify axis, legend, and plot labels](https://ggplot2.tidyverse.org/reference/labs.html).
+---
+
+
+```{r message=FALSE, warning=FALSE, comment=FALSE}
+ggplot(data = df_iris, aes(x = Sepal.Length, y = Sepal.Width)) +
+  geom_point()
+```
+
+---
+
+#### Scatter Plot with [Labels](https://ggplot2.tidyverse.org/reference/labs.html)
+
+Add title and labels adding `labs()`. 
+
 ```
 ggplot(data = <data>, aes(x = <column name for x>, y = <column name for y>)) +
   geom_point() +
   labs(title = "Title", x = "Label for x", y = "Label for y")
 ```
+---
+
 ```{r}
 ggplot(data = df_iris, aes(x = Sepal.Length, y = Sepal.Width)) +
   geom_point() + 
   labs(title = "Scatter Plot of Sepal Data of Iris", x = "Sepal Length", y = "Sepal Width")
 ```
 
-#### Scatter Plot with Colors
+---
 
-Add different colors automatically to each spieces. See [Colour related aesthetics: colour, fill, and alpha](https://ggplot2.tidyverse.org/reference/aes_colour_fill_alpha.html). Can you see each group?
+#### Scatter Plot with [Colors](https://ggplot2.tidyverse.org/reference/aes_colour_fill_alpha.html)
+
+Add different colors automatically to each species. Can you see each group?
+
 ```{r}
 ggplot(data = df_iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) +
   geom_point()
 ```
+
+---
+
+#### Scatter Plot with Shapes
 
 ```{r}
 ggplot(data = df_iris, aes(x = Sepal.Length, y = Sepal.Width, shape = Species)) +
   geom_point()
 ```
 
-#### Boxplot
+---
 
-The boxplot compactly displays the distribution of a continuous variable. See [A box and whiskers plot (in the style of Tukey)](https://ggplot2.tidyverse.org/reference/geom_boxplot.html).
+#### [Boxplot](https://ggplot2.tidyverse.org/reference/geom_boxplot.html)
+
+The boxplot compactly displays the distribution of a continuous variable. 
+
 ```{r}
 ggplot(data = df_iris, aes(x = Species, y = Sepal.Length)) +
   geom_boxplot()
 ```
 
-#### Histogram
+---
 
-Visualize the distribution of a single continuous variable by dividing the x axis into bins and counting the number of observations in each bin. Histograms (geom_histogram()) display the counts with bars. See [Histograms and frequency polygons](https://ggplot2.tidyverse.org/reference/geom_histogram.html).
-```{r}
+#### [Histogram](https://ggplot2.tidyverse.org/reference/geom_histogram.html)
+
+Visualize the distribution of a single continuous variable by dividing the x axis into bins and counting the number of observations in each bin. Histograms (geom_histogram()) display the counts with bars. 
+
+```{r, message=FALSE, warning=FALSE}
 ggplot(data = df_iris, aes(x = Sepal.Length)) +
   geom_histogram()
 ```
+
+---
+
 Change the number of bins by `bins =` `<number>`.
+
 ```{r}
 ggplot(data = df_iris, aes(x = Sepal.Length)) +
   geom_histogram(bins = 10)
 ```
 
+---
+
 ### Data Modeling 
 
-We will not get into the mathematical models and hypothesis testings. The following is a simple linear regression model and the graph of the fitted line.
-```{r}
+Professor Kaizoji will cover the mathematical models and hypothesis testings. 
+
+```{r, message=FALSE, warning=FALSE}
 ggplot(data = df_iris, aes(x = Sepal.Length, y = Sepal.Width)) +
   geom_point() +
   geom_smooth(method = "lm", se = FALSE)
@@ -571,6 +698,8 @@ ggplot(data = df_iris, aes(x = Sepal.Length, y = Sepal.Width)) +
 
 * Posit Primers: The Basics: https://posit.cloud/learn/primers/1
   - Complete Visualization Basics and Programming Basics
+
+---
 
 #### Assignments - See Moodle
 
@@ -602,6 +731,8 @@ You can install other `swirl` courses as well
 * [Github: swirl courses](https://github.com/swirldev/swirl_courses#swirl-courses) 
   - `install_course("Course Name Here")`
 
+---
+
 ### Install and Start Swirl Courses
 
 #### Three Steps to Start Swirl
@@ -631,6 +762,7 @@ swirl() # Everytime you start or resume swirl
 * Section 2 discusses the directories and file systems of a computer
 * Sections 9, 10, 11 are for programming
 
+---
 
 #### Controling a `swirl` Session
 
@@ -650,9 +782,13 @@ When you are at the R prompt (>):
 5. Typing main() returns you to swirl's main menu.
 6. Typing info() displays these options again.
 
+---
+
 #### Final Remark
 
 You will encounter the message like ‘Would you like to receive credit for completing this course on Coursera.org?’ at the end of each course. This is for `coursera` courses. Select 'NO'. 
+
+
 
 ## More on R Script: Examples
 
@@ -665,6 +801,7 @@ You will encounter the message like ‘Would you like to receive credit for comp
 2. In RStudio (Workspace in RStudio.cloud, Project in RStudio) choose File > New File > R Script and paste it.
 3. Choose File > Save with a name; e.g. _{file names}_ (.R will be added automatically)
 
+---
 
 ### `basics.R`
 
@@ -891,6 +1028,7 @@ hist(cars$dist)
 hist(cars$dist, breaks = seq(0,120, 10))
 ```
 
+---
 
 ### coronavirus.R
 
@@ -1000,6 +1138,8 @@ plot(df_confirmed$date, df_confirmed$cases, type = "h",
     + How many variables?
 * Videos: [The best stats you’ve ever seen, Hans Rosling](http://www.edtech.events/the-best-stats-youve-ever-seen-hans-rosling/)
 
+---
+
 ### Factfulness is ... \hfill _From the book_
 
 recognizing when a decision feels urgent and remembering that it rarely is.
@@ -1011,6 +1151,8 @@ To control the urgency instinct, take small steps.
 * Beware of fortune-tellers. Any prediction about the future is uncertain. Be wary of predictions that fail to acknowledge that. Insist on a full range of scenarios, never just the best or worst case. Ask how often such predictions have been right before.
 * Be wary of drastic action. Ask what the side effects will be. Ask how the idea has been tested. Step-by-step practical improvements, and evaluation of their impact, are less dramatic but usually more effective.
 
+---
+
 ```{r}
 # install.packages("gapminder")
 library(gapminder)
@@ -1020,13 +1162,19 @@ df <- gapminder
 df
 ```
 
+---
+
 ```{r}
 glimpse(df)
 ```
 
+---
+
 ```{r}
 summary(df)
 ```
+
+---
 
 ### Questions
 
