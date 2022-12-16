@@ -1,15 +1,14 @@
 ---
-title: "Exploratory Data Analysis I"#"&nbsp;" #
-#author: "Hiroshi Suzuki"
-#date: "2022-12-13" #"`r Sys.Date()`" 
-output: 
+title: "Exploratory Data Analysis I"
+output:
+  pdf_document: default
+  ioslides_presentation:
+    widescreen: yes
+    smaller: yes
+  html_document:
+    df_print: paged
   html_notebook:
     number_sections: yes
-  ioslides_presentation:
-    widescreen: true
-    smaller: true
-#    toc: true
-#    toc_float: true
 ---
 # Exploratory Data Analysis (EDA) I
 
@@ -808,7 +807,7 @@ You will encounter the message like ‘Would you like to receive credit for comp
 
 The script with the outputs.
 
-```{r basics, cash = TRUE}
+```{r basics, cash = TRUE, eval=FALSE}
 #################
 #
 # basics.R
@@ -1036,7 +1035,7 @@ hist(cars$dist, breaks = seq(0,120, 10))
 The script and its outputs.
 __coronavirus.csv__ is very large
 
-```{r cash = TRUE}
+```{r cash = TRUE, eval=FALSE}
 # https://coronavirus.jhu.edu/map.html
 # JHU Covid-19 global time series data
 # See R pakage coronavirus at: https://github.com/RamiKrispin/coronavirus
