@@ -1,0 +1,259 @@
+---
+title: "dplyr with examples of iris"
+output: 
+  html_notebook: 
+    number_sections: yes
+---
+
+# dplyr
+
+Overview: [https://dplyr.tidyverse.org](https://dplyr.tidyverse.org))
+
+`dplyr` is a grammar of data manipulation, providing a consistent set of verbs that help you solve the most common data manipulation challenges
+
+```{r setup, include=FALSE}
+library(tidyverse)
+```
+
+## Functions
+
+-   `select()` picks variables based on their names.
+
+-   `filter()` picks cases based on their values.
+
+-   `mutate()` adds new variables that are functions of existing variable
+
+-   `summarise()` reduces multiple values down to a single summary.
+
+-   `arrange()` changes the ordering of the rows.
+
+-   `group_by()` takes an existing tbl and converts it into a grouped tbl.
+
+## `iris` data
+
+```{r}
+iris
+```
+
+## [`select`](https://dplyr.tidyverse.org/reference/select.html)
+
+Subset columns using their names and types. Example uses `babynames` package as in Posit Primers: Work with Data.
+
+| Helper Function | Use                                          | Example                                       |
+|------------------|-------------------------|-----------------------------|
+| \-              | Columns except                               | select(babynames, -prop)                      |
+| :               | Columns between (inclusive)                  | select(babynames, year:n)                     |
+| contains()      | Columns that contains a string               | select(babynames, contains("n"))              |
+| ends_with()     | Columns that ends with a string              | select(babynames, ends_with("n"))             |
+| matches()       | Columns that matches a regex                 | select(babynames, matches("n"))               |
+| num_range()     | Columns with a numerical suffix in the range | Not applicable with babynames                 |
+| one_of()        | Columns whose name appear in the given set   | select(babynames, one_of(c("sex", "gender"))) |
+| starts_with()   | Columns that starts with a string            | select(babynames, starts_with("n"))           |
+
+### Columns except
+
+```{r}
+select(iris, -Species)
+```
+
+### Columns between (inclusive)
+
+```{r}
+select(iris, 3:5)
+```
+
+### Columns that contains a string
+
+```{r}
+select(iris, contains("Sepal"))
+```
+
+### Columns that ends with a string
+
+```{r}
+select(iris, ends_with("Width"))
+```
+
+### Columns that matches a regex
+
+```{r}
+select(iris, matches("pe"))
+```
+
+### Columns with a numerical suffix in the range
+
+Not applicable to `iris` data
+
+### Columns whose name appear in the given set
+
+```{r}
+select(iris, one_of("Sepal.Length", "Petal.Width"))
+```
+
+### Columns that starts with a string
+
+```{r}
+select(iris, starts_with("s"))
+```
+
+## [`filter`](https://dplyr.tidyverse.org/reference/filter.html)
+
+Subset rows using column values
+
+| Logical operator | tests                            | Example   |
+|------------------|----------------------------------|-----------|
+| \>               | Is x greater than y?             | x \> y    |
+| \>=              | Is x greater than or equal to y? | x \>= y   |
+| \<               | Is x less than y?                | x \< y    |
+| \<=              | Is x less than or equal to y?    | x \<= y   |
+| ==               | Is x equal to y?                 | x == y    |
+| !=               | Is x not equal to y?             | x != y    |
+| is.na()          | Is x an NA?                      | is.na(x)  |
+| !is.na()         | Is x not an NA?                  | !is.na(x) |
+
+### Is x greater than y?
+
+```{r}
+filter(iris, Sepal.Length > 6.0)
+```
+
+### Is x greater than or equal to y?
+
+And: &
+
+```{r}
+filter(iris, Sepal.Length >= 5.0 & Sepal.Width >= 4.0)
+```
+
+### Is x less than y?
+
+```{r}
+filter(iris, Sepal.Length < 5.0)
+```
+
+### Is x less than or equal to y?
+
+OR: \|
+
+```{r}
+filter(iris, Sepal.Length > 7.0 | Sepal.Width >= 4.0)
+```
+
+### Is x equal to y?
+
+```{r}
+filter(iris, Species=="virginica")
+```
+
+### Is x an NA?
+
+```{r}
+filter(iris, is.na(Sepal.Width))
+```
+
+### Is x not an NA?
+
+```{r}
+filter(iris, !is.na(Sepal.Width))
+```
+
+### Extra
+
+```{r}
+filter(iris, Sepal.Width > Petal.Length)
+```
+
+## [`arrange`](https://dplyr.tidyverse.org/reference/arrange.html)
+
+-   `arrange()` orders the rows of a data frame by the values of selected columns.
+
+Unlike other `dplyr` verbs, `arrange()` largely ignores grouping; you need to explicitly mention grouping variables (\`or use .by_group = TRUE) in order to group by them, and functions of variables are evaluated once per data frame, not once per group.
+
+```{r}
+arrange(iris, Sepal.Length, desc(Sepal.Width))
+```
+
+### `slice, slice_head, slice_tail, slice_min, slice_max, slice_sample`
+
+```{r}
+slice_min(iris, Sepal.Length, n = 6)
+```
+
+## [`pipes`](https://r4ds.had.co.nz/pipes.html)`(R4DS)`
+
+## [`mutate`](https://dplyr.tidyverse.org/reference/mutate.html)
+
+-   Create, modify, and delete columns
+
+-   Useful mutate functions
+
+    -   +, -, log(), etc., for their usual mathematical meanings
+
+    -   lead(), lag()
+
+    -   dense_rank(), min_rank(), percent_rank(), row_number(), cume_dist(), ntile()
+
+    -   cumsum(), cummean(), cummin(), cummax(), cumany(), cumall()
+
+    -   na_if(), coalesce()
+
+```{r}
+mutate(iris, rank = min_rank(Sepal.Length)) %>%
+  arrange(rank)
+```
+
+```{r}
+iris %>% mutate(Sepal.Ratio = Sepal.Length/Sepal.Width) %>%
+  arrange(Sepal.Ratio)
+```
+
+## [`group_by`](https://dplyr.tidyverse.org/reference/group_by.html)
+
+Most data operations are done on groups defined by variables. `group_by()` takes an existing tbl and converts it into a grouped tbl where operations are performed "by group". `ungroup()`removes grouping.
+
+## [`summarise` or `summarize`](https://dplyr.tidyverse.org/reference/summarise.html)
+
+### Summary functions {.unnumbered}
+
+You can use any function in `summarise()` so long as it meets one criteria: the function must take a vector of values as input and return a single value as output. Functions that do this are known as summary functions and they are common in the field of descriptive statistics. Some of the most useful summary functions include:
+
+1.  Measures of location - mean(x), median(x), quantile(x, 0.25), min(x), and max(x)
+2.  Measures of spread - sd(x), var(x), IQR(x), and mad(x)
+3.  Measures of position - first(x), nth(x, 2), and last(x)
+4.  Counts - n_distinct(x) and n(), which takes no arguments, and returns the size of the current group or data frame.
+5.  Counts and proportions of logical values - sum(!is.na(x)), which counts the number of TRUEs returned by a logical test; mean(y == 0), which returns the proportion of TRUEs returned by a logical test.
+6.  if_else(), recode(), case_when()
+
+```{r}
+iris %>% 
+  group_by(Species) %>% 
+  summarize(sl_mean = mean(Sepal.Length), sw_mean = mean(Sepal.Width), 
+  pl_mean = mean(Petal.Length), pw_mean = mean(Petal.Width))
+```
+
+```{r}
+iris %>% 
+  group_by(Species) %>%
+  mutate(rank = min_rank(Sepal.Length)) %>%
+  arrange(rank)
+```
+
+## Posit Primers
+
+Please practice with Posit Primers - Work with Data
+
+[Work with Data](https://posit.cloud/learn/primers/2)
+
+> Learn the most important data handling skills in R: how to extract values from a table, subset tables, calculate summary statistics, and derive new variables.
+
+[Working with Tibbles](https://posit.cloud/learn/primers/2.1)
+
+Learn to use tibbles, the most user-friendly tabular data structure in R, as well as how to manage tidyverse packages with\... the tidyverse package.
+
+[Isolating Data with dplyr](https://posit.cloud/learn/primers/2.2)
+
+Master three simple functions for finding, and extracting, the data in your data set. Here you will learn to select variables, filter observations, and arrange values. Here, you will also meet R's pipe operator, %\>%.
+
+[Deriving Information with dplyr](https://posit.cloud/learn/primers/2.3)
+
+Data sets contain more information than they display, and this tutorial will show you how to access that information. You'll learn to derive new variables and to compute groupwise summary statistics.
