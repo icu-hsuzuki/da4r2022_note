@@ -127,7 +127,7 @@ An **R Notebook** is an R Markdown document _with chunks that can be executed in
 4. Tool > Install Packages `tinytex` (for pdf generation)
     * Alternatively, `install.packages('tinytex')`
     * If TeX is not installed: `tinytex::install_tinytex()`  \# install TinyTeX
-      - On Terminal: 
+      - If you are not sure, please check on `Terminal` in the left below pane: 
         + which latex
         + which mktexlsr
 5. Let's try!  
@@ -153,6 +153,20 @@ output:
 #    toc_float: true
 ---
 ```
+
+#### YAML
+
+* Change the title
+* Write ID and your name
+* Date is auto-generated and inserted. If you wish, you can replace "`r Sys.Date()`" by your favorite date style.
+
+#### Code Chunk
+
+* When you execute or run a code within the notebook, the results appear beneath the code.
+* Try executing this chunk by clicking the Run button, a triangle pointing right, within the chunk or by placing your cursor inside it and pressing Ctrl+Shift+Enter (Win) or Cmd+Shift+Enter (Mac).
+* Add a new chunk by clicking the Insert Chunk button on the toolbar or by pressing Ctrl+Option+I (Win) or Cmd+Option+I (Mac).
+* When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the Preview button or press Ctrl+Shift+K (Win) or Cmd+Shift+K (Mac) to preview the HTML file).
+* The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike Knit, _Preview does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed_.
 
 ### Testing R Markdown Formats
 
