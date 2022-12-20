@@ -69,14 +69,6 @@ When you save the notebook, an HTML file containing the code and output will be 
 
 The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
 
-## YAML for R Notebook
-
-There are three lines of options in the top YAML. If you delete \#, the line becomes active.
-
-* number_sections: yes    \# for automatic numbering of sections
-* toc: true               \# for table of contents
-* toc_float: true         \# for floating table of contents
-
 ## YAML for Various Output Formats
 
 ```

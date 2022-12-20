@@ -1,5 +1,5 @@
 ---
-title: "Exploratory Data Analysis II"
+title: "QALL401: Data Analysis for Researchers"
 output:
   html_notebook:
     number_sections: yes
@@ -12,30 +12,33 @@ output:
   pdf_document: 
     number_sections: yes
 ---
-# PART I
+# Exploratory Data Analysis I
+# Exploratory Data Analysis II
+
+---
 
 ### Course Contents {-}
 
-  1. 2022-12-07: Introduction: About the course [lead by TK]
+1. 2022.12.07: Introduction: About the course [lead by TK]
     - An introduction to open and public data, and data science
-  2. 2022-12-14: Exploratory Data Analysis (EDA) 1 [lead by hs]  
+2. 2022-12-14: Exploratory Data Analysis (EDA) 1 [lead by hs]  
     - R Basics with RStudio and/or RStudio.cloud; Toy Data
-  3. **2022-12-21: Exploratory Data Analysis (EDA) 2 [lead by hs]   
+3. 2022-12-21: Exploratory Data Analysis (EDA) 2 [lead by hs]   
     - R Markdown, `tidyverse` I: `dplyr`; `gapminder`**
-  4. 2023-01-11: Exploratory Data Analysis (EDA) 3 [lead by hs]  
+4. 2023-01-11: Exploratory Data Analysis (EDA) 3 [lead by hs]  
     - `tidyverse`II: `readr`, `ggplot2`; Public Data, WDI, WIR, etc
-  5. 2023-01-18: Exploratory Data Analysis (EDA) 4 [lead by hs]  
+5. 2023-01-18: Exploratory Data Analysis (EDA) 4 [lead by hs]  
     - `tidyverse` III: `tidyr`, etc.; WDI, WIR, etc
-  6. 2023-01-25: Exploratory Data Analysis (EDA) 5 [lead by hs]  
+6. 2023-01-25: Exploratory Data Analysis (EDA) 5 [lead by hs]  
     - `tidyverse` IV; WDI, WIR, etc
-  7. 2023-02-01: Introduction to PPDAC         
+7. 2023-02-01: Introduction to PPDAC         
     - Problem-Plan-Data-Analysis-Conclusion Cycle: [lead by TK]
-  8. 2023-02-08: Model building I [lead by TK]   
+8. 2023-02-08: Model building I [lead by TK]   
     -Collecting and visualizing data and Introduction to WDI  
          (World Development Indicators by World Bank)
-  9. 2023-02-15: Model building II [lead by TK]   
+9. 2023-02-15: Model building II [lead by TK]   
     -Analyzing data and communications
-  10. 2023-02-22: Project Presentation
+10. 2023-02-22: Project Presentation
 
 ---
 
@@ -89,13 +92,36 @@ An **R Notebook** is an R Markdown document _with chunks that can be executed in
 
 ---
 
-### Two Goodies
+#### Two Goodies
 
 * **Important**: Implementation of Reproducible Research and Literate Programming
 
 * **Useful** to Render into Various Formats: R Notebook (HTML), R Markdown (HTML), PDF, MS Word, MS Powerpoint, Ioslides Presentation (HTML), Slidy Presentation (HTML), Beamer Presentation (PDF), etc.
 
-### Records of EDA and Communication
+### Reproducible Research and Literate Programming
+
+#### Literate Programming by D. Knuth
+
+Literate programming is an approach to programming introduced by Donald Knuth in which a program is given as an explanation of the program logic in a natural language, such as English, interspersed with snippets of macros and traditional source code, from which a compilable source code can be generated
+
+#### [D. Knuth](https://www.brainyquote.com/quotes/donald_knuth_181634)
+Let us change our traditional attitude to the construction of programs: Instead of imagining that our main task is to instruct a computer what to do, let us concentrate rather on explaining to human beings what we want a computer to do.
+
+#### Reproducible Research - Quote from a [Coursera Course](https://www.coursera.org/learn/reproducible-research)
+
+Reproducible research is the idea that data analyses, and more generally, scientific claims, are published with their data and software code so that others may verify the findings and build upon them.  The need for reproducibility is increasing dramatically as data analyses become more complex, involving larger datasets and more sophisticated computations. Reproducibility allows for people to focus on the actual content of a data analysis, rather than on superficial details reported in a written summary. In addition, reproducibility makes an analysis more useful to others because the data and code that actually conducted the analysis are available. 
+
+#### R Markdown workflow, [R for Data Science](https://r4ds.had.co.nz/r-markdown-workflow.html#r-markdown-workflow)
+
+R Markdown is also important because it so tightly integrates prose and code. This makes it a great analysis notebook because it lets you develop code and record your thoughts. It:
+
+* Records what you did and why you did it. Regardless of how great your memory is, if you don’t record what you do, there will come a time when you have forgotten important details. Write them down so you don’t forget!
+
+* Supports rigorous thinking. You are more likely to come up with a strong analysis if you record your thoughts as you go, and continue to reflect on them. This also saves you time when you eventually write up your analysis to share with others.
+
+* Helps others understand your work. It is rare to do data analysis by yourself, and you’ll often be working as part of a team. A lab notebook helps you share why you did it with your colleagues or lab mates.
+
+#### Records of EDA and Communication
 
 1. Memo on a scratch paper: R Scripts
 2. Record on a notebook: R Notebook (an R Markdown format)
@@ -106,19 +132,7 @@ An **R Notebook** is an R Markdown document _with chunks that can be executed in
   * [BOOKDOWN: Write HTML, PDF, ePub, and Kindle books with R Markdown](https://bookdown.org). Free online document is provided in [pdf as well](https://bookdown.org/yihui/rmarkdown/rmarkdown.pdf)
   - [Arxive Page](https://bookdown.org/home/archive/) 
 
-
-## References
-
-* Posit Primers: [Report Reproducibly](https://rmarkdown.rstudio.com/lesson-1.html?_ga=2.60708591.317621277.1671142614-2004472742.1671142614)
-* Markdown Quick Reference: Top Menu Bar \> Help \> Markdown Quick Reference
-* Cheat Sheet (Top Menu Bar: Help \> Cheat Sheets): RMarkdown Cheat Sheet, RMarkdown Reference Guide
-* Books:
-  - [R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/)
-  - [R Markdown Cookbook](https://bookdown.org/yihui/rmarkdown-cookbook/)
-* Post error messages to a web search engine.
-
-
-### R Studio Setup
+### Let's Get Started
 
 1. Start R Studio - _Update R Studio if old_
 2. Create a Project
@@ -139,7 +153,11 @@ An **R Notebook** is an R Markdown document _with chunks that can be executed in
 
 Note: R Notebooks are relatively new feature of RStudio and are only available in version 1.0 or higher of RStudio. 
 
-### R Notebook Template in Moodle
+### Templates
+
+#### RNotebook_Template
+
+Template to submit your assignment of this course: [`RNotebook_Template.nb.html`](https://icu-hsuzuki.github.io/da4r2022_note/RNotebook_Template.nb.html)
 
 ```
 ---
@@ -154,13 +172,13 @@ output:
 ---
 ```
 
-#### YAML
+##### YAML
 
 * Change the title
 * Write ID and your name
 * Date is auto-generated and inserted. If you wish, you can replace "`r Sys.Date()`" by your favorite date style.
 
-#### Code Chunk
+##### Code Chunk
 
 * When you execute or run a code within the notebook, the results appear beneath the code.
 * Try executing this chunk by clicking the Run button, a triangle pointing right, within the chunk or by placing your cursor inside it and pressing Ctrl+Shift+Enter (Win) or Cmd+Shift+Enter (Mac).
@@ -168,7 +186,9 @@ output:
 * When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the Preview button or press Ctrl+Shift+K (Win) or Cmd+Shift+K (Mac) to preview the HTML file).
 * The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike Knit, _Preview does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed_.
 
-### Testing R Markdown Formats
+#### Testing R Markdown Formats
+
+Various Output Formats: [`test-rmarkdown.nb.html`](https://icu-hsuzuki.github.io/da4r2022_note/test-rmarkdown.nb.html)
 
 ```
 ---
@@ -194,131 +214,25 @@ output:
 ---
 ```
 
-### Testing R Markdown Formats with Templates
+#### Comments on Presentation Formats and Options
+
+* For slides, a new slide starts at \#\#, the second-level heading.
+* `---` is page break for presentation formats.
+* For Word and Powerpoint, you can add your template. See the documents in References
+  - Use R Markdown to create a Word document [similar for PowerPoint]
+  - Save the rendered Word file as: `ref-doc-style.docx`
+  - Edit the styles of the file `ref-doc-style.docx`
+  - Add `ref-doc-style.docx` as reference_doc in YAML with indention as below
 
 ```
----
-title: "Testing R Markdown Formats with Template"
-author: "DS-SL"
-date: "`r Sys.Date()`"
-output:
-  html_notebook:
-    number_sections: yes
-  html_document:
-    df_print: paged
-    number_sections: yes
   word_document: 
     number_sections: yes
     reference_doc: ref-doc-style.docx
-  pdf_document: 
-    number_sections: yes
-  beamer_presentation: 
-    theme: Madrid
-  ioslides_presentation:
-    widescreen: yes
-    smaller: yes
-  slidy_presentation: default
   powerpoint_presentation: 
     reference_doc: ref-ppt-style.pptx
----
-
 ```
 
-<!-- ### Default YAML: R Notebook, HTML, PDF, WORD -->
-
-<!-- ``` -->
-<!-- --- -->
-<!-- title: "The Title of This R Notebook" -->
-<!-- author: "Your Name" -->
-<!-- date: "2021-12-22" -->
-<!-- output: -->
-<!--   html_notebook: default -->
-<!--   html_document: default -->
-<!--   word_document: default -->
-<!--   pdf_document: default -->
-<!-- --- -->
-
-<!-- ``` -->
-
-<!-- * Original format is `output: html_document` -->
-<!-- * Indention matters in YAML. So it is safer to copy and paste `output:` to `pdf_document: default` -->
-<!-- * R Notebook is also an HTML format, so html_notebook part may disappear after knitting in HTML. -->
-
-<!-- ### An Example of R Notebooks -->
-
-<!-- 1. Moodle: QALL401 2021W 2021-12-22 Examples of R Notebook -->
-
-<!-- 2. Open the file  -->
-
-<!--   * R Codes with Outputs -->
-<!--   * Headings, Links, Explanations, etc. -->
-<!--   * [Hide] button, and [Code] button with a menu -->
-<!--   * Choose: Download Rmd -->
-
-<!-- 3. Save as "_file_name_.nb.html" in your R project directory -->
-
-<!-- 4. Download and Save "jhu_covid.Rmd". (Or, open the file in editor) -->
-
-<!-- 5. Preview by [Preview] button. -->
-
-<!-- 6. Knit to other formats, e.g. Word under [Preview] button -->
-
-<!-- N.B. If Step 4 does not work, create a new R Notebook and copy and paste [R Markdown Source File] in Moodle -->
-
-
-<!-- ### Knit, Notebook Mode and Preview of Default.Rmd -->
-
-<!-- 1. Knit to HTML -->
-<!-- 2. Knit to PDF (require \TeX \ system, install `tinytex` package) -->
-<!-- 3. Knit to Word -->
-<!-- 4. Controlling a code chunk and its output -->
-
-<!--   * Highlight and run -->
-<!--   * Run all chunks above -->
-<!--   * Expand, collapse and clear output -->
-<!--   * Show output in other window -->
-<!--   * Modify chunk options -->
-
-<!-- 5. Output Options: -->
-
-<!--   * Notebook, HTML, PDF, Word -->
-<!--   * General, Figures and Advanced -->
-
-<!-- ### `yaml` - YAML Ain't a Markup Language - Example -->
-
-<!-- ``` -->
-<!-- --- -->
-<!-- title: "File Name --Subtitle--" -->
-<!-- author: "My Name" -->
-<!-- date: "2021/12/22" -->
-<!-- output: -->
-<!--   html_notebook: -->
-<!--     number_sections: yes -->
-<!--     toc: yes -->
-<!--     toc_float: yes -->
-<!--   word_document: -->
-<!--     fig_caption: yes -->
-<!--     fig_height: 5 -->
-<!--     fig_width: 6 -->
-<!-- #    reference_docx: word-styles-reference-01.docx -->
-<!-- --- -->
-<!-- ``` -->
-
-
-
-### R Markdown: Quick References (See Moodle)
-
-* R Studio Help (menu bar) > Markdown Quick Reference
-* R Studio Help (menu bar) > Cheat Sheet 
-  - R Markdown Cheat Sheet
-  - R Markdown Reference Guide
-* [R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/) by Yihui Xie, J. J. Allaire, Garrett Grolemund
-* In Textbook: [R for Data Science: Communicate](https://r4ds.had.co.nz/communicate-intro.html#communicate-intro)
-* Markdown: R Markdown is based on the Markdown language of Pandoc
-  - [Pandoc's Markdown](https://pandoc.org/MANUAL.html#pandocs-markdown): Detailed Information
-  - [Markdown Tutorials](https://www.markdowntutorial.com): Interactive Practicum
-  - [DARING FIREBALL: Markdown](https://daringfireball.net/projects/markdown/) (detailed explanation and editor as Dingus)
-
+* You can use `Output Options` at the bottom of the gear icon next to Preview/knit button.
 
 ### Markdown Language -- or use WYSIWYG editor
 
@@ -336,152 +250,33 @@ output:
 * _Italicized text_ by `_italic_`, **Bold text** by `**bold**`
 * Superscripts, Subscripts, Strikethrough text
 
-### Visual R Markdown
+#### Visual R Markdown
+
+>R Studio introduced Visual Editor towards the end of 2021. It seems to be stable but it is not perfect to go back and forth from the original editor using tags. I always use the original editor and I am confident on all the functions of it but I do not have much experience on Visual Editor. [My Note in QALL401 2021]
   
   * https://rstudio.github.io/visual-markdown-editing/
 
 
-### MS Word: [Happy collaboration with Rmd to docx](https://rmarkdown.rstudio.com/articles_docx.html)
+### References
 
-* Use R Markdown to create a Word document
-  - Save as: ``word-styles-reference-01.docx''
-* Edit the Word styles
-  - Edit the styles of the file ``word-styles-reference-01.docx'' .
-* Save this document as your style reference docx file
-* Format an Rmd report using the styles reference docx file
-```
----
-title: "Test Report"
-author: "Your Name"
-date: "January 6, 2021"
-output:
-  word_document:
-    reference_docx: word-styles-reference-01.docx
----
-```
-
-### Why R Markdown?
-
-#### R Markdown Cheat Sheet
-
-* .Rmd files: 
-An R Markdown (.Rmd) file is a record of your research. It contains 
-  1. the code that a scientist needs to reproduce your work along with 
-  2. the narration that a reader needs to understand your work.
-* Reproducible Research: 
-At the click of a button, or the type
-of a command, you can rerun the
-code in an R Markdown file to Rmd reproduce your work and export
-the results as a finished report.
-* Dynamic Documents: 
-You can choose to export the finished report as a html, nb.html, pdf, MS Word, ODT, RTF, or markdown document; or as a html or pdf based slide show.
+* Posit Primers: [Report Reproducibly](https://rmarkdown.rstudio.com/lesson-1.html?_ga=2.60708591.317621277.1671142614-2004472742.1671142614)
+* Markdown Quick Reference: Top Menu Bar \> Help \> Markdown Quick Reference
+* Cheat Sheet (Top Menu Bar: Help \> Cheat Sheets): RMarkdown Cheat Sheet, RMarkdown Reference Guide
+* Books:
+  - In Textbook: [R for Data Science: Communicate](https://r4ds.had.co.nz/communicate-intro.html#communicate-intro)
+  - [R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/) by Yihui Xie, J. J. Allaire, Garrett Grolemund
+  - [R Markdown Cookbook](https://bookdown.org/yihui/rmarkdown-cookbook/) by Yihui Xie, Christophe Dervieux, Emily Riederer
+* Markdown: R Markdown is based on the Markdown language of Pandoc
+  - [Pandoc's Markdown](https://pandoc.org/MANUAL.html#pandocs-markdown): Detailed Information
+  - [Markdown Tutorials](https://www.markdowntutorial.com): Interactive Practicum
+  - [DARING FIREBALL: Markdown](https://daringfireball.net/projects/markdown/) (detailed explanation and editor as Dingus)
+* Post error messages to a web search engine.
 
 
 
+## Data Transforamtion with `dplyr`
 
-### Literate Programming by D. Knuth
-
-Literate programming is an approach to programming introduced by Donald Knuth in which a program is given as an explanation of the program logic in a natural language, such as English, interspersed with snippets of macros and traditional source code, from which a compilable source code can be generated
-
-#### [D. Knuth](https://www.brainyquote.com/quotes/donald_knuth_181634)
-Let us change our traditional attitude to the construction of programs: Instead of imagining that our main task is to instruct a computer what to do, let us concentrate rather on explaining to human beings what we want a computer to do.
-
-### Reproducible Research - Quote from a Coursera Course
-
-#### [Reproducible Research](https://www.coursera.org/learn/reproducible-research)
-
-Reproducible research is the idea that data analyses, and more generally, scientific claims, are published with their data and software code so that others may verify the findings and build upon them.  The need for reproducibility is increasing dramatically as data analyses become more complex, involving larger datasets and more sophisticated computations. Reproducibility allows for people to focus on the actual content of a data analysis, rather than on superficial details reported in a written summary. In addition, reproducibility makes an analysis more useful to others because the data and code that actually conducted the analysis are available. 
-
-### [R Markdown workflow, R for Data Science](https://r4ds.had.co.nz/r-markdown-workflow.html#r-markdown-workflow)
-
-R Markdown is also important because it so tightly integrates prose and code. This makes it a great analysis notebook because it lets you develop code and record your thoughts. It:
-
-* Records what you did and why you did it. Regardless of how great your memory is, if you don’t record what you do, there will come a time when you have forgotten important details. Write them down so you don’t forget!
-
-* Supports rigorous thinking. You are more likely to come up with a strong analysis if you record your thoughts as you go, and continue to reflect on them. This also saves you time when you eventually write up your analysis to share with others.
-
-* Helps others understand your work. It is rare to do data analysis by yourself, and you’ll often be working as part of a team. A lab notebook helps you share why you did it with your colleagues or lab mates.
-
-#### Examples of yaml
-
-```
----
-title: "R Notebook"
-output: html_notebook
----
-```
-
-##### Default + author + date
-The format of date can be changed.
-
-```
----
-title: "Title of the Notebook"
-author: "Your Name"
-date: "2021-12-22" 
-output: html_notebook
----
-```
-
-##### Examples
-##### Notebook of Coronavirus
-
-```
----
-title: "A Study of Cases of Coronavirus Pandemic"
-author: "Hiroshi Suzuki"
-date: "2021/12/22"
-output:
-  html_notebook:
-    number_sections: yes
-    toc: yes
-    toc_float: yes
----
-```
-
-##### Notebook of Coronavirus + pdf + word
-
-```
----
-title: "A Study of Cases of Coronavirus Pandemic"
-author: "Hiroshi Suzuki"
-date: "2021/12/22"
-output:
-  html_notebook:
-    number_sections: yes
-    toc: yes
-    toc_float: yes
-  pdf_document:
-    toc: true
-    number_sections: true
-  word_document: default
----
-```
-
-##### Edit the word file file_show.docx to create my-styles.docx, e.g., a4-my-styles.docx changed the paper size to A4 from US letter.
-
-```
----
-title: "A Study of Cases of Coronavirus Pandemic"
-author: "Hiroshi Suzuki"
-date: "2021/12/22"
-output:
-  html_notebook:
-    number_sections: yes
-    toc: yes
-    toc_float: yes
-  pdf_document:
-    toc: true
-    number_sections: true
-  word_document:
-    reference_docx: a4-my-styles.docx
----
-
-```
-
-# Part II: Data Transforamtion with `dplyr`
-
-## `dplyr` [Overview](https://dplyr.tidyverse.org)
+### `dplyr` [Overview](https://dplyr.tidyverse.org)
 
 dplyr is a grammar of data manipulation, providing a consistent set of verbs that help you solve the most common data manipulation challenges:
 
@@ -556,11 +351,11 @@ Unlike other `dplyr` verbs, `arrange()` largely ignores grouping; you need to ex
 
 ---
 
-* [`group_by`](https://dplyr.tidyverse.org/reference/group_by.html)
+### [`group_by`](https://dplyr.tidyverse.org/reference/group_by.html)
 
 ---
 
-* [`summarise` or `summarize`](https://dplyr.tidyverse.org/reference/summarise.html)
+### [`summarise` or `summarize`](https://dplyr.tidyverse.org/reference/summarise.html)
 
 ```{r}
 iris %>% 
@@ -707,25 +502,6 @@ ggplot(data = <DATA>) +
     - Observations and difficulties encountered.
 
 **Due:** 2023-01-09 23:59:00. Submit your R Notebook file in Moodle (The Second Assignment). Due on Monday!
-
-
-### Note on Assignment 2 in Week 3: R Notebook
-
-Please note the following.
-
-* There are essentially three modes: R Scripts, R Notebook and R Markdown. 
-* R Notebook is a special type of R Markdown but please use R Notebook at least for Suzuki's assignments.
-* To start, choose R Notebook from New File in the File Menu. If you started with R Markdown, please switch it with the Preview button hidden under the triangle on the right of the knit button. 
-* The file we preview has the name _file name_.nb.html. For example if the original file name is a3_12345.Rmd, then a3_12345.nb.html is created. You can check it using Files tab.
-* When you preview R Notebook, on the top right, you can find Code button. If you press it you also can find download Rmd, which is the source of R Notebook you edited. In this way we can share both the outputs and the source.
-* One difficulty is that you cannot include the outputs of the code chunk in the preview. 
-* Check Preview on Save and/or save the file before preview, i.e., pressing the preview button. 
-* Select Run all under Run button. Then all outputs apear on your editor and all outputs will appear in your preview.
-* If some of your code chunks have problems, run each code chunk from top to bottom so that all outputs appear in your editor or viewer.
-* When you share your R Notebook, do not forget to share _file name_.nb.html.
-* If you have a _file name_.nb.html, then find it from Files in R Studio, you can automatically create _file name_.Rmd to edit the source. 
-* R Studio introduced Visual Editor towards the end of 2021. It seems to be stable but it is not perfect to go back and forth from the original editor using tags. I always use the original editor and I am confident on all the functions of it but I do not have much experience on Visual Editor.  
-
 
 
 

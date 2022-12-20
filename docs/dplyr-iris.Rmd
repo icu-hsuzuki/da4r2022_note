@@ -5,17 +5,15 @@ output:
     number_sections: yes
 ---
 
-# dplyr
-
-Overview: [https://dplyr.tidyverse.org](https://dplyr.tidyverse.org))
-
-`dplyr` is a grammar of data manipulation, providing a consistent set of verbs that help you solve the most common data manipulation challenges
+>Overview: [https://dplyr.tidyverse.org](https://dplyr.tidyverse.org))
+>
+>`dplyr` is a grammar of data manipulation, providing a consistent set of verbs that help you solve the most common data manipulation challenges
 
 ```{r setup, include=FALSE}
 library(tidyverse)
 ```
 
-## Functions
+# Functions
 
 -   `select()` picks variables based on their names.
 
@@ -29,13 +27,13 @@ library(tidyverse)
 
 -   `group_by()` takes an existing tbl and converts it into a grouped tbl.
 
-## `iris` data
+# `iris` data
 
 ```{r}
 iris
 ```
 
-## [`select`](https://dplyr.tidyverse.org/reference/select.html)
+# [`select`](https://dplyr.tidyverse.org/reference/select.html)
 
 Subset columns using their names and types. Example uses `babynames` package as in Posit Primers: Work with Data.
 
@@ -50,53 +48,59 @@ Subset columns using their names and types. Example uses `babynames` package as 
 | one_of()        | Columns whose name appear in the given set   | select(babynames, one_of(c("sex", "gender"))) |
 | starts_with()   | Columns that starts with a string            | select(babynames, starts_with("n"))           |
 
-### Columns except
+## Columns except
 
 ```{r}
 select(iris, -Species)
 ```
 
-### Columns between (inclusive)
+## Columns between (inclusive)
 
 ```{r}
 select(iris, 3:5)
 ```
 
-### Columns that contains a string
+## Columns that contains a string
 
 ```{r}
 select(iris, contains("Sepal"))
 ```
 
-### Columns that ends with a string
+## Columns that ends with a string
 
 ```{r}
 select(iris, ends_with("Width"))
 ```
 
-### Columns that matches a regex
+## Columns that matches a regex
 
 ```{r}
 select(iris, matches("pe"))
 ```
 
-### Columns with a numerical suffix in the range
+## Columns with a numerical suffix in the range
 
 Not applicable to `iris` data
 
-### Columns whose name appear in the given set
+## Columns whose name appear in the given set
 
 ```{r}
 select(iris, one_of("Sepal.Length", "Petal.Width"))
 ```
 
-### Columns that starts with a string
+## Columns that starts with a string
 
 ```{r}
 select(iris, starts_with("s"))
 ```
 
-## [`filter`](https://dplyr.tidyverse.org/reference/filter.html)
+## Columns by changing names
+
+```{r}
+select(iris, sl = Sepal.Length, sw = Sepal.Width, sp = Species)
+```
+
+# [`filter`](https://dplyr.tidyverse.org/reference/filter.html)
 
 Subset rows using column values
 
@@ -111,13 +115,13 @@ Subset rows using column values
 | is.na()          | Is x an NA?                      | is.na(x)  |
 | !is.na()         | Is x not an NA?                  | !is.na(x) |
 
-### Is x greater than y?
+## Is x greater than y?
 
 ```{r}
 filter(iris, Sepal.Length > 6.0)
 ```
 
-### Is x greater than or equal to y?
+## Is x greater than or equal to y?
 
 And: &
 
@@ -125,13 +129,13 @@ And: &
 filter(iris, Sepal.Length >= 5.0 & Sepal.Width >= 4.0)
 ```
 
-### Is x less than y?
+## Is x less than y?
 
 ```{r}
 filter(iris, Sepal.Length < 5.0)
 ```
 
-### Is x less than or equal to y?
+## Is x less than or equal to y?
 
 OR: \|
 
@@ -139,31 +143,31 @@ OR: \|
 filter(iris, Sepal.Length > 7.0 | Sepal.Width >= 4.0)
 ```
 
-### Is x equal to y?
+## Is x equal to y?
 
 ```{r}
 filter(iris, Species=="virginica")
 ```
 
-### Is x an NA?
+## Is x an NA?
 
 ```{r}
 filter(iris, is.na(Sepal.Width))
 ```
 
-### Is x not an NA?
+## Is x not an NA?
 
 ```{r}
 filter(iris, !is.na(Sepal.Width))
 ```
 
-### Extra
+## Extra
 
 ```{r}
 filter(iris, Sepal.Width > Petal.Length)
 ```
 
-## [`arrange`](https://dplyr.tidyverse.org/reference/arrange.html)
+# [`arrange`](https://dplyr.tidyverse.org/reference/arrange.html)
 
 -   `arrange()` orders the rows of a data frame by the values of selected columns.
 
@@ -173,15 +177,15 @@ Unlike other `dplyr` verbs, `arrange()` largely ignores grouping; you need to ex
 arrange(iris, Sepal.Length, desc(Sepal.Width))
 ```
 
-### `slice, slice_head, slice_tail, slice_min, slice_max, slice_sample`
+## `slice, slice_head, slice_tail, slice_min, slice_max, slice_sample`
 
 ```{r}
 slice_min(iris, Sepal.Length, n = 6)
 ```
 
-## [`pipes`](https://r4ds.had.co.nz/pipes.html)`(R4DS)`
+# [`pipes`](https://r4ds.had.co.nz/pipes.html)`(R4DS)`
 
-## [`mutate`](https://dplyr.tidyverse.org/reference/mutate.html)
+# [`mutate`](https://dplyr.tidyverse.org/reference/mutate.html)
 
 -   Create, modify, and delete columns
 
@@ -207,13 +211,13 @@ iris %>% mutate(Sepal.Ratio = Sepal.Length/Sepal.Width) %>%
   arrange(Sepal.Ratio)
 ```
 
-## [`group_by`](https://dplyr.tidyverse.org/reference/group_by.html)
+# [`group_by`](https://dplyr.tidyverse.org/reference/group_by.html)
 
 Most data operations are done on groups defined by variables. `group_by()` takes an existing tbl and converts it into a grouped tbl where operations are performed "by group". `ungroup()`removes grouping.
 
-## [`summarise` or `summarize`](https://dplyr.tidyverse.org/reference/summarise.html)
+# [`summarise` or `summarize`](https://dplyr.tidyverse.org/reference/summarise.html)
 
-### Summary functions {.unnumbered}
+## Summary functions {.unnumbered}
 
 You can use any function in `summarise()` so long as it meets one criteria: the function must take a vector of values as input and return a single value as output. Functions that do this are known as summary functions and they are common in the field of descriptive statistics. Some of the most useful summary functions include:
 
@@ -238,7 +242,7 @@ iris %>%
   arrange(rank)
 ```
 
-## Posit Primers
+# Posit Primers
 
 Please practice with Posit Primers - Work with Data
 
