@@ -1,0 +1,163 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+# Exploratory Data Analysis I
+
+# Exploratory Data Analysis II
+
+
+### Course Contents {-}
+
+1. 2022.12.07: Introduction: About the course [lead by TK]
+    - An introduction to open and public data, and data science
+2. 2022-12-14: Exploratory Data Analysis (EDA) 1 [lead by hs]  
+    - R Basics with RStudio and/or RStudio.cloud; Toy Data
+3. 2022-12-21: Exploratory Data Analysis (EDA) 2 [lead by hs]   
+    - R Markdown, `tidyverse` I: `dplyr`; `gapminder`**
+4. 2023-01-11: Exploratory Data Analysis (EDA) 3 [lead by hs]  
+    - `tidyverse`II: `readr`, `ggplot2`; Public Data, WDI, WIR, etc
+5. 2023-01-18: Exploratory Data Analysis (EDA) 4 [lead by hs]  
+    - `tidyverse` III: `tidyr`, etc.; WDI, WIR, etc
+6. 2023-01-25: Exploratory Data Analysis (EDA) 5 [lead by hs]  
+    - `tidyverse` IV; WDI, WIR, etc
+7. 2023-02-01: Introduction to PPDAC         
+    - Problem-Plan-Data-Analysis-Conclusion Cycle: [lead by TK]
+8. 2023-02-08: Model building I [lead by TK]   
+    -Collecting and visualizing data and Introduction to WDI  
+         (World Development Indicators by World Bank)
+9. 2023-02-15: Model building II [lead by TK]   
+    -Analyzing data and communications
+10. 2023-02-22: Project Presentation
+
+---
+
+### Review {-}
+
+* R on R Studio/Posit Cloud (RStudio Cloud)
+* Three ways to run codes
+  1. Console
+  2. R Script
+  3. Code Chunk in R Notebook
+* Packages
+  1. `tidyverse`
+  2. `rmarkdown`
+  3. `gapminder`
+  
+```{r include=FALSE}
+library(tidyverse)
+library(gapminder)
+library(WDI)
+```
+
+
+---
+
+#### EDA (A diagram from R4DS by H.W. and G.G.) {-}
+
+![EDA from r4ds](./data/data-science.png)
+
+**Today**: R Markdown and `dplyr`
+
+
+## R Markdown
+
+What is R Markdown: https://vimeo.com/178485416
+
+* Code Chunks
+* Text
+* YAML Metadata
+
+---
+
+### What is R Markdown and R Notebook
+
+R Markdown provides an authoring framework for data science. You can use a single R Markdown file to both
+
+* save and execute code
+* generate high quality reports that can be shared with an audience
+
+R Notebooks are an implementation of Literate Programming that allows for direct interaction with R while producing a reproducible document with publication-quality output.
+
+An **R Notebook** is an R Markdown document _with chunks that can be executed independently and interactively, with output visible immediately beneath the input_.
+
+(Reference: [R Markdown: The Definitive Guide, 3.2 Notebook](https://bookdown.org/yihui/rmarkdown/notebook.html))
+
+---
+
+#### Two Goodies
+
+* **Important**: Implementation of Reproducible Research and Literate Programming
+
+* **Useful** to Render into Various Formats: R Notebook (HTML), R Markdown (HTML), PDF, MS Word, MS Powerpoint, Ioslides Presentation (HTML), Slidy Presentation (HTML), Beamer Presentation (PDF), etc.
+
+---
+
+### Reproducible Research and Literate Programming
+
+#### Literate Programming by D. Knuth
+
+Literate programming is an approach to programming introduced by Donald Knuth in which a program is given as an explanation of the program logic in a natural language, such as English, interspersed with snippets of macros and traditional source code, from which a compilable source code can be generated
+
+#### [D. Knuth](https://www.brainyquote.com/quotes/donald_knuth_181634)
+Let us change our traditional attitude to the construction of programs: Instead of imagining that our main task is to instruct a computer what to do, let us concentrate rather on explaining to human beings what we want a computer to do.
+
+---
+
+#### Reproducible Research - Quote from a [Coursera Course](https://www.coursera.org/learn/reproducible-research)
+
+Reproducible research is the idea that data analyses, and more generally, scientific claims, are published with their data and software code so that others may verify the findings and build upon them.  The need for reproducibility is increasing dramatically as data analyses become more complex, involving larger datasets and more sophisticated computations. Reproducibility allows for people to focus on the actual content of a data analysis, rather than on superficial details reported in a written summary. In addition, reproducibility makes an analysis more useful to others because the data and code that actually conducted the analysis are available. 
+
+---
+
+#### R Markdown workflow, [R for Data Science](https://r4ds.had.co.nz/r-markdown-workflow.html#r-markdown-workflow)
+
+R Markdown is also important because it so tightly integrates prose and code. This makes it a great analysis notebook because it lets you develop code and record your thoughts. It:
+
+* Records what you did and why you did it. Regardless of how great your memory is, if you don’t record what you do, there will come a time when you have forgotten important details. Write them down so you don’t forget!
+
+* Supports rigorous thinking. You are more likely to come up with a strong analysis if you record your thoughts as you go, and continue to reflect on them. This also saves you time when you eventually write up your analysis to share with others.
+
+* Helps others understand your work. It is rare to do data analysis by yourself, and you’ll often be working as part of a team. A lab notebook helps you share why you did it with your colleagues or lab mates.
+
+---
+
+#### Records of EDA and Communication
+
+1. Memo on a scratch paper: R Scripts
+2. Record on a notebook: R Notebook (an R Markdown format)
+3. Short paper or a digital communication: R Notebook
+3. Paper or a report: R Markdown (html, pdf, MS Word, etc.)
+4. Presentation (html, pdf, MS Powerpoint, etc.)
+5. Publication of a Book
+  * [BOOKDOWN: Write HTML, PDF, ePub, and Kindle books with R Markdown](https://bookdown.org). Free online document is provided in [pdf as well](https://bookdown.org/yihui/rmarkdown/rmarkdown.pdf)
+  - [Arxive Page](https://bookdown.org/home/archive/) 
+
+---
+
+### Let's Get Started
+
+1. Start R Studio - _Update R Studio if old_
+2. Create a Project
+3. Tool > Install Packages `rmarkdown`
+    * Or on Console: `install.packages("rmarkdown")`
+4. Tool > Install Packages `tinytex` (for pdf generation)
+    * Alternatively, `install.packages('tinytex')`
+    * If TeX is not installed: `tinytex::install_tinytex()`  \# install TinyTeX
+      - If you are not sure, please check on `Terminal` in the left below pane: 
+        + which latex
+        + which mktexlsr
+5. Let's try!  
+    a. File > New File > R Notebook
+    b. Save with a file name, say, test-notebook
+    c. Preview by [Preview] button
+    d. Run Code Chunk `plot(cars)` and then Preview again.
+    e. Knit PDF, Word (and HTML)
+
+Note: R Notebooks are relatively new feature of RStudio and are only available in version 1.0 or higher of RStudio. 
+
+---
+

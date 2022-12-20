@@ -301,7 +301,8 @@ df_wdi_lifeExp %>% ggplot(aes(x = year, y = mean_lifeExp, color = region, linety
 ```
 
 ```{r}
-df_wdi_lifeExp %>% ggplot() +
+df_wdi_lifeExp %>% filter(!is.na(mean_lifeExp), !is.na(median_lifeExp)) %>%
+                            ggplot() +
   geom_line(aes(x = year, y = mean_lifeExp, color = region)) + 
   geom_line(aes(x = year, y = median_lifeExp, linetype = region))
 ```
