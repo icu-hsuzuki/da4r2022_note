@@ -1,13 +1,15 @@
 ---
 title: "Exploratory Data Analysis II"
 output:
-  pdf_document: default
+  html_notebook:
+    number_sections: yes
   ioslides_presentation:
     widescreen: yes
     smaller: yes
   html_document:
     df_print: paged
-  html_notebook:
+    number_sections: yes
+  pdf_document: 
     number_sections: yes
 ---
 # PART I
@@ -19,7 +21,7 @@ output:
   2. 2022-12-14: Exploratory Data Analysis (EDA) 1 [lead by hs]  
     - R Basics with RStudio and/or RStudio.cloud; Toy Data
   3. **2022-12-21: Exploratory Data Analysis (EDA) 2 [lead by hs]   
-    - R Markdown, `tidyverse` I: `dplyr`; WDI**
+    - R Markdown, `tidyverse` I: `dplyr`; `gapminder`**
   4. 2023-01-11: Exploratory Data Analysis (EDA) 3 [lead by hs]  
     - `tidyverse`II: `readr`, `ggplot2`; Public Data, WDI, WIR, etc
   5. 2023-01-18: Exploratory Data Analysis (EDA) 4 [lead by hs]  
@@ -28,10 +30,10 @@ output:
     - `tidyverse` IV; WDI, WIR, etc
   7. 2023-02-01: Introduction to PPDAC         
     - Problem-Plan-Data-Analysis-Conclusion Cycle: [lead by TK]
-  8. 2023-02-08: Model building I [lead by TK]
+  8. 2023-02-08: Model building I [lead by TK]   
     -Collecting and visualizing data and Introduction to WDI  
          (World Development Indicators by World Bank)
-  9. 2023-02-15: Model building II [lead by TK]
+  9. 2023-02-15: Model building II [lead by TK]   
     -Analyzing data and communications
   10. 2023-02-22: Project Presentation
 
@@ -66,7 +68,13 @@ library(WDI)
 
 ## R Markdown
 
-### What is R Markdown Notebook
+What is R Markdown: https://vimeo.com/178485416
+
+* Code Chunks
+* Text
+* YAML Metadata
+
+### What is R Markdown and R Notebook
 
 R Markdown provides an authoring framework for data science. You can use a single R Markdown file to both
 
@@ -75,7 +83,7 @@ R Markdown provides an authoring framework for data science. You can use a singl
 
 R Notebooks are an implementation of Literate Programming that allows for direct interaction with R while producing a reproducible document with publication-quality output.
 
-An R Notebook is an R Markdown document with chunks that can be executed independently and interactively, with output visible immediately beneath the input.
+An **R Notebook** is an R Markdown document _with chunks that can be executed independently and interactively, with output visible immediately beneath the input_.
 
 (Reference: [R Markdown: The Definitive Guide, 3.2 Notebook](https://bookdown.org/yihui/rmarkdown/notebook.html))
 
@@ -83,31 +91,45 @@ An R Notebook is an R Markdown document with chunks that can be executed indepen
 
 ### Two Goodies
 
-* **Important and Essential**: Reproducible Research with Literate Programming
+* **Important**: Implementation of Reproducible Research and Literate Programming
 
-* **Useful to Render Vairous Formats**: R Notebook (HTML), R Markdown (HTML), PDF, MS Word, MS Powerpoint, Ioslides Presentation (HTML), Slidy Presentatoin (HTML), Beamer Presentation (PDF)
+* **Useful** to Render into Various Formats: R Notebook (HTML), R Markdown (HTML), PDF, MS Word, MS Powerpoint, Ioslides Presentation (HTML), Slidy Presentation (HTML), Beamer Presentation (PDF), etc.
 
 ### Records of EDA and Communication
 
-1. Memo on scratch paper: R Scripts
-2. Record on a notebook: R Notebook (a type of an R Markdown format)
+1. Memo on a scratch paper: R Scripts
+2. Record on a notebook: R Notebook (an R Markdown format)
 3. Short paper or a digital communication: R Notebook
-3. Paper or a report: R Markdown (html, pdf, or MS Word)
-4. Presentation
-  * R Markdown with a presentation format (html, pdf, or PowerPoint)
-6. Publication of a Book
+3. Paper or a report: R Markdown (html, pdf, MS Word, etc.)
+4. Presentation (html, pdf, MS Powerpoint, etc.)
+5. Publication of a Book
   * [BOOKDOWN: Write HTML, PDF, ePub, and Kindle books with R Markdown](https://bookdown.org). Free online document is provided in [pdf as well](https://bookdown.org/yihui/rmarkdown/rmarkdown.pdf)
   - [Arxive Page](https://bookdown.org/home/archive/) 
 
 
+## References
+
+* Posit Primers: [Report Reproducibly](https://rmarkdown.rstudio.com/lesson-1.html?_ga=2.60708591.317621277.1671142614-2004472742.1671142614)
+* Markdown Quick Reference: Top Menu Bar \> Help \> Markdown Quick Reference
+* Cheat Sheet (Top Menu Bar: Help \> Cheat Sheets): RMarkdown Cheat Sheet, RMarkdown Reference Guide
+* Books:
+  - [R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/)
+  - [R Markdown Cookbook](https://bookdown.org/yihui/rmarkdown-cookbook/)
+* Post error messages to a web search engine.
+
 
 ### R Studio Setup
 
-1. Start R Studio
+1. Start R Studio - _Update R Studio if old_
 2. Create a Project
 3. Tool > Install Packages `rmarkdown`
     * Or on Console: `install.packages("rmarkdown")`
 4. Tool > Install Packages `tinytex` (for pdf generation)
+    * Alternatively, `install.packages('tinytex')`
+    * If TeX is not installed: `tinytex::install_tinytex()`  \# install TinyTeX
+      - On Terminal: 
+        + which latex
+        + which mktexlsr
 5. Let's try!  
     a. File > New File > R Notebook
     b. Save with a file name, say, test-notebook
@@ -117,85 +139,156 @@ An R Notebook is an R Markdown document with chunks that can be executed indepen
 
 Note: R Notebooks are relatively new feature of RStudio and are only available in version 1.0 or higher of RStudio. 
 
-### Default YAML: R Notebook, HTML, PDF, WORD
+### R Notebook Template in Moodle
 
 ```
 ---
-title: "The Title of This R Notebook"
-author: "Your Name"
-date: "2021-12-22"
-output:
-  html_notebook: default
-  html_document: default
-  word_document: default
-  pdf_document: default
+title: "Title of R Notebook"
+author: "ID and Your Name"
+date: "`r Sys.Date()`" 
+output: 
+  html_notebook:
+#    number_sections: yes
+#    toc: true
+#    toc_float: true
 ---
-
 ```
 
-* Original format is `output: html_document`
-* Indention matters in YAML. So it is safer to copy and paste `output:` to `pdf_document: default`
-* R Notebook is also an HTML format, so html_notebook part may disappear after knitting in HTML.
-
-### An Example of R Notebooks
-
-1. Moodle: QALL401 2021W 2021-12-22 Examples of R Notebook
-
-2. Open the file 
-
-  * R Codes with Outputs
-  * Headings, Links, Explanations, etc.
-  * [Hide] button, and [Code] button with a menu
-  * Choose: Download Rmd
-
-3. Save as "_file_name_.nb.html" in your R project directory
-
-4. Download and Save "jhu_covid.Rmd". (Or, open the file in editor)
-
-5. Preview by [Preview] button.
-
-6. Knit to other formats, e.g. Word under [Preview] button
-
-N.B. If Step 4 does not work, create a new R Notebook and copy and paste [R Markdown Source File] in Moodle
-
-
-### Knit, Notebook Mode and Preview of Default.Rmd
-
-1. Knit to HTML
-2. Knit to PDF (require \TeX \ system, install `tinytex` package)
-3. Knit to Word
-4. Controlling a code chunk and its output
-
-  * Highlight and run
-  * Run all chunks above
-  * Expand, collapse and clear output
-  * Show output in other window
-  * Modify chunk options
-
-5. Output Options:
-
-  * Notebook, HTML, PDF, Word
-  * General, Figures and Advanced
-
-### `yaml` - YAML Ain't a Markup Language - Example
+### Testing R Markdown Formats
 
 ```
 ---
-title: "File Name --Subtitle--"
-author: "My Name"
-date: "2021/12/22"
+title: "Testing R Markdown Formats"
+author: "DS-SL"
+date: "`r Sys.Date()`"
 output:
   html_notebook:
     number_sections: yes
-    toc: yes
-    toc_float: yes
-  word_document:
-    fig_caption: yes
-    fig_height: 5
-    fig_width: 6
-#    reference_docx: word-styles-reference-01.docx
+  pdf_document: 
+    number_sections: yes
+  html_document:
+    df_print: paged
+    number_sections: yes
+  word_document: 
+    number_sections: yes
+  powerpoint_presentation: default
+  ioslides_presentation:
+    widescreen: yes
+    smaller: yes
+  slidy_presentation: default
+  beamer_presentation: default
 ---
 ```
+
+### Testing R Markdown Formats with Templates
+
+```
+---
+title: "Testing R Markdown Formats with Template"
+author: "DS-SL"
+date: "`r Sys.Date()`"
+output:
+  html_notebook:
+    number_sections: yes
+  html_document:
+    df_print: paged
+    number_sections: yes
+  word_document: 
+    number_sections: yes
+    reference_doc: ref-doc-style.docx
+  pdf_document: 
+    number_sections: yes
+  beamer_presentation: 
+    theme: Madrid
+  ioslides_presentation:
+    widescreen: yes
+    smaller: yes
+  slidy_presentation: default
+  powerpoint_presentation: 
+    reference_doc: ref-ppt-style.pptx
+---
+
+```
+
+<!-- ### Default YAML: R Notebook, HTML, PDF, WORD -->
+
+<!-- ``` -->
+<!-- --- -->
+<!-- title: "The Title of This R Notebook" -->
+<!-- author: "Your Name" -->
+<!-- date: "2021-12-22" -->
+<!-- output: -->
+<!--   html_notebook: default -->
+<!--   html_document: default -->
+<!--   word_document: default -->
+<!--   pdf_document: default -->
+<!-- --- -->
+
+<!-- ``` -->
+
+<!-- * Original format is `output: html_document` -->
+<!-- * Indention matters in YAML. So it is safer to copy and paste `output:` to `pdf_document: default` -->
+<!-- * R Notebook is also an HTML format, so html_notebook part may disappear after knitting in HTML. -->
+
+<!-- ### An Example of R Notebooks -->
+
+<!-- 1. Moodle: QALL401 2021W 2021-12-22 Examples of R Notebook -->
+
+<!-- 2. Open the file  -->
+
+<!--   * R Codes with Outputs -->
+<!--   * Headings, Links, Explanations, etc. -->
+<!--   * [Hide] button, and [Code] button with a menu -->
+<!--   * Choose: Download Rmd -->
+
+<!-- 3. Save as "_file_name_.nb.html" in your R project directory -->
+
+<!-- 4. Download and Save "jhu_covid.Rmd". (Or, open the file in editor) -->
+
+<!-- 5. Preview by [Preview] button. -->
+
+<!-- 6. Knit to other formats, e.g. Word under [Preview] button -->
+
+<!-- N.B. If Step 4 does not work, create a new R Notebook and copy and paste [R Markdown Source File] in Moodle -->
+
+
+<!-- ### Knit, Notebook Mode and Preview of Default.Rmd -->
+
+<!-- 1. Knit to HTML -->
+<!-- 2. Knit to PDF (require \TeX \ system, install `tinytex` package) -->
+<!-- 3. Knit to Word -->
+<!-- 4. Controlling a code chunk and its output -->
+
+<!--   * Highlight and run -->
+<!--   * Run all chunks above -->
+<!--   * Expand, collapse and clear output -->
+<!--   * Show output in other window -->
+<!--   * Modify chunk options -->
+
+<!-- 5. Output Options: -->
+
+<!--   * Notebook, HTML, PDF, Word -->
+<!--   * General, Figures and Advanced -->
+
+<!-- ### `yaml` - YAML Ain't a Markup Language - Example -->
+
+<!-- ``` -->
+<!-- --- -->
+<!-- title: "File Name --Subtitle--" -->
+<!-- author: "My Name" -->
+<!-- date: "2021/12/22" -->
+<!-- output: -->
+<!--   html_notebook: -->
+<!--     number_sections: yes -->
+<!--     toc: yes -->
+<!--     toc_float: yes -->
+<!--   word_document: -->
+<!--     fig_caption: yes -->
+<!--     fig_height: 5 -->
+<!--     fig_width: 6 -->
+<!-- #    reference_docx: word-styles-reference-01.docx -->
+<!-- --- -->
+<!-- ``` -->
 
 
 
@@ -229,6 +322,9 @@ output:
 * _Italicized text_ by `_italic_`, **Bold text** by `**bold**`
 * Superscripts, Subscripts, Strikethrough text
 
+### Visual R Markdown
+  
+  * https://rstudio.github.io/visual-markdown-editing/
 
 
 ### MS Word: [Happy collaboration with Rmd to docx](https://rmarkdown.rstudio.com/articles_docx.html)
@@ -573,32 +669,33 @@ ggplot(data = <DATA>) +
 
 ## The Week Two Assignment (in Moodle)
 
--   Pick two data from the built-in dataset. (`library(help = "datasets")` or go to the site [The R Datasets Package](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/00Index.html))
+**R Markdown and `dplyr`**
 
-    -   One of them can be `iris` but do not choose `cars` or `AirPassengers`.
-    -   `ggplot2` examples of `cars`, `iris` and `AirPassengers` are given below.
+* Create an R Notebook of a Data Analysis containing the following and submit the rendered HTML file (eg. `a2_123456.nb.html`)
+  1. create an R Notebook using the R Notebook Template in Moodle,  save as `a2_123456.Rmd`, 
+  2. write your name and ID and the contents, 
+  3. run each code block, 
+  4. preview to create `a2_123456.nb.html`,
+  5. submit  `a2_123456.nb.html` to Moodle.
 
--   Create an R Notebook of a Data Analysis containing the following and submit the rendered HTML file (*file name*.nb.html):
+1. Pick data from the built-in datasets besides `cars`. (`library(help = "datasets")` or go to the site [The R Datasets Package](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/00Index.html))
 
-    1.  title, date, and author, i.e., Your Name
-    2.  an explanation of the data and the variables
-    3.  at least one code chunk containing the following:
+    - Information of the data: Name, Description, Usage, Format, Source, References (Hint: ?cars)
+    - Use `head()`, `str()`, ..., and create at least one chart using `ggplot2` - Code Chunk.
+      + Don't forget to add `library(tidyverse)` in the first code chunk.
+    - An observation of the chart - in your own words.
 
-    -   `head()`, `str()`
+2. Load `gapminder` by `library(gapminder)`.
 
-    4.  for each dataset, at least one code chunk containing graphs using ggplot2. Please try at least two `geoms`:
+    - Choose `pop` or `gdpPercap`, or both, one country in the data, a group of countries in the data.
+    - Create charts using ggplot2 with geom_line and the variables and countries chosen in 1. (See examples of the charts for `lifeExp`.)
+    - Study the data as you like.
+    - Observations and difficulties encountered.
 
-    -   `geom_hist()`, `geom_boxplot()`, `goem_col()`, etc.
-    -   `geom_line()`, `geom_point()`, etc.
-
-    5.  your findings and/or questions
-    6.  file name: ID.nb.html, e.g. 123456.nb.html
-    7.  option: `median()`, `mean()`, `sd()` of a quantitative (numeric) variable, `cor()` of two quantitative (numeric) variables (or a correlation table)
-
--   Submit your R Notebook file to Moodle (The Third Assignment) by 2021-01-11 23:59:00
+**Due:** 2023-01-09 23:59:00. Submit your R Notebook file in Moodle (The Second Assignment). Due on Monday!
 
 
-### Note on R Notebook
+### Note on Assignment 2 in Week 3: R Notebook
 
 Please note the following.
 
@@ -613,46 +710,51 @@ Please note the following.
 * If some of your code chunks have problems, run each code chunk from top to bottom so that all outputs appear in your editor or viewer.
 * When you share your R Notebook, do not forget to share _file name_.nb.html.
 * If you have a _file name_.nb.html, then find it from Files in R Studio, you can automatically create _file name_.Rmd to edit the source. 
-* To create a fancy document with R Notebook, see the Markdown Quick Reference under Help on top menu for the editor. If you are using Visual Editor using A bottun on top left pane, see https://rstudio.github.io/visual-markdown-editing/. 
-* R Studio introduced Visual Editor last year. It seems to be stable but it is not perfect to go back and forth from the original editor using tags. I always use the original editor and I am confident on all the functions of it but I do not have much experience on Visual Editor.  
+* R Studio introduced Visual Editor towards the end of 2021. It seems to be stable but it is not perfect to go back and forth from the original editor using tags. I always use the original editor and I am confident on all the functions of it but I do not have much experience on Visual Editor.  
 
 
-## Responses to the Week Three Assignment
 
-### Setup
-
-We load two packages; `datasets` and `ggplot2`. The `datasets` are loaded automatically and you do not need the first line of the followiong code chunk. But it is safer to include it because some data names are used previously for different purposes.
 
 ```{r}
-library(datasets)
-library(ggplot2)
+gapminder
 ```
 
-For explanation, we use the following population data of WDI.
+* SP.DYN.LE00.IN: Life expectancy at birth, total (years)
+* NY.GDP.PCAP.KD: GDP per capita (constant 2015 US$)
+* SP.POP.TOTL: Population, total
 
 ```{r}
-library(WDI)
-pop <- WDI(
-  country = c("NG", "BD", "RU", "MX", "JP"), 
-  indicator = c(population = "SP.POP.TOTL"),
-  start = 1960, end = 2020)
-head(pop)
+df_wdi <- WDI(
+  country = "all", 
+  indicator = c(lifeExp = "SP.DYN.LE00.IN", pop = "SP.POP.TOTL", gdpPercap = "NY.GDP.PCAP.KD")
+)
 ```
 
+```{r}
+df_wdi
+```
 
-#### Assignments - See Moodle
+```{r}
+df_wdi_extra <- WDI(
+  country = "all", 
+  indicator = c(lifeExp = "SP.DYN.LE00.IN", pop = "SP.POP.TOTL", gdpPercap = "NY.GDP.PCAP.KD"), 
+  extra = TRUE
+)
+```
 
-1. Assignment Week 2-1: Introduction Plus Forum  
-  - Due: Tuesday, 20 December 2022, 11:59 PM
+```{r}
+df_wdi_extra
+```
 
-2. Assignment Week 2-2: Quiz 1 on R Basics 
-  - Due: Tuesday, 20 December 2022, 11:59 PM
+```{r}
+WDIsearch(string="gdp per capita", field="name", short=FALSE, cache=NULL)
+```
 
-:::
+```{r}
+WDIsearch(string="life expectancy", field="name", short=FALSE, cache=NULL)
+```
 
+```{r}
+WDIsearch(string="population, total", field="name", short=FALSE, cache=NULL)
+```
 
-### Questions
-
-* List questions based on this data.
-* What do you want to see? 
-* What kind of chart do you want to construct?
