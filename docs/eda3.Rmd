@@ -1,19 +1,19 @@
 ---
 title: 'QALL401: Data Analysis for Researchers'
 output:
-  html_notebook:
-    number_sections: yes
+  ioslides_presentation:
+    df_print: paged
+    widescreen: yes
+    smaller: yes
+    keep_md: yes
   html_document:
     df_print: paged
     number_sections: yes
   beamer_presentation: default
   pdf_document:
     number_sections: yes
-  ioslides_presentation:
-    df_print: paged
-    widescreen: yes
-    smaller: yes
-    keep_md: yes
+  html_notebook:
+    number_sections: yes
   slidy_presentation: default
 ---
 
@@ -72,7 +72,8 @@ library(ggrepel)
 #### Gapminder Package Data
 
 ```{r}
-(df <- gapminder)
+df <- gapminder
+df
 ```
 
 ---
@@ -838,7 +839,7 @@ df_f1_rev %>%
 
 **WDI and `ggplot2`**
 
-* Create an R Notebook of a Data Analysis containing the following and submit the rendered HTML file (eg. `a3_123456.nb.html`)
+* Create an R Notebook of a Data Analysis containing the following and submit the rendered HTML file (eg. `a3_123456.nb.html`  by replacing 123456 with your ID)
   1. create an R Notebook using the R Notebook Template in Moodle,  save as `a3_123456.Rmd`, 
   2. write your name and ID and the contents, 
   3. run each code block, 
