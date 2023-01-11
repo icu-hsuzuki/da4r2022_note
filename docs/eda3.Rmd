@@ -599,7 +599,17 @@ world_map0 <- world_map %>%
 
 ---
 
+```{r}
+write_csv(world_map0, "data/world_map0.csv")
+```
 
+```{r eval=FALSE}
+map0_url <- "https://icu-hsuzuki.github.io/da4r2022_note/data/world_map0.csv"
+world_map0 <- read_csv(map0_url)
+```
+
+
+---
 
 ```{r}
 co2pcap %>% filter(income != "Aggregates", year == 2019) %>% 
@@ -622,11 +632,7 @@ world_map0 %>% left_join(iso3166, by = c("region" = "ISOname")) %>%
 ```
 
 
-```{r}
-world_map <- map_data("world")
-co2pcap %>% filter(income != "Aggregates", year == 2019) %>%
-  anti_join(world_map, by = c("country"="region"))
-```
+---
 
 
 ```{r echo=FALSE}
@@ -639,11 +645,6 @@ co2pcap %>%
 
 ---
 
-```{r}
-world_map %>% distinct(region)
-```
-
----
 
 ## Data Visualization and `ggplot2'
 
