@@ -1,9 +1,8 @@
 ---
 title: 'QALL401: Data Analysis for Researchers'
 output:
-  ioslides_presentation:
+  ioslides_presentation: 
     df_print: paged
-    widescreen: yes
     smaller: yes
     keep_md: yes
   html_document:
