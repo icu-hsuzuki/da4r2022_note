@@ -1,0 +1,431 @@
+---
+title: 'World Map'
+output:
+  html_notebook:
+    number_sections: yes
+  html_document:
+    df_print: paged
+    number_sections: yes
+  beamer_presentation: default
+  pdf_document:
+    number_sections: yes
+  ioslides_presentation: 
+    df_print: paged
+    widescreen: yes
+---
+
+
+# Exploratory Data Analysis III  
+
+## Importing Public Data, WDI
+
+### Reviews and Previews
+
+```{r message=FALSE}
+library(tidyverse)
+library(gapminder)
+library(maps)
+library(WDI)
+```
+
+---
+
+```{r}
+(df <- gapminder)
+```
+
+---
+
+```{r}
+asean <- c("Brunei", "Cambodia", "Laos", "Myanmar", "Philippines", "Indonesia", "Malaysia", "Singapore")
+df %>% filter(country %in% asean) %>%
+  ggplot(aes(x = year, y = gdpPercap, col = country)) + geom_line()
+```
+
+---
+```{r}
+df %>% filter(country %in% asean) %>%
+  ggplot(aes(x = gdpPercap, y = lifeExp, col = country)) + geom_point()
+```
+
+---
+
+```{r}
+df %>% filter(country %in% asean) %>%
+  ggplot(aes(x = gdpPercap, y = lifeExp, col = country)) + 
+  geom_point() + coord_trans(x = "log10", y = "identity")
+```
+$\log_{10}{100}$ = `r log10(100)`, $\log_{10}{1000}$ = `r log10(1000)`, $\log_{10}{10000}$ = `r log10(10000)`
+
+$10^{2.5}$ = `r sqrt(10)^{5}`, $10^{3}$ = `r 10^{3}`, $10^{3.5}$ = `r sqrt(10)^7`, 
+
+$10^{4}$ = `r 10^4`, $10^{4.5}$ = `r sqrt(10)^9`.
+
+---
+
+```{r echo=FALSE}
+library(ggrepel)
+df2007 <- df %>% filter(country %in% asean, year == 2007)
+df %>% filter(country %in% asean) %>%
+  ggplot(aes(x = gdpPercap, y = lifeExp, col = country))+ 
+  geom_line() + geom_label_repel(data = df2007, aes(label = country)) + geom_point()  +
+  coord_trans(x = "log10", y = "identity") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1), legend.position = "none") +
+  labs(title = "Life Expectancy vs GDP Per Capita of ASEAN Countries",
+       subtitle = "Data: gapminder package", x = "GDP per Capita", y = "Life Expectancy")
+```
+
+---
+
+```{r echo=FALSE}
+library(tidyverse)
+library(maps)
+world_map <- map_data("world")
+df %>%
+  ggplot(aes(map_id = country)) + 
+  geom_map(aes(fill = gdpPercap), map = world_map) + expand_limits(x = world_map$long, y = world_map$lat) +
+  labs(title = "Gapminder Package Data", subtitle="World Map of GDP per Capita Data")
+```
+
+---
+
+#### World Bank: World Development Indicators (WDI)
+
+* SP.DYN.LE00.IN: Life expectancy at birth, total (years)
+* NY.GDP.PCAP.KD: GDP per capita (constant 2015 US$)
+* SP.POP.TOTL: Population, total
+
+```{r cash=TRUE}
+df_wdi <- WDI(
+  country = "all", 
+  indicator = c(lifeExp = "SP.DYN.LE00.IN", pop = "SP.POP.TOTL", gdpPercap = "NY.GDP.PCAP.KD")
+)
+```
+
+---
+
+```{r}
+df_wdi
+```
+
+---
+
+```{r cash=TRUE}
+df_wdi_extra <- WDI(
+  country = "all", 
+  indicator = c(lifeExp = "SP.DYN.LE00.IN", pop = "SP.POP.TOTL", gdpPercap = "NY.GDP.PCAP.KD"), 
+  extra = TRUE
+)
+```
+
+---
+
+```{r}
+df_wdi_extra
+```
+
+
+---
+
+### Exploratory Data Analysis
+
+#### What is EDA (Posit Primers: [Visualise Data](https://posit.cloud/learn/primers/3.1))
+
+1. EDA is an iterative cycle that helps you understand what your data says. When you do EDA, you:
+
+2. Generate questions about your data
+
+3. Search for answers by visualising, transforming, and/or modeling your data
+
+Use what you learn to refine your questions and/or generate new questions
+
+EDA is an important part of any data analysis. You can use EDA to make discoveries about the world; or you can use EDA to ensure the quality of your data, asking questions about whether the data meets your standards or not.
+
+---
+
+### Open and Public Data, World Bank
+
+#### [Open Government Data Toolkit](http://opendatatoolkit.worldbank.org): [Open Data Defined](http://opendatatoolkit.worldbank.org/en/essentials.html)
+
+The term ``Open Data'' has a very precise meaning. Data or content is open if anyone is free to use, re-use or redistribute it, subject at most to measures that preserve provenance and openness.
+
+1. The data must be \underline{legally open}, which means they must be placed in the public domain or under liberal terms of use with minimal restrictions.
+2. The data must be \underline{technically open}, which means they must be published in electronic formats that are machine readable and non-proprietary, so that anyone can access and use the data using common, freely available software tools. Data must also be publicly available and accessible on a public server, without password or firewall restrictions. To make Open Data easier to find, most organizations create and manage Open Data catalogs.
+
+---
+
+### World Bank: WDI - World Development Indicaters
+
+* World Bank: https://www.worldbank.org
+* [Who we are](https://www.worldbank.org/en/who-we-are):
+  - To end extreme poverty: By reducing the share of the global population that lives in extreme poverty to 3 percent by 2030.
+  - To promote shared prosperity: By increasing the incomes of the poorest 40 percent of people in every country. 
+* World Bank Open Data: https://data.worldbank.org
+  - Data Bank, World Development Indicators, etc.
+* [World Development Indicators (WDI)](https://datatopics.worldbank.org/world-development-indicators/) : the World Bank’s premier compilation of cross-country comparable data on development; 1400 time series indicators
+  - Themes: Poverty and Inequality, People, Environment, Economy, States and Markets, Global Links
+  - Open Data & DataBank: Explore data, Query database
+  - Bulk Download: Excel, CSV
+  - API Documentation
+  
+---
+
+### R Package [WDI](https://CRAN.R-project.org/package=WDI)
+
+* [WDI](https://CRAN.R-project.org/package=WDI): World Development Indicators and Other World Bank Data
+* Search and download data from over 40 databases hosted by the World Bank, including the World Development Indicators ('WDI'), International Debt Statistics, Doing Business, Human Capital Index, and Sub-national Poverty indicators.
+* Version: 2.7.4
+* Materials:	[README](https://cran.r-project.org/web/packages/WDI/readme/README.html)   - _usage_
+  - [NEWS](https://cran.r-project.org/web/packages/WDI/news/news.html) - _version history_
+* Published: 2021-04-06
+* README: https://cran.r-project.org/web/packages/WDI/readme/README.html
+* Reference manual:	[WDI.pdf](https://cran.r-project.org/web/packages/WDI/WDI.pdf)
+
+---
+
+### Function WDI
+
+* **Usage**
+
+```
+WDI(country = "all",
+    indicator = "NY.GDP.PCAP.KD",
+    start = 1960,
+    end = 2020,
+    extra = FALSE,
+    cache = NULL)
+```
+
+* **Arguments** See Help!
+  - country: Vector of countries (ISO-2 character codes, e.g. "BR", "US", "CA", or "all") 
+  - indicator: If you supply a named vector, the indicators will be automatically renamed: `c('women_private_sector' = 'BI.PWK.PRVS.FE.ZS')`
+
+---
+
+### Function WDIsearch
+
+```{r}
+library(WDI)
+```
+```{r}
+WDIsearch(string = "NY.GDP.PCAP.KD", 
+          field = "indicator", cache = NULL)
+```
+
+---
+
+```{r}
+WDIsearch(string = "population", 
+          field = "name", short=FALSE, cache = wdi_cache)
+```
+
+---
+
+```
+WDIsearch(string = "NY.GDP.PCAP.KD", 
+  field = "indicator", short = FALSE, cache = NULL)
+```
+```
+WDIsearch(string = "gdp", 
+  field = "name", short = TRUE, cache = NULL) 
+```
+
+---
+
+### Use cash
+
+WDIbulk downloads the zip file of Bulk Downloads in [WDI site](https://datatopics.worldbank.org/world-development-indicators/) , it is a list containing 6 data frames: Data, Country, Series, Country-Series, Series-Time, FootNote.
+
+`timeout`: integer maximum number of seconds to wait for download
+
+
+
+```{r cash=TRUE}
+wdi <- WDIbulk(timeout = 600)
+```
+---
+
+#### Bulk Downloads: Data
+
+```{r}
+wdi$Data  
+```
+
+---
+
+#### Bulk Downloads: Country
+
+```{r}
+wdi$Country  
+```
+
+---
+
+#### Bulk Downloads: Series
+
+```{r}
+wdi$Series 
+```
+
+---
+
+#### Bulk Downloads: Country-Series
+
+```{r}
+wdi$`Country-Series`  
+```
+
+---
+
+#### Bulk Downloads: Series-Time
+
+```{r}
+wdi$`Series-Time`  
+```
+
+---
+
+#### Bulk Downloads: Footnote
+
+```{r}
+wdi$FootNote 
+```
+
+---
+
+### WDIcache
+
+Download an updated list of available WDI indicators from the World Bank website. Returns a list for use in the WDIsearch function.
+
+```{r cash=TRUE}
+wdi_cache <- WDIcache()
+```
+
+Downloading all series information from the World Bank website can take time. The WDI package ships with a local data object with information on all the series available on 2012-06-18. You can update this database by retrieving a new list using `WDIcache`, and then feeding the resulting object to `WDIsearch` via the cache argument.
+
+---
+
+```{r}
+wdi_cache
+```
+
+
+---
+
+### WDI_data
+
+List of 2 data frames
+
+The first character matrix includes a full list of WDI series. This list is updated semi-regularly. Users can refresh the list manually using the 'WDIcache()' function and search in the updated list using the 'cache' argument.
+
+
+```{r}
+glimpse(WDI_data)
+```
+
+---
+
+```{r}
+WDI_data$series
+```
+
+---
+
+```{r}
+WDI_data$country
+```
+
+```{r}
+WDI_data$country  %>% filter(country == "Japan")
+```
+
+---
+
+```{r}
+WDIsearch(string = "gdp", 
+  field = "name", short = FALSE, cache = wdi_cache) 
+```
+
+---
+
+### World Development Indicators - Summary
+
+Find indicators:
+
+1. `WDIsearch(string = "gdp", field = "name", short = FALSE, cache = NULL)`
+2. [WDI](https://datatopics.worldbank.org/world-development-indicators/): Data Themes
+3. Browse by Indicators: https://data.worldbank.org/indicator
+   - Featured Indicators or All Indicators
+   - Obtain the indicator from the detail or the URL
+
+---
+
+Indicator: EN.ATM.CO2E.PC
+
+<iframe src="https://data.worldbank.org/share/widget?end=2019&indicators=EN.ATM.CO2E.PC&locations=JP-1W-US-PK&start=2019&view=bar&year=2019" width='450' height='300' frameBorder='0' scrolling="no" ></iframe>
+
+---
+
+```{r cash=TRUE}
+co2pcap <- WDI(country = "all", indicator = "EN.ATM.CO2E.PC", start = 1960, end = NULL, extra = TRUE, cache = wdi_cache)
+```
+
+```{r}
+co2pcap
+```
+
+---
+
+<iframe src="https://data.worldbank.org/share/widget?end=2020&indicators=SP.ADO.TFRT&start=2020&view=map" width='450' height='300' frameBorder='0' scrolling="no" ></iframe>
+
+---
+### `readr`, `readxl`
+
+   `readr`, `ggplot2`; Public Data, WDI, WIR, etc
+    
+## Data Visualization and `ggplot2'
+
+
+### Learning Resouces
+
+* Posit Primers:
+  - [Visualize Data](https://posit.cloud/learn/primers/3): Learn how to use ggplot2 to make any type of plot with your data. Then learn the best ways to visualize patterns within values and relationships between variables.
+* [r4ds: Explore, II](https://r4ds.had.co.nz/explore-intro.html#explore-intro)
+
+
+### Exploratory Data Analysis
+
+#### What is EDA?
+
+EDA is an iterative cycle that helps you understand what your data says. When you do EDA, you:
+
+1. Generate questions about your data
+
+2. Search for answers by visualising, transforming, and/or modeling your data
+
+3. Use what you learn to refine your questions and/or generate new questions
+
+EDA is an important part of any data analysis. You can use EDA to make discoveries about the world; or you can use EDA to ensure the quality of your data, asking questions about whether the data meets your standards or not.
+
+#### Two useful questions
+
+There is no rule about which questions you should ask to guide your research. However, two types of questions will always be useful for making discoveries within your data. You can loosely word these questions as:
+
+1. What type of variation occurs within my variables?
+2. What type of covariation occurs between my variables?
+
+The rest of this tutorial will look at these two questions. To make the discussion easier, let’s define some terms…
+
+### Data Visualization
+
+### `ggplot2` Basics
+
+![visualization](data/visualization.png)
+
+
+
+### World Inequility Report
+
+### `ggplot2` Extra
+
+

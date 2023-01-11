@@ -1,17 +1,18 @@
 ---
 title: 'QALL401: Data Analysis for Researchers'
 output:
-  html_notebook:
-    number_sections: yes
+  ioslides_presentation: 
+    df_print: paged
+    widescreen: yes
+    smaller: yes
   html_document:
     df_print: paged
     number_sections: yes
   beamer_presentation: default
   pdf_document:
     number_sections: yes
-  ioslides_presentation:
-    widescreen: yes
-    smaller: yes
+  html_notebook:
+    number_sections: yes
 ---
 
 ## Course Contents {-}
@@ -811,7 +812,7 @@ You will encounter the message like ‘Would you like to receive credit for comp
 
 The script with the outputs.
 
-```#{r basics, cash = TRUE, eval=FALSE}
+```{r basics, eval=FALSE}
 #################
 #
 # basics.R
@@ -1038,6 +1039,7 @@ hist(cars$dist, breaks = seq(0,120, 10))
 
 The script and its outputs.
 __coronavirus.csv__ is very large
+
 
 ```{r cash = TRUE, eval=FALSE}
 # https://coronavirus.jhu.edu/map.html
@@ -1942,6 +1944,8 @@ df_wdi_extra
 ```{r message=FALSE}
 library(tidyverse)
 library(gapminder)
+library(maps)
+library(WDI)
 ```
 
 ---
@@ -1967,6 +1971,19 @@ df %>% filter(country %in% asean) %>%
 ---
 
 ```{r}
+df %>% filter(country %in% asean) %>%
+  ggplot(aes(x = gdpPercap, y = lifeExp, col = country)) + 
+  geom_point() + coord_trans(x = "log10", y = "identity")
+```
+$\log_{10}{100}$ = `r log10(100)`, $\log_{10}{1000}$ = `r log10(1000)`, $\log_{10}{10000}$ = `r log10(10000)`
+
+$10^{2.5}$ = `r sqrt(10)^{5}`, $10^{3}$ = `r 10^{3}`, $10^{3.5}$ = `r sqrt(10)^7`, 
+
+$10^{4}$ = `r 10^4`, $10^{4.5}$ = `r sqrt(10)^9`.
+
+---
+
+```{r echo=FALSE}
 library(ggrepel)
 df2007 <- df %>% filter(country %in% asean, year == 2007)
 df %>% filter(country %in% asean) %>%
@@ -1980,43 +1997,59 @@ df %>% filter(country %in% asean) %>%
 
 ---
 
-```{r}
-df %>% filter(country %in% asean) %>%
-  ggplot(aes(x = gdpPercap, y = lifeExp, col = country)) + 
-  geom_point() + coord_trans(x = "log10", y = "identity")
-```
-
-
-```{r}
+```{r echo=FALSE}
 library(tidyverse)
 library(maps)
 world_map <- map_data("world")
 df %>%
   ggplot(aes(map_id = country)) + 
-  geom_map(aes(fill = gdpPercap), map = world_map) + expand_limits(x = world_map$long, y = world_map$lat)
+  geom_map(aes(fill = gdpPercap), map = world_map) + expand_limits(x = world_map$long, y = world_map$lat) +
+  labs(title = "Gapminder Package Data", subtitle="World Map of GDP per Capita Data")
 ```
 
+---
 
+#### WDI
 
+* SP.DYN.LE00.IN: Life expectancy at birth, total (years)
+* NY.GDP.PCAP.KD: GDP per capita (constant 2015 US$)
+* SP.POP.TOTL: Population, total
 
+```{r cash=TRUE}
+df_wdi <- WDI(
+  country = "all", 
+  indicator = c(lifeExp = "SP.DYN.LE00.IN", pop = "SP.POP.TOTL", gdpPercap = "NY.GDP.PCAP.KD")
+)
+```
 
-$\log_{10}{100}$ = `r log10(100)`, $\log_{10}{1000}$ = `r log10(1000)`, $\log_{10}{10000}$ = `r log10(10000)`
-
-$10^{2.5}$ = `r 10^{2.5}`, $10^{3}$ = `r 10^{3}`, $10^{3.5}$ = `r 10^(3.5)`, $10^{4}$ = `r 10^(4)`, $10^{4.5}$ = `r 10^(4.5)`.
-
+---
 
 ```{r}
-(x4 <-round(10^4,1))
-(x45 <- round(10^(4.5),1))
+df_wdi
 ```
 
-`r x45`, `r x4`
+---
+
+```{r cash=TRUE}
+df_wdi_extra <- WDI(
+  country = "all", 
+  indicator = c(lifeExp = "SP.DYN.LE00.IN", pop = "SP.POP.TOTL", gdpPercap = "NY.GDP.PCAP.KD"), 
+  extra = TRUE
+)
+```
+
+---
+
+```{r}
+df_wdi_extra
+```
+
 
 ---
 
 ### Exploratory Data Analysis
 
-#### What is EDA
+#### What is EDA (Posit Primers: [Visualise Data](https://posit.cloud/learn/primers/3.1))
 
 1. EDA is an iterative cycle that helps you understand what your data says. When you do EDA, you:
 
@@ -2028,9 +2061,7 @@ Use what you learn to refine your questions and/or generate new questions
 
 EDA is an important part of any data analysis. You can use EDA to make discoveries about the world; or you can use EDA to ensure the quality of your data, asking questions about whether the data meets your standards or not.
 
-### Public Data
-
-### Package `WDI`
+---
 
 ### Open and Public Data, World Bank
 
@@ -2041,7 +2072,7 @@ The term ``Open Data'' has a very precise meaning. Data or content is open if an
 1. The data must be \underline{legally open}, which means they must be placed in the public domain or under liberal terms of use with minimal restrictions.
 2. The data must be \underline{technically open}, which means they must be published in electronic formats that are machine readable and non-proprietary, so that anyone can access and use the data using common, freely available software tools. Data must also be publicly available and accessible on a public server, without password or firewall restrictions. To make Open Data easier to find, most organizations create and manage Open Data catalogs.
 
-
+---
 
 ### World Bank: WDI - World Development Indicaters
 
@@ -2058,6 +2089,8 @@ The term ``Open Data'' has a very precise meaning. Data or content is open if an
   - States and Markets
   - Global Links
   
+---
+
 ### R Package [WDI](https://CRAN.R-project.org/package=WDI)
 
 * [WDI](https://CRAN.R-project.org/package=WDI): World Development Indicators and Other World Bank Data
@@ -2068,6 +2101,8 @@ The term ``Open Data'' has a very precise meaning. Data or content is open if an
 * Published: 2021-04-06
 * README: https://cran.r-project.org/web/packages/WDI/readme/README.html
 * Reference manual:	[WDI.pdf](https://cran.r-project.org/web/packages/WDI/WDI.pdf)
+
+---
 
 ### Function WDI
 
@@ -2085,7 +2120,9 @@ WDI(country = "all",
 * **Arguments**
   - country: Vector of countries (ISO-2 character codes, e.g. "BR", "US", "CA", or "all") 
   - indicator: If you supply a named vector, the indicators will be automatically renamed: `c('women_private_sector' = 'BI.PWK.PRVS.FE.ZS')`
-  
+
+---
+
 ### Function WDIsearch
 
 ```{r}
@@ -2104,6 +2141,11 @@ WDIsearch(string = "gdp",
   field = "name", short = TRUE, cache = NULL) 
 ```
 
+---
+
+https://databank.worldbank.org/GDP-per-Capita-of-BRICs/id/ec7b40a8
+
+---
 
 ### World Development Indicators
 

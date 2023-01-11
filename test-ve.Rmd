@@ -7,7 +7,7 @@ output:
 
 # dplyr
 
-Overview: [https://dplyr.tidyverse.org](https://dplyr.tidyverse.org))
+Overview: <https://dplyr.tidyverse.org>)
 
 `dplyr` is a grammar of data manipulation, providing a consistent set of verbs that help you solve the most common data manipulation challenges
 
@@ -40,7 +40,7 @@ iris
 Subset columns using their names and types. Example uses `babynames` package as in Posit Primers: Work with Data.
 
 | Helper Function | Use                                          | Example                                       |
-|------------------|-------------------------|-----------------------------|
+|-----------------|----------------------------------------------|-----------------------------------------------|
 | \-              | Columns except                               | select(babynames, -prop)                      |
 | :               | Columns between (inclusive)                  | select(babynames, year:n)                     |
 | contains()      | Columns that contains a string               | select(babynames, contains("n"))              |
