@@ -149,17 +149,6 @@ df %>% filter(country %in% asean) %>%
 
 ---
 
-```{r echo=TRUE, eval = FALSE}
-library(tidyverse)
-library(maps)
-world_map <- map_data("world")
-df %>%
-  ggplot(aes(map_id = country)) + 
-  geom_map(aes(fill = gdpPercap), map = world_map) + expand_limits(x = world_map$long, y = world_map$lat) +
-  labs(title = "Gapminder Package Data", subtitle="World Map of GDP per Capita Data")
-```
-
----
 
 ```{r echo=FALSE}
 library(tidyverse)
@@ -644,7 +633,7 @@ co2pcap %>%
   labs(title = "Income Levels in 2019")
 ```
 
----
+
 
 
 ## Data Visualization and `ggplot2'
@@ -833,7 +822,7 @@ df_f1_rev %>%
   - Overplotting and Big Data
   - Customize Your Plots
 
----
+
 
 ## The Week Three Assignment (in Moodle)
 
@@ -864,5 +853,6 @@ df_f1_rev %>%
 
 **Due:** 2023-01-16 23:59:00. Submit your R Notebook file in Moodle (The Third Assignment). Due on Monday!
 
----
+
+
 
