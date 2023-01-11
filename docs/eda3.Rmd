@@ -1,19 +1,19 @@
 ---
 title: 'QALL401: Data Analysis for Researchers'
 output:
-  ioslides_presentation:
-    df_print: paged
-    widescreen: yes
-    smaller: yes
-    keep_md: yes
+  html_notebook:
+    number_sections: yes
   html_document:
     df_print: paged
     number_sections: yes
   beamer_presentation: default
   pdf_document:
     number_sections: yes
-  html_notebook:
-    number_sections: yes
+  ioslides_presentation:
+    df_print: paged
+    widescreen: yes
+    smaller: yes
+    keep_md: yes
   slidy_presentation: default
 ---
 
@@ -389,7 +389,7 @@ WDI_data$country  %>% filter(country == "Japan")
 
 ```{r}
 WDIsearch(string = "gdp", 
-  field = "name", short = FALSE, cache = NULL) #cache = wdi_cache
+  field = "name", short = FALSE, cache = wdi_cache) 
 ```
 
 ---
@@ -415,12 +415,12 @@ Find indicators:
 
 ```{r}
 WDIsearch(string = "EN.ATM.CO2E.PC", field = "indicator", 
-          short = FALSE, cache = NULL) #cache = wdi_cache
+          short = FALSE, cache = wdi_cache) 
 ```
 
 ```{r}
 WDIsearch(string = "EN.ATM.CO2E.PC", field = "indicator", 
-          short = FALSE, cache = NULL) %>% pull(description) #cache = wdi_cache
+          short = FALSE, cache = wdi_cache) %>% pull(description) 
 ```
 
 * Source: Climate Watch. 2020. GHG Emissions. Washington, DC: World Resources Institute. Available at: climatewatchdata.org/ghg-emissions. See SP.POP.TOTL for the denominator's source.
@@ -431,7 +431,7 @@ WDIsearch(string = "EN.ATM.CO2E.PC", field = "indicator",
 ---
 
 ```{r cash=TRUE, eval=FALSE}
-co2pcap <- WDI(country = "all", indicator = "EN.ATM.CO2E.PC", start = 1960, end = NULL, extra = TRUE, cache = NULL) #cache = wdi_cache
+co2pcap <- WDI(country = "all", indicator = "EN.ATM.CO2E.PC", start = 1960, end = NULL, extra = TRUE, cache = wdi_cache)
 ```
 
 ```{r echo=FALSE, message=FALSE, eval=FALSE}
@@ -697,8 +697,13 @@ library(readxl)
 ```{r summary-data, cash = TRUE, eval = FALSE}
 url_summary <- "https://wir2022.wid.world/www-site/uploads/2022/03/WIR2022TablesFigures-Summary.xlsx"
 download.file(url = url_summary, destfile = "data/WIR2022s.xlsx") 
+```
+
+
+```{r}
 excel_sheets("data/WIR2022s.xlsx")
 ```
+
 
 ### F14: Global carbon inequality, 2019. Group contribution to world emissions (%)
 
