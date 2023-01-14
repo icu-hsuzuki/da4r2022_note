@@ -3,7 +3,7 @@ title: "Responses to Assignment 2"
 output: 
   html_notebook: 
     toc: yes
-    toc_float: yes
+    toc_float: true
     highlight: haddock
     theme: cosmo
     number_sections: yes
@@ -11,12 +11,12 @@ output:
 
 # About File
 
-1. You are supposed to submit R Notebook File with a file name a2_YourID.nb.html.
-  - Some submitted a HTML file, such as a2_YourID.html. You need to create R Notebook. Use the template in Moodle. It creates a file with *.nb.html at the end.
-  - Some did not run each code chunk. You should run each code or select Run all under Run button. If some code chunk has a problem or an error, run each code chunk or use Run all chunk above or Run all chunk below, so the result appear in your R Notebook file.
+1. You are supposed to submit an R Notebook File with a file name a2_YourID.nb.html.
+  - Some submitted an HTML file, such as a2_YourID.html. You need to create an R Notebook. Use the template in Moodle. It creates a file with *.nb.html at the end automatically.
+  - Some did not run each code chunk. You should run each code or select 'Run all' under 'Run' button. If some code chunk has a problem or an error, run each code chunk or use Run all chunk above or Run all chunk below, so the result appear in your R Notebook file.
   
 2. You are supposed to write observations. 
-  - Writing codes seem to be challenging, however, we are learning 'data analysis' not 'prgraming'. Do not forget to write explanation of the data, questions and observations.
+  - Writing codes seem to be challenging, however, we are learning 'data analysis' not 'programming'. Do not forget to write explanations of the data, questions and observations.
   
 3. Cheat Sheets, Posit Primers, and the textbook 'R for Data Science' are the first set of references you should look at together wih my lecture materials.
 
@@ -27,7 +27,7 @@ library(tidyverse)
 library(gapminder)
 ```
 
-The following is a short-hand of 
+The following `(df <- gapminder)` is a short-hand of 
 
 ```
 df <- gapminder
