@@ -61,12 +61,16 @@ output:
 * Data URL: https://wir2022.wid.world/www-site/uploads/2022/03/WIR2022TablesFigures-Summary.xlsx
 
 ```{r}
+library(tidyverse)
 library(readxl)
 ```
 
 ```{r summary-data, cash = TRUE, eval = FALSE}
 url_summary <- "https://wir2022.wid.world/www-site/uploads/2022/03/WIR2022TablesFigures-Summary.xlsx"
 download.file(url = url_summary, destfile = "data/WIR2022s.xlsx") 
+```
+
+```{r}
 excel_sheets("data/WIR2022s.xlsx")
 ```
 
@@ -86,6 +90,8 @@ df_f1_rev <- df_f1 %>% select(cat = ...1, 2:4) %>%
   pivot_longer(2:4, names_to = "group", values_to = "value")
 df_f1_rev
 ```
+
+---
 
 ```{r}
 df_f1_rev %>%
@@ -133,15 +139,191 @@ Data can come in a variety of formats, but one format is easier to use in R than
 
 ### `tidyr` Basics
 
+![tidy-data](data/tidy-1.png)
+
+1. Each variable is in its own column
+2. Each observation is in its own row
+
+---
+
+### Pivot data from wide to long: [`pivot_longer()`](https://tidyr.tidyverse.org/reference/pivot_longer.html)
+
+template 1.
+
+```
+pivot_longer(data, 
+  cols = <columns to pivot into longer format>,
+  names_to = <name of the new character column>, # e.g. "group", "category", "class"
+  values_to = <name of the column the values of cells go to>) # e.g. "value", "n"
+```
+
+```{r}
+df_f1
+```
+
+---
+
+```{r}
+(df_f1_rev <- df_f1 %>% pivot_longer(-1, names_to = "group", values_to = "value"))
+```
+
+---
+
+```{r}
+df_f1_rev %>% 
+  ggplot(aes(x = ...1, y = value, fill = group)) +
+  geom_col(position = "dodge")
+```
+
+---
+
+```{r eval=FALSE}
+df_f1_rev %>% filter(group != "Top 1%") %>%
+  ggplot() +
+  geom_col(aes(x = ...1, y = value, fill = group), position = "dodge") +
+  geom_text(aes(x = ...1, y = value, group = group, label = scales::label_percent(accuracy=1)(value)), 
+            position = position_dodge(width = 0.9)) + 
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  labs(title = "Figure 1. Global income and wealth inequality, 2021",
+       x = "", y = "Share of total income or wealth", fill = "")
+```
+
+---
+
+```{r echo=FALSE}
+df_f1_rev %>% filter(group != "Top 1%") %>%
+  ggplot() +
+  geom_col(aes(x = ...1, y = value, fill = group), position = "dodge") +
+  geom_text(aes(x = ...1, y = value, group = group, label = scales::label_percent(accuracy=1)(value)), 
+            position = position_dodge(width = 0.9)) + 
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  labs(title = "Figure 1. Global income and wealth inequality, 2021",
+       x = "", y = "Share of total income or wealth", fill = "")
+```
+**Interpretation**: The global bottom 50% captures 8.5% of total income measured at Purchasing Power Parity (PPP). The global bottom 50% owns 2% of wealth (at Purchasing Power Parity). The global top 10% owns 76% of total Household wealth and captures 52% of total income in 2021. Note that top wealth holders are not necessarily top income holders. Incomes are measured after the operation of pension and unemployment systems and before taxes and transfers.  
+**Sources and series**: wir2022.wid.world/methodology.
+
+---
+
+### F2: The poorest half lags behind: Bottom 50%, middle 40% and top 10% income shares across the world in 2021
+
+```{r}
+df_f2 <- read_excel("data/WIR2022s.xlsx", sheet = "data-F2")
+df_f2
+```
+
+---
+
+```{r}
+df_f2 %>% pivot_longer(cols = 3:5, names_to = "group", values_to = "value")
+```
+
+---
+
+```{r}
+df_f2 %>% pivot_longer(cols = 3:5, names_to = "group", values_to = "value") %>%
+  ggplot(aes(x = iso, y = value, fill = group)) +
+  geom_col(position = "dodge")
+```
+
+---
+
+### F4: The extreme concentration of capital: wealth inequality across the world, 2021
+
+```{r}
+df_f4 <- read_excel("data/WIR2022s.xlsx", sheet = "data-F4")
+df_f4
+```
+
+---
+
+### F13: Female labor income share across the world, 1990-2020
+
+```{r}
+df_f13 <- read_excel("data/WIR2022s.xlsx", sheet = "data-F13.")
+df_f13
+```
+
+---
+
+
+### F3: Top 10/Bottom 50 income gaps across the world, 2021
+
+
+```{r}
+df_f3 <- read_excel("data/WIR2022s.xlsx", sheet = "data-F3")
+df_f3
+```
+
+---
+
+```{r}
+df_f3$T10B50 %>% summary()
+```
+
+---
+
+```{r}
+df_f3 %>% ggplot() + geom_histogram(aes(T10B50))
+```
+
+```{r}
+df_f3 %>% arrange(desc(T10B50))
+```
+
+```{r}
+df_f3 %>% 
+  mutate(`Top 10 Bottom 50 Ratio` = cut(T10B50,breaks = c(5, 12, 13, 16, 19,140), include.lowest = TRUE)) 
+```
+
+```{r}
+df_f3 %>% 
+  mutate(`Top 10 Bottom 50 Ratio` = cut(T10B50,breaks = c(5, 12, 13, 16, 19,140), include.lowest = TRUE)) %>%
+  ggplot(aes(map_id = Country)) + geom_map(aes(fill = `Top 10 Bottom 50 Ratio`), map = world_map) + expand_limits(x = world_map$long, y = world_map$lat)
+```
+
+
+```{r}
+world_map_wir <- world_map %>% 
+  mutate(region = case_when(region == "Democratic Republic of the Congo" ~ "DR Congo",
+                            region == "Republic of Congo"  ~ "Congo",
+                            region == "Russia"  ~ "Russian Federation",
+                            region == "South Korea" ~ "Korea",
+                            region == "Laos" ~  "Lao PDR",
+                            region == "Vietnam" ~ "Viet Nam",
+                            TRUE ~ region))
+df_f3 %>% 
+  mutate(`Top 10 Bottom 50 Ratio` = cut(T10B50,breaks = c(5, 12, 13, 16, 19,140), include.lowest = TRUE)) %>%
+  ggplot(aes(map_id = Country)) + geom_map(aes(fill = `Top 10 Bottom 50 Ratio`), map = world_map_wir) + expand_limits(x = world_map$long, y = world_map$lat)
+```
+
+
+```{r}
+world_map_wir <- world_map %>% 
+  mutate(region = case_when(region == "Democratic Republic of the Congo" ~ "DR Congo",
+                            region == "Republic of Congo"  ~ "Congo",
+                            region == "Russia"  ~ "Russian Federation",
+                            region == "South Korea" ~ "Korea",
+                            region == "Laos" ~  "Lao PDR",
+                            region == "Vietnam" ~ "Viet Nam",
+                            TRUE ~ region))
+df_f3 %>% 
+  mutate(`Top 10 Bottom 50 Ratio` = cut(T10B50,breaks = c(5, 12, 13, 16, 19,140), include.lowest = TRUE)) %>%
+  ggplot(aes(map_id = Country)) + geom_map(aes(fill = `Top 10 Bottom 50 Ratio`), map = world_map_wir) + expand_limits(x = world_map$long, y = world_map$lat)  +
+  labs(title = "Figure 3. Top 10/Bottom 50 income gaps across the world, 2021",
+       x = "", y = "", fill = "Top 10/Bottom 50 ratio") +
+  theme(legend.position="bottom", 
+        axis.text.x=element_blank(), axis.ticks.x=element_blank(),
+        axis.text.y=element_blank(), axis.ticks.y=element_blank()) + 
+  scale_fill_brewer(palette='YlOrRd')
+```
+
+
 ## Applications `tidyr`
 
-### WIR2022
-
-   `tidyr`, etc.; WDI, WIR, etc
-   
 ## The Week Five Assignment (in Moodle)
 
-**WDI and `ggplot2`**
+**`tidyr` and WIR2022**
 
 * Create an R Notebook of a Data Analysis containing the following and submit the rendered HTML file (eg. `a3_123456.nb.html`  by replacing 123456 with your ID)
   1. create an R Notebook using the R Notebook Template in Moodle,  save as `a3_123456.Rmd`, 
@@ -150,10 +332,9 @@ Data can come in a variety of formats, but one format is easier to use in R than
   4. preview to create `a3_123456.nb.html`,
   5. submit  `a3_123456.nb.html` to Moodle.
 
-1. Choose at least one indicator of WDI
+1. Choose a data with at least two categorical variables and at least two numerical variables.
 
     - Information of the data: Name, Indicator, Description, Source, etc.
-    - Download the data with `WDI`
     - Explain why you chose the indicator
     - List questions you want to study
 
@@ -161,12 +342,13 @@ Data can come in a variety of formats, but one format is easier to use in R than
 
 2. Explore the data using visualization using `ggplot2`
 
-    - Use a histogram (geom_histogram), boxplot (geom_boxplot), a scatter plot (geom_point), a line plot (geom_line)
-    - For at least one chart, add title, and labels of axis, and add an explanation of it
+    - Create various charts
+    - Create at least one chart with at least two categocial variables and at least one numerical variable.
+    - Create at least one chart with at least two numerical variables and at least one categorical variable.
 
-3. Observations and difficulties encountered.
+3. Observations based on your data visualization, and difficulties and questions encountered if any.
 
-**Due:** 2023-01-16 23:59:00. Submit your R Notebook file in Moodle (The Third Assignment). Due on Monday!
+**Due:** 2023-01-23 23:59:00. Submit your R Notebook file in Moodle (The Fourth Assignment). Due on Monday!
 
 
 # Exploratory Data Analysis (EDA) V  
