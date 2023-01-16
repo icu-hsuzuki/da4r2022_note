@@ -1,0 +1,193 @@
+---
+title: 'QALL401: Data Analysis for Researchers'
+output:
+  html_notebook:
+    number_sections: yes
+  html_document:
+    df_print: paged
+    number_sections: yes
+  beamer_presentation: default
+  pdf_document:
+    number_sections: yes
+  ioslides_presentation: 
+    df_print: paged
+    widescreen: yes
+    smaller: yes
+---
+
+## Course Contents {-}
+
+1. 2022.12.07: Introduction: About the course [lead by TK]
+    - An introduction to open and public data, and data science
+2. 2022-12-14: Exploratory Data Analysis (EDA) 1 [lead by hs]  
+    - R Basics with RStudio and/or RStudio.cloud; Toy Data
+3. 2022-12-21: Exploratory Data Analysis (EDA) 2 [lead by hs]   
+    - R Markdown, `tidyverse` I: `dplyr`; `gapminder`
+4. 2023-01-11: Exploratory Data Analysis (EDA) 3 [lead by hs]  
+    - `tidyverse`II: `readr`, `ggplot2`; Public Data, WDI, WIR, etc
+5. **2023-01-18: Exploratory Data Analysis (EDA) 4 [lead by hs]**  
+    - `tidyverse` III: `tidyr`, etc.; WDI, WIR, etc
+6. 2023-01-25: Exploratory Data Analysis (EDA) 5 [lead by hs]  
+    - `tidyverse` IV; WDI, WIR, etc
+7. 2023-02-01: Introduction to PPDAC         
+    - Problem-Plan-Data-Analysis-Conclusion Cycle: [lead by TK]
+8. 2023-02-08: Model building I [lead by TK]    
+    - Collecting and visualizing data and Introduction to WDI  
+         (World Development Indicators by World Bank)
+9. 2023-02-15: Model building II [lead by TK]    
+    - Analyzing data and communications
+10. 2023-02-22: Project Presentation
+
+
+# Exploratory Data Analysis (EDA) I
+
+# Exploratory Data Analysis II
+
+# Exploratory Data Analysis III  
+
+
+
+# Exploratory Data Analysis (EDA) IV  
+
+## Tidy Data
+
+### Reviews and Previews
+
+### Example: World Inequility Report - WIR2022
+
+* World Inequality Report: https://wir2022.wid.world/
+* Executive Summary: https://wir2022.wid.world/executive-summary/
+* Methodology: https://wir2022.wid.world/methodology/
+* Data URL: https://wir2022.wid.world/www-site/uploads/2022/03/WIR2022TablesFigures-Summary.xlsx
+
+```{r}
+library(readxl)
+```
+
+```{r summary-data, cash = TRUE, eval = FALSE}
+url_summary <- "https://wir2022.wid.world/www-site/uploads/2022/03/WIR2022TablesFigures-Summary.xlsx"
+download.file(url = url_summary, destfile = "data/WIR2022s.xlsx") 
+excel_sheets("data/WIR2022s.xlsx")
+```
+
+---
+
+### F1: Global income and wealth inequality, 2021
+
+```{r data-f1, cash = TRUE}
+df_f1 <- read_excel("data/WIR2022s.xlsx", sheet = "data-F1")
+df_f1
+```
+
+---
+
+```{r echo=FALSE}
+df_f1_rev <- df_f1 %>% select(cat = ...1, 2:4) %>%
+  pivot_longer(2:4, names_to = "group", values_to = "value")
+df_f1_rev
+```
+
+```{r}
+df_f1_rev %>%
+  ggplot(aes(x = cat, y = value, fill = group)) +
+  geom_col(position = "dodge")
+```
+
+---
+
+### References of `tidyr`
+
+* Textbook: [R for Data Science,Tidy Data](https://r4ds.had.co.nz/tidy-data.html#tidy-data)
+
+#### RStudio Primers: See References in Moodle at the bottom
+
+**Tidy Your Data**
+
+  - Reshape Data
+  - Separate and Unite Columns
+  - Join Data Sets
+
+### Variables, values, and observations: Definitions
+
+* A **variable** is a quantity, quality, or property that you can measure.
+* A **value** is the state of a variable when you measure it. The value of a variable may change from measurement to measurement.
+* An **observation** or **case** is a set of measurements made under similar conditions (you usually make all of the measurements in an observation at the same time and on the same object). An observation will contain several values, each associated with a different variable. I’ll sometimes refer to an observation as a case or data point.
+* **Tabular data** is a table of values, each associated with a variable and an observation. Tabular data is tidy if each value is placed in its own cell, each variable in its own column, and each observation in its own row.
+* So far, all of the data that you’ve seen has been tidy. In real-life, most data isn’t tidy, so we’ll come back to these ideas again in Data Wrangling.
+
+---
+
+### Tidy Data
+
+> “Data comes in many formats, but R prefers just one: tidy data.” — Garrett Grolemund
+
+Data can come in a variety of formats, but one format is easier to use in R than the others. This format is known as tidy data. A data set is tidy if:
+
+1. Each variable is in its own column
+2. Each observation is in its own row
+3. Each value is in its own cell (this follows from #1 and #2)
+
+> “Tidy data sets are all alike; but every messy data set is messy in its own way.” — Hadley Wickham
+
+> “all happy families are all alike; each unhappy family is unhappy in its own way” - Tolstoy's Anna Karenina
+
+### `tidyr` Basics
+
+## Applications `tidyr`
+
+### WIR2022
+
+   `tidyr`, etc.; WDI, WIR, etc
+   
+## The Week Five Assignment (in Moodle)
+
+**WDI and `ggplot2`**
+
+* Create an R Notebook of a Data Analysis containing the following and submit the rendered HTML file (eg. `a3_123456.nb.html`  by replacing 123456 with your ID)
+  1. create an R Notebook using the R Notebook Template in Moodle,  save as `a3_123456.Rmd`, 
+  2. write your name and ID and the contents, 
+  3. run each code block, 
+  4. preview to create `a3_123456.nb.html`,
+  5. submit  `a3_123456.nb.html` to Moodle.
+
+1. Choose at least one indicator of WDI
+
+    - Information of the data: Name, Indicator, Description, Source, etc.
+    - Download the data with `WDI`
+    - Explain why you chose the indicator
+    - List questions you want to study
+
+---
+
+2. Explore the data using visualization using `ggplot2`
+
+    - Use a histogram (geom_histogram), boxplot (geom_boxplot), a scatter plot (geom_point), a line plot (geom_line)
+    - For at least one chart, add title, and labels of axis, and add an explanation of it
+
+3. Observations and difficulties encountered.
+
+**Due:** 2023-01-16 23:59:00. Submit your R Notebook file in Moodle (The Third Assignment). Due on Monday!
+
+
+# Exploratory Data Analysis (EDA) V  
+
+## Modeling
+
+### Other Examples
+
+## Roudups
+
+### R Markdown Revisited
+
+#### Literate Programming and Reproducible Research
+
+#### Presentation and Paper
+
+1. Data Source
+2. Variables
+3. Problems
+4. Visualization
+5. Model
+6. Conclusions and Further Research
+ 
+   WDI, WIR, etc

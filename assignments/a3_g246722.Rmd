@@ -1,0 +1,99 @@
+---
+title: "Title of R Notebook"
+author: "g246722 Luz Carreno"
+date: "`r Sys.Date()`"
+output:
+  html_notebook: null
+--- 
+
+1. Please Change the title on top.
+2. Erase the lines originally included in the file after --- not needed for the assignment.
+  please keep the top matter called YAML from --- to ---
+3. In order to analyze the data, you need to assign its name to the data you downloaded. But the name can be anything. So for example, df, dat, but I prefer to give a name reasonably short and that you can distinguish easily. Since we used many data in the course, I assigned more descriptive name `co2pcap`. What about `lit_rate_af`? Do no use - as it is interpreted as minus. 
+4. You need to do setup to add `tidyverse` and `WDI` first.
+
+```{r}
+library(tidyverse)
+library(WDI)
+```
+
+5. If you want to update the information of the data, run the following code first, but not neccesary most of the case as the original is not so old. Run only onece.
+
+```{r cash=TRUE}
+wdi_cache <- WDIcache()
+```
+
+The following is perfect.
+
+```{r}
+WDIsearch(string = "SE.ADT.LITR.FE.ZS", 
+          field = "indicator", cache = NULL)
+```
+
+```{r}
+WDIsearch(string = "SE.ADT.LITR.FE.ZS", field = "indicator", 
+          short = FALSE, cache = NULL) #cache = wdi_cache
+```
+
+[1] "Adult literacy rate is the percentage of people ages 15 and above who can both read and write with understanding a short simple statement about their everyday life."
+
+-   ***Source***: UNESCO Institute for Statistics ( UIS ). UIS.Stat Bulk Data Download Service. Accessed October 24, 2022. [apiportal.uis.unesco.org/bdds](https://apiportal.uis.unesco.org/bdds).
+
+
+In the following I assigned the result of WDIsearch the name dat_info.
+Since it is a data frame, I get the information of each column as follows. Since there is only one row, every out put has only one output with [1].
+
+```{r}
+dat_info <- WDIsearch(string = "SE.ADT.LITR.FE.ZS", field = "indicator", 
+          short = FALSE, cache = wdi_cache)
+dat_info$indicator
+dat_info$name
+dat_info$description
+dat_info$sourceDatabase
+dat_info$sourceOrganization
+```
+The following is perfect but county = "all"d is fine.
+
+```{r}
+dat = WDI(indicator='SE.ADT.LITR.FE.ZS', country=('all'), start=1976, end=2020)
+```
+
+```{r}
+dat
+```
+
+Please check the difference.
+
+```{r}
+dat_extra <- WDI(country = "all",
+    indicator = "SE.ADT.LITR.FE.ZS",
+    start = 1976,
+    end = 2020,
+    extra = TRUE
+   )
+dat_extra
+```
+
+```{r}
+WDIsearch(string = "Literacy rate, adult", field = "name", short = FALSE, cache = wdi_cache)
+```
+
+Running the following code chunk takes time.
+
+```{r}
+lit_rate <- WDI(country = "all", indicator = c("female" = "SE.ADT.LITR.FE.ZS", 
+                                               "male" = "SE.ADT.LITR.MA.ZS", 
+                                               "total" = "SE.ADT.LITR.ZS"), 
+                start = 1960, end = NULL,
+                extra = TRUE, cache = wdi_cache)
+lit_rate
+```
+
+Now you can start investigation.
+
+Good luck. Don't hesitate to ask me questions. But many of our class are struggling and it is better to post questions in the forum in Moodle.
+
+```{r}
+co2pcap <- WDI(country = "all", indicator = "EN.ATM.CO2E.PC", start = 1960, end = NULL, extra = TRUE, cache = wdi_cache)
+```
+
