@@ -1061,6 +1061,7 @@ In RStudio,
 
   * Create a new project: File > New Project; or  
   * Open a project: File > Open Project, Open Project in New Session, Open Recent Project  
+    - It is easier to find an existing project from: File > Recent Project 
   * _Check there is a file `project_name.Rproj` in your project folder (directory)_
 
  

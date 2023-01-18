@@ -62,7 +62,11 @@ We should know first about the variables. At least you must know if each of the 
 ## WDI
 
 * IP.JRN.ARTC.SC: Scientific and technical journal articles
-* 
+* FP.CPI.TOTL.ZG: Inflation, consumer prices (% annual growth) 
+* NY.GDP.PCAP.KD: GDP per capita (constant 2015 US$)
+* BX.KLT.DINV.CD.WD: Foreign direct investment, net inflows (BoP, current US$)
+* SP.POP.TOTL (Total Population), MS.MIL.XPND.GD.ZS (Military expenditure (% of GDP)), MS.MIL.TOTL.P1 (Total Armed Forces Personnel), NY.GDP.MKTP.CD (NY.GDP.MKTP.CD: GDP)
+* IP.JRN.ARTC.SC: Scientific and technical journal articles
 
 # Responses to Questions
 
@@ -85,6 +89,63 @@ sct %>% summary()
 sct %>% filter(country == "France") %>%
   ggplot(aes(x = IP.JRN.ARTC.SC)) + ggtitle ("Distribution of number of scientific/technical articles in France") + 
   geom_histogram(bins = 8)
+```
+
+## Q2.
+
+```{r}
+WDIsearch(string = "gdp per capita", field = "name", short = FALSE)
+```
+
+```{r}
+dat = WDI(indicator='NY.GDP.PCAP.KD', country=c('MX','CA','US'), start=2000, end=2020)
+```
+```{r}
+ggplot(dat, aes(x = NY.GDP.PCAP.KD, fill=country), alpha = 0.5) +
+  geom_histogram(bins = 10)
+```
+
+
+##
+
+```{r}
+FDI <- WDI(country = "all", indicator = "BX.KLT.DINV.CD.WD", start = 1960, end = NULL, extra = TRUE)
+```
+
+1. In the beginning, when I want to write_csv, I put the file in the file but not the data file. Then here came out an error which says can’t open the file;
+2. When I use the same way of line chart and box plot chart want to draw the histogram, there is a mistake.
+
+```{r}
+write_csv(FDI, "data/FDI.csv")
+```
+
+```{r}
+FDI %>% drop_na(BX.KLT.DINV.CD.WD) %>%
+  ggplot(aes(BX.KLT.DINV.CD.WD)) + geom_histogram(bins = 10)
+```
+
+
+###
+
+```{r}
+artcpcap <- WDI(country = "all", indicator = "IP.JRN.ARTC.SC", start = 1960, end = NULL, extra = TRUE, cach = NULL) 
+```
+
+```{r}
+artcpcap %>% 
+  filter(income != "Aggregates", year == 2018, IP.JRN.ARTC.SC > 0, 
+         income !="Not classified") %>%
+  ggplot(aes(x = income, y = IP.JRN.ARTC.SC, fill = income)) + 
+  geom_boxplot() + coord_trans(x ="identity", y="log10") 
+  
+```
+
+```{r}
+artcpcap %>% drop_na(IP.JRN.ARTC.SC) %>%
+  filter(income !="Aggregates", IP.JRN.ARTC.SC > 0) %>%
+  group_by(income, year) %>% summarize(median = median(IP.JRN.ARTC.SC)) %>%
+  ggplot() + 
+  geom_line(mapping = aes(x = year, y = median, color = income))
 ```
 
 
@@ -182,3 +243,23 @@ wdi_gdp %>% filter(country == "Brazil") %>% ggplot() + geom_histogram(aes(x = gd
 ```{r}
 wdi_gdp %>% filter(country == "Brazil") %>% pull(gdp) %>% n()
 ```
+
+
+```{r}
+df4 <- WDI(
+  country="all",
+  indicator = c("SP.POP.TOTL","MS.MIL.XPND.GD.ZS","MS.MIL.TOTL.P1","NY.GDP.MKTP.CD"),
+  start = 1960,
+  end = NULL,
+  extra = FALSE,
+  cache = NULL,
+  latest = NULL,
+  language = "en"
+)
+```
+
+```{r}
+colnames(df4) <- c("Country","iso2c","iso3c","Year","Population","Mil_Exp","Total_Mil_HC","GDP")
+df4
+```
+
