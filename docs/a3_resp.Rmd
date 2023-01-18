@@ -1,0 +1,184 @@
+---
+title: "Responses to Assignment 3"
+output: 
+  html_notebook: 
+    toc: yes
+    toc_float: true
+    highlight: haddock
+    theme: cosmo
+    number_sections: yes
+---
+
+## Assignment Three: The Week Four Assignment {-}
+
+**WDI and `ggplot2`**
+
+* Create an R Notebook of a Data Analysis containing the following and submit the rendered HTML file (eg. `a3_123456.nb.html`  by replacing 123456 with your ID)
+  1. create an R Notebook using the R Notebook Template in Moodle,  save as `a3_123456.Rmd`, 
+  2. write your name and ID and the contents, 
+  3. run each code block, 
+  4. preview to create `a3_123456.nb.html`,
+  5. submit  `a3_123456.nb.html` to Moodle.
+
+1. Choose at least one indicator of WDI
+
+    - Information of the data: Name, Indicator, Description, Source, etc.
+    - Download the data with `WDI`
+    - Explain why you chose the indicator
+    - List questions you want to study
+
+2. Explore the data using visualization using `ggplot2`
+
+    - Use a histogram (geom_histogram), boxplot (geom_boxplot), a scatter plot (geom_point), a line plot (geom_line)
+    - For at least one chart, add title, and labels of axis, and add an explanation of it
+
+3. Observations and difficulties encountered.
+
+**Due:** 2023-01-16 23:59:00. Submit your R Notebook file in Moodle (The Third Assignment). Due on Monday!
+
+# Set up
+
+```{r}
+library(tidyverse)
+library(WDI)
+```
+
+It is not a must, but it is good to run the following code chunk and use `wdi_cache` for `WDIsearch()` to update the mata data. See `WDIcache` help. 
+
+```{r cache = TRUE}
+wdi_cache <- WDIcache()
+```
+
+
+# General Comments
+
+## Varibles
+
+We should know first about the variables. At least you must know if each of the variables is a categorical variable or a numerical variable.
+
+
+## Example: 
+
+## WDI
+
+* IP.JRN.ARTC.SC: Scientific and technical journal articles
+* 
+
+# Responses to Questions
+
+## Q1. 
+
+```{r}
+WDIsearch(string = "IP.JRN.ARTC.SC", field = "indicator", short = FALSE, cache = wdi_cache)
+```
+
+```{r cash=TRUE}
+sct <- WDI(country = c("US", "FR", "KE"), indicator = c("IP.JRN.ARTC.SC"), start = 1990, end = NULL, extra = TRUE, cache = wdi_cache)
+sct
+```
+
+```{r}
+sct %>% summary()
+```
+
+```{r}
+sct %>% filter(country == "France") %>%
+  ggplot(aes(x = IP.JRN.ARTC.SC)) + ggtitle ("Distribution of number of scientific/technical articles in France") + 
+  geom_histogram(bins = 8)
+```
+
+
+# Appendix: A secondary axis
+
+* [Specify a secondary axis](https://ggplot2.tidyverse.org/reference/sec_axis.html)
+  - This function is used in conjunction with a position scale to create a secondary axis, positioned opposite of the primary axis. All secondary axes must be based on a one-to-one transformation of the primary axes.
+
+`scale_y_continuous(sec.axis = sec_axis(~ . scaling_function))`
+
+## Example
+
+Suppose you have two indicators, 
+
+* NY.GDP.MKTP.KD: GDP (constant 2015 US$)
+* NY.GDP.PCAP.KD: GDP per capita (constant 2015 US$)
+
+```{r}
+WDIsearch(string = "NY.GDP.MKTP.KD", field = "indicator", short = FALSE, cache = wdi_cache)
+```
+
+```{r}
+WDIsearch(string = "NY.GDP.PCAP.KD", field = "indicator", short = FALSE, cache = wdi_cache)
+```
+
+List the name of countries of ASEAN and BRICs using `wdi_cache$country`.
+
+```{r}
+asean <- c("Brunei Darussalam", "Cambodia", "Lao PDR", "Myanmar", 
+           "Philippines", "Indonesia", "Malaysia", "Singapore")
+brics <- c("Brazil", "Russian Federation", "India", "China")
+```
+
+Find the `iso2c` of the countries using `wdi_cache$country`.
+
+```{r}
+wdi_cache$country %>% 
+  filter(country %in% 
+           c("Brunei Darussalam", "Cambodia", "Lao PDR", "Myanmar", 
+           "Philippines", "Indonesia", "Malaysia", "Singapore",
+           "Brazil", "Russian Federation", "India", "China")) %>% 
+  pull(iso2c)
+```
+
+Separate the iso3c's of the countries with commas and read data using `WDI`.
+
+```{r cache=TRUE}
+wdi_gdp <- WDI(
+  country = c("BR", "BN", "CN", "ID", "IN", "KH", "LA", "MM", "MY", "PH", "RU", "SG"),
+  indicator = c(gdp = "NY.GDP.MKTP.KD", gdpPercap = "NY.GDP.PCAP.KD"),
+  start = 1960, extra = TRUE, cache = wdi_cache)
+```
+
+
+```{r}
+wdi_gdp %>% filter(country %in% asean) %>% drop_na(gdp, gdpPercap) %>% summary() 
+```
+
+Using the summary, decide the scaling of two variables, `gdpPercap` and `gdp`.
+
+```{r}
+wdi_gdp %>% drop_na(gdp, gdpPercap) %>%
+  filter(country %in% asean) %>%
+  ggplot() + 
+  geom_line(aes(x = year, y = gdpPercap, linetype = country)) + 
+  geom_line(aes(x = year, y = gdp/(10^7), col = country)) + 
+  coord_trans(x ="identity", y="log10") +
+  scale_y_continuous(sec.axis = sec_axis(~ . *(10^7), name = "gdp/(10^7)"))
+```
+
+### BRICs
+
+```{r}
+wdi_gdp %>% filter(country %in% brics) %>% drop_na(gdp, gdpPercap) %>% summary() 
+```
+
+Using the summary, decide the scaling of two variables, `gdpPercap` and `gdp`.
+
+```{r}
+wdi_gdp %>% drop_na(gdp, gdpPercap) %>%
+  filter(country %in% brics) %>%
+  ggplot() + 
+  geom_line(aes(x = year, y = gdpPercap, linetype = country)) + 
+  geom_line(aes(x = year, y = gdp/(10^9), col = country)) + 
+  coord_trans(x ="identity", y="log10") +
+  scale_y_continuous(sec.axis = sec_axis(~ . *(10^7), name = "gdp/(10^9)"))
+```
+
+### test
+
+```{r}
+wdi_gdp %>% filter(country == "Brazil") %>% ggplot() + geom_histogram(aes(x = gdp))
+```
+
+```{r}
+wdi_gdp %>% filter(country == "Brazil") %>% pull(gdp) %>% n()
+```
