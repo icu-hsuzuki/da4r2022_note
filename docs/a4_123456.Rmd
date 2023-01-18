@@ -1,0 +1,146 @@
+---
+title: "TEST R Notebook of QALL401"
+author: "123456 H.S."
+date: "`r Sys.Date()`"
+output:
+  html_notebook: null
+---
+
+# About
+
+I try to investigate the education of the world using the data from UN, WIR and WDI.
+
+# Set up
+
+```{r}
+library(tidyverse)
+library(WDI)
+library(readxl)
+```
+
+# Importing Data
+
+## URLs
+
+WIR2022 Executive Summary
+
+```{r}
+wir2022 <- "https://wir2022.wid.world/www-site/uploads/2022/03/WIR2022TablesFigures-Summary.xlsx"
+```
+
+UN Education data at <https://data.un.org/>.
+
+```{r}
+url <- "https://data.un.org/_Docs/SYB/CSV/SYB65_309_202209_Education.csv"
+```
+
+By `readr::read_csv`, you can directly download and read the data.
+
+Since the first row is not the column names, an option `skip = 1` is applied.
+
+```{r}
+un_ed <- read_csv(url, skip = 1)
+```
+
+```{r}
+un_ed
+```
+
+As for an Excel data, you need to download first. It will be written in the `data` folder.
+
+```{r}
+download.file(url = wir2022, destfile = "data/wir2022.xlsx")
+```
+
+The package `readxl` is installed with `tidyverse` package but not loaded with `tidyverse`. Add `library(readxl)` if it is not in Setup.
+
+```{r}
+wir_df1 <- read_excel("data/wir2022.xlsx", sheet = 1)
+```
+
+```{r}
+wir_df1
+```
+
+By the following `excel_sheets` you can get a list of sheets. There are 32 sheets.
+
+```{r}
+excel_sheets("data/wir2022.xlsx")
+```
+
+```{r}
+df_F1 <- read_excel("data/wir2022.xlsx", sheet = "data-F1"); df_F1
+```
+
+## WDI Package
+
+It is convenient to have `WDIcache().`
+
+```{r}
+wdi_cache <- WDIcache()
+```
+
+It is a list with two data frames; indicator and country.
+
+```{r}
+wdi_cache$series
+```
+
+```{r}
+wdi_cache$country
+```
+
+If you cannot resolve an error, you can include the code chunk. I may be able to help you.
+
+```{r}
+wite_csv(wdi_cache, "data_directory/cache.csv")
+```
+
+*Typo and wrong directory name.*
+
+```{r}
+write_csv(wdi_cache, "data/cache.csv")
+```
+
+`wdi_cache` is a list, you cannot use `write_csv.`
+
+## WDI: Government expenditure on education, total (% of GDP)
+
+```{r}
+WDIsearch(string="SE.XPD.TOTL.GD.ZS", field = "indicator", short = FALSE, cache = wdi_cache)
+```
+
+```{r}
+wdi_ed_budget <- WDI(country = "all", indicator = "SE.XPD.TOTL.GD.ZS", 
+                     start = 1960, end = NULL, extra = TRUE, cache = wdi_cache)
+```
+
+```{r}
+wdi_ed_budget
+```
+
+# Analysis and Visualizations
+
+-   What type of variation occurs within my variables?
+
+-   What type of covariation occurs between my variables?
+
+```{r}
+wdi_ed_budget %>% ggplot(aes(x = SE.XPD.TOTL.GD.ZS)) + geom_histogram()
+```
+
+Added `drop_na(variable)` and changed `bins.`
+
+```{r}
+wdi_ed_budget %>% drop_na(SE.XPD.TOTL.GD.ZS) %>%
+  ggplot(aes(x = SE.XPD.TOTL.GD.ZS)) + geom_histogram(bins = 10)
+
+```
+
+We should see the variation using other visualization.
+
+# Conclusions
+
+Nothing is obtained yet!
+
+Good luck.
