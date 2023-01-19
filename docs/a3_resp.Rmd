@@ -396,11 +396,15 @@ df_infl <- WDI(country = c("VN","CN","JP"),
 ```
 
 ```{r}
-df_infl %>% filter(year %in% c(2000, 2007, 2020), 
-                   country %in% c("Japan", "Vietnam", "China")) %>%
+df_infl_s <- df_infl %>% filter(year %in% c(2000, 2007, 2020), 
+                   country %in% c("Japan", "Vietnam", "China"))
+df_infl_s
+```
+```{r}
+df_infl_s %>%
   ggplot(aes(x = year, y = inf, color= country)) + 
   geom_line() + geom_point() + 
-  geom_text(aes(label = scales::label_percent(accuracy=1)(inf)), nudge_y = 0.8) + 
+  geom_text(aes(label = round(inf,2)), nudge_y = 0.8) + 
 labs(title = "Inflation of Japan, Vietnam and China from 2000 to 2020", 
      x = "", y = "Inflation, consumer prices (annual %)")
 ```
