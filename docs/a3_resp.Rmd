@@ -396,7 +396,7 @@ df_infl <- WDI(country = c("VN","CN","JP"),
 ```
 
 ```{r}
-df_infl_s <- df_infl %>% filter(year %in% c(2000, 2007, 2020), 
+df_infl_s <- df_infl %>% filter(year %in% c(2000, 2005, 2010, 2015, 2020), 
                    country %in% c("Japan", "Vietnam", "China"))
 df_infl_s
 ```
