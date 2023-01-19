@@ -1,12 +1,14 @@
 ---
 title: "Responses to Assignment 3"
-output: 
-  html_notebook: 
+output:
+  html_notebook:
     toc: yes
-    toc_float: true
+    toc_float: yes
     highlight: haddock
     theme: cosmo
     number_sections: yes
+  pdf_document:
+    toc: yes
 ---
 
 ## Assignment Three: The Week Four Assignment {-}
