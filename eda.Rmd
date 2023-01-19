@@ -3840,10 +3840,8 @@ Correlation
 ```{r}
 iris %>% select(-5) %>% cor()
 ```
-```{r}
-library(corrr)
 
-```
+Galton's data. Regression.
 
 
 Normalization, standalization
