@@ -3830,6 +3830,97 @@ df_f8 %>%
 
 ## Modeling
 
+> “Tidy data sets are all alike; but every messy data set is messy in its own way.” — Hadley Wickham
+
+> “all happy families are all alike; each unhappy family is unhappy in its own way” - Tolstoy's Anna Karenina
+
+
+Correlation
+
+```{r}
+iris %>% select(-5) %>% cor()
+```
+```{r}
+library(corrr)
+
+```
+
+
+Normalization, standalization
+
+SDGs Academy
+
+Trend
+
+
+```{r}
+df4 <- WDI(
+  country="all",
+  indicator = c("SP.POP.TOTL","MS.MIL.XPND.GD.ZS","MS.MIL.TOTL.P1","NY.GDP.MKTP.CD"),
+  start = 1960,
+  end = NULL,
+  extra = FALSE,
+  cache = NULL,
+  latest = NULL,
+  language = "en"
+)
+```
+
+```{r}
+colnames(df4) <- c("Country","iso2c","iso3c","Year","Population","Mil_Exp","Total_Mil_HC","GDP")
+df4
+```
+
+### Tali
+
+```{r}
+df_wdi_poverty <- WDI(
+  country = "all", 
+  indicator = c(national_poverty_rate = "SI.POV.NAHC", multidimentional_poverty_rate = "SI.POV.MDIM", gdpPercap = "NY.GDP.PCAP.KD", gini_indx = "SI.POV.GINI"), start = 1990,
+    end = 2021,
+  extra = TRUE
+)
+```
+
+```{r}
+df_wdi_poverty %>%  
+  group_by(country, year) %>%
+  mutate(mean_gdp_country = mean(gdpPercap)) %>%
+  mutate(mean_poverty_country= mean(national_poverty_rate)) %>%
+  ungroup() %>%
+    filter(!is.na(income)) %>%   filter(!(income=="Aggregates")) %>% ggplot(aes(x = log10(mean_gdp_country))) + geom_point(aes(y = mean_poverty_country, color = income)) +  labs(x = "GDP per capita", y = "poverty rate (% of population)", title = "Poverty rates and GDP per capita", subtitle="world countries, 1990-2021 average, by income level")
+```
+
+```{r}
+df_wdi_poverty %>%  
+  group_by(country, year) %>%
+  mutate(mean_gdp_country = mean(gdpPercap)) %>%
+  mutate(mean_multipoverty_country= mean(multidimentional_poverty_rate)) %>%
+  ungroup() %>%
+    filter(!(region=="Aggregates")) %>% filter(!is.na(region)) %>% ggplot(aes(x = log10(mean_gdp_country))) + geom_point(aes(y = mean_multipoverty_country, color = region)) +  labs(x = "GDP per capita", y = "Multidimentinal poverty rate (% of population)", title = "Multidimentional Poverty rates and GDP per capita", subtitle="world countries, 1990-2021 average, by region")
+```
+
+index sdg, ghi, academy
+
+moocs
+
+R4DS: Model basics
+  https://r4ds.had.co.nz/model-basics.html
+modelr: https://modelr.tidyverse.org
+
+Tidymodels: https://www.tidymodels.org
+
+Tidyverse Skills for Data Science
+https://jhudatascience.org/tidyversecourse/
+https://jhudatascience.org/tidyversecourse/model.html
+
+
+machine learning:A Gentle Introduction to tidymodels https://rviews.rstudio.com/2019/06/19/a-gentle-intro-to-tidymodels/
+
+Tidy Modeling with R
+https://www.tmwr.org
+
+
 ### Other Examples
 
 ## Roudups
@@ -3837,6 +3928,8 @@ df_f8 %>%
 ### R Markdown Revisited
 
 #### Literate Programming and Reproducible Research
+
+Clipboard
 
 #### Presentation and Paper
 
