@@ -206,14 +206,14 @@ WDI(indicator = "NY.GDP.PCAP.KD")
 
 * In order to use the downloaded data, we need to assign a name to it. It can be `df` if you download and use only one data, but it is better to assign the data to be a more descriptive name.
 
-```{r}
+```{r cache = TRUE}
 df_gdppcap <- WDI(indicator = "NY.GDP.PCAP.KD")
 df_gdppcap
 ```
 
 * If you want to use extra information such as `region`, `income`, `lending`, use `extra = TRUE`.
 
-```{r}
+```{r cache = TRUE}
 df_gdppcap_extra <- WDI(indicator = "NY.GDP.PCAP.KD", extra = TRUE)
 df_gdppcap_extra
 ```
@@ -239,7 +239,7 @@ gdppcap <- read_csv("data/gdppcap_extra.csv")
 
 If you want to import data for several countries, you can use `iso2c` codes of the countries.
 
-```{r}
+```{r cache = TRUE}
 ASEAN <- c("BN", "ID", "KH", "LA", "MM", "MY", "PH", "SG")
 df_gdppcap_asean <- WDI(ASEAN, "NY.GDP.PCAP.KD")
 df_gdppcap_asean %>% distinct(country) %>% pull()
@@ -305,7 +305,7 @@ wdi_cache$series %>% filter(grepl("gdp per cap", name, ignore.case = TRUE))
 * [Posit Cloud: Histograms](https://posit.cloud/learn/primers/3.3)
 
 
-```{r}
+```{r cache = TRUE}
 wdi_cache$series %>% filter(indicator == "SG.GEN.PARL.ZS") %>% pull(name)
 df_women_in_parl <- WDI(indicator = c(women_in_parl = "SG.GEN.PARL.ZS")) %>%
   drop_na(women_in_parl)
@@ -321,7 +321,7 @@ df_women_in_parl %>% filter(year == 2020) %>%
   ggplot(aes(women_in_parl)) + geom_histogram(binwidth = 5)
 ```
 
-```{r}
+```{r cache = TRUE}
 wdi_cache$series %>% filter(indicator == "IP.JRN.ARTC.SC") %>% pull(name)
 df_stja <- WDI(indicator = c(stja = "IP.JRN.ARTC.SC"), extra = TRUE) %>%
   drop_na(stja)
@@ -352,7 +352,7 @@ df_stja %>% filter(income != "Aggregates", income != "Not classified", stja >0) 
   ggplot(aes(stja, fill = income)) + geom_density(alpha = 0.3) + scale_x_log10()
 ```
 
-```{r}
+```{r cache = TRUE}
 wdi_cache$series %>% filter(indicator == "MS.MIL.XPND.GD.ZS") %>% pull(name)
 df_milxpnd <- WDI(indicator = c(milxpnd = "MS.MIL.XPND.GD.ZS"), extra = TRUE) %>%
   drop_na(milxpnd)
@@ -375,7 +375,7 @@ df_milxpnd %>% filter(income != "Aggregates", income != "Not classified", year =
 
 ## Q2. Effect of unemployed rate under pandemic depending on income groups
 
-```{r}
+```{r cache = TRUE}
 wdi_cache$series %>% filter(indicator == "SL.UEM.TOTL.ZS") %>% pull(name)
 df_ur <- WDI(indicator = c(ur = "SL.UEM.TOTL.ZS"), 
              extra = TRUE, cache = wdi_cache) %>% drop_na(ur)
@@ -389,7 +389,7 @@ df_ur %>% filter(income == "Aggregates") %>% filter(grepl('income', country)) %>
 
 ## Q3. Add values at each data point.
 
-```{r}
+```{r cache = TRUE}
 wdi_cache$series %>% filter(indicator == "FP.CPI.TOTL.ZG") %>% pull(name)
 df_infl <- WDI(country = c("VN","CN","JP"), 
                indicator = c(inf = "FP.CPI.TOTL.ZG"), extra = TRUE) %>% drop_na(inf)
@@ -407,7 +407,7 @@ labs(title = "Inflation of Japan, Vietnam and China from 2000 to 2020",
 
 # Regression Lines; Topic of EDA5
 
-```{r}
+```{r cache = TRUE}
 wdi_cache$series %>% filter(indicator %in% c("SI.POV.NAHC","SI.POV.MDIM")) %>% pull(name)
 df_wdi_poverty <- WDI(
   indicator = c(poverty = "SI.POV.NAHC", multipoverty = "SI.POV.MDIM", gdppercap = "NY.GDP.PCAP.KD"), start = 1990,
