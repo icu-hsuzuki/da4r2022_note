@@ -1,0 +1,489 @@
+---
+title: "Responses to Assignment 3"
+output: 
+  html_notebook: 
+    toc: yes
+    toc_float: true
+    highlight: haddock
+    theme: cosmo
+    number_sections: yes
+---
+
+## Assignment Three: The Week Four Assignment {-}
+
+**WDI and `ggplot2`**
+
+* Create an R Notebook of a Data Analysis containing the following and submit the rendered HTML file (eg. `a3_123456.nb.html`  by replacing 123456 with your ID)
+  1. create an R Notebook using the R Notebook Template in Moodle,  save as `a3_123456.Rmd`, 
+  2. write your name and ID and the contents, 
+  3. run each code block, 
+  4. preview to create `a3_123456.nb.html`,
+  5. submit  `a3_123456.nb.html` to Moodle.
+
+1. Choose at least one indicator of WDI
+
+    - Information of the data: Name, Indicator, Description, Source, etc.
+    - Download the data with `WDI`
+    - Explain why you chose the indicator
+    - List questions you want to study
+
+2. Explore the data using visualization using `ggplot2`
+
+    - Use a histogram (geom_histogram), boxplot (geom_boxplot), a scatter plot (geom_point), a line plot (geom_line)
+    - For at least one chart, add title, and labels of axis, and add an explanation of it
+
+3. Observations and difficulties encountered.
+
+**Due:** 2023-01-16 23:59:00. Submit your R Notebook file in Moodle (The Third Assignment). Due on Monday!
+
+# Set up
+
+```{r}
+library(tidyverse)
+library(WDI)
+```
+
+It is not a must, but it is good to run the following code chunk and use `wdi_cache` for `WDIsearch()` to update the mata data. See `WDIcache` help. 
+
+```{r cache = TRUE}
+wdi_cache <- WDIcache()
+```
+
+
+# General Comments
+
+## Varibles
+
+We should know first about the variables. At least you must know if each of the variables is a categorical variable or a numerical variable.
+
+
+## Example: 
+
+## WDI
+
+* IP.JRN.ARTC.SC: Scientific and technical journal articles
+* FP.CPI.TOTL.ZG: Inflation, consumer prices (% annual growth) 
+* NY.GDP.PCAP.KD: GDP per capita (constant 2015 US$)
+* BX.KLT.DINV.CD.WD: Foreign direct investment, net inflows (BoP, current US$)
+* SP.POP.TOTL (Total Population), MS.MIL.XPND.GD.ZS (Military expenditure (% of GDP)), MS.MIL.TOTL.P1 (Total Armed Forces Personnel), NY.GDP.MKTP.CD (NY.GDP.MKTP.CD: GDP)
+* IP.JRN.ARTC.SC: Scientific and technical journal articles
+* SI.POV.MDIM (Multidimensional poverty headcount ratio (% of total population)),  SI.POV.NAHC (Poverty headcount ratio at national poverty lines (% of population)), NY.GDP.PCAP.KD (GDP per capita (constant 2015 US$)), SI.POV.GINI (Gini index)
+* NY.GNS.ICTR.ZS, pop = "SP.POP.TOTL", gdpPercap = "NY.GDP.PCAP.KD"
+* SL.UEM.TOTL.ZS (Unemployment, total (% of total labor force) (modeled ILO estimate)), GDP per capita growth (annual%) (ID: NY.GDP.PCAP.KD.ZG)
+* SP.URB.TOTL.IN.ZS (Urban population (% of total population))
+* AG.LND.AGRI.ZS: Agricultural land (% of land area) with pop = "SP.POP.TOTL", gdpPercap = "NY.GDP.PCAP.KD"
+* FP.CPI.TOTL.ZG: Inflation, consumer prices (annual %), DT.ODA.ODAT.PC.ZS (Net ODA received per capita (current US$))
+* SE.ADT.LITR.FE.ZS (Literacy rate, adult female (% of females ages 15 and above)), with SE.ADT.LITR.MA.ZS (male), SE.ADT.LITR.ZS (total)
+* SE.ADT.1524.LT.FE.ZS (Literacy rate, youth female (% of females ages 15-24))
+* SE.XPD.TOTL.GD.ZS (Government expenditure on education, total (% of GDP))
+* SG.GEN.PARL.ZS (Proportion of seats held by women in national parliaments (%))
+
+# Responses to Questions
+
+## Q1. 
+
+```{r}
+WDIsearch(string = "IP.JRN.ARTC.SC", field = "indicator", short = FALSE, cache = wdi_cache)
+```
+
+```{r cash=TRUE}
+sct <- WDI(country = c("US", "FR", "KE"), indicator = c("IP.JRN.ARTC.SC"), start = 1990, end = NULL, extra = TRUE, cache = wdi_cache)
+sct
+```
+
+```{r}
+sct %>% summary()
+```
+
+```{r}
+sct %>% filter(country == "France") %>%
+  ggplot(aes(x = IP.JRN.ARTC.SC)) + ggtitle ("Distribution of number of scientific/technical articles in France") + 
+  geom_histogram(bins = 8)
+```
+
+## Q2.
+
+```{r}
+WDIsearch(string = "gdp per capita", field = "name", short = FALSE)
+```
+
+```{r}
+dat = WDI(indicator='NY.GDP.PCAP.KD', country=c('MX','CA','US'), start=2000, end=2020)
+```
+```{r}
+ggplot(dat, aes(x = NY.GDP.PCAP.KD, fill=country), alpha = 0.5) +
+  geom_histogram(bins = 10)
+```
+
+
+##
+
+```{r}
+FDI <- WDI(country = "all", indicator = "BX.KLT.DINV.CD.WD", start = 1960, end = NULL, extra = TRUE)
+```
+
+1. In the beginning, when I want to write_csv, I put the file in the file but not the data file. Then here came out an error which says can’t open the file;
+2. When I use the same way of line chart and box plot chart want to draw the histogram, there is a mistake.
+
+```{r}
+write_csv(FDI, "data/FDI.csv")
+```
+
+```{r}
+FDI %>% drop_na(BX.KLT.DINV.CD.WD) %>%
+  ggplot(aes(BX.KLT.DINV.CD.WD)) + geom_histogram(bins = 10)
+```
+
+
+###
+
+```{r}
+artcpcap <- WDI(country = "all", indicator = "IP.JRN.ARTC.SC", start = 1960, end = NULL, extra = TRUE, cach = NULL) 
+```
+
+```{r}
+artcpcap %>% 
+  filter(income != "Aggregates", year == 2018, IP.JRN.ARTC.SC > 0, 
+         income !="Not classified") %>%
+  ggplot(aes(x = income, y = IP.JRN.ARTC.SC, fill = income)) + 
+  geom_boxplot() + coord_trans(x ="identity", y="log10") 
+  
+```
+
+```{r}
+artcpcap %>% drop_na(IP.JRN.ARTC.SC) %>%
+  filter(income !="Aggregates", IP.JRN.ARTC.SC > 0) %>%
+  group_by(income, year) %>% summarize(median = median(IP.JRN.ARTC.SC)) %>%
+  ggplot() + 
+  geom_line(mapping = aes(x = year, y = median, color = income))
+```
+
+
+# Appendix: A secondary axis
+
+* [Specify a secondary axis](https://ggplot2.tidyverse.org/reference/sec_axis.html)
+  - This function is used in conjunction with a position scale to create a secondary axis, positioned opposite of the primary axis. All secondary axes must be based on a one-to-one transformation of the primary axes.
+
+`scale_y_continuous(sec.axis = sec_axis(~ . scaling_function))`
+
+## Example
+
+Suppose you have two indicators, 
+
+* NY.GDP.MKTP.KD: GDP (constant 2015 US$)
+* NY.GDP.PCAP.KD: GDP per capita (constant 2015 US$)
+
+```{r}
+WDIsearch(string = "NY.GDP.MKTP.KD", field = "indicator", short = FALSE, cache = wdi_cache)
+```
+
+```{r}
+WDIsearch(string = "NY.GDP.PCAP.KD", field = "indicator", short = FALSE, cache = wdi_cache)
+```
+
+List the name of countries of ASEAN and BRICs using `wdi_cache$country`.
+
+```{r}
+asean <- c("Brunei Darussalam", "Cambodia", "Lao PDR", "Myanmar", 
+           "Philippines", "Indonesia", "Malaysia", "Singapore")
+brics <- c("Brazil", "Russian Federation", "India", "China")
+```
+
+Find the `iso2c` of the countries using `wdi_cache$country`.
+
+```{r}
+wdi_cache$country %>% 
+  filter(country %in% 
+           c("Brunei Darussalam", "Cambodia", "Lao PDR", "Myanmar", 
+           "Philippines", "Indonesia", "Malaysia", "Singapore",
+           "Brazil", "Russian Federation", "India", "China")) %>% 
+  pull(iso2c)
+```
+
+Separate the iso3c's of the countries with commas and read data using `WDI`.
+
+```{r cache=TRUE}
+wdi_gdp <- WDI(
+  country = c("BR", "BN", "CN", "ID", "IN", "KH", "LA", "MM", "MY", "PH", "RU", "SG"),
+  indicator = c(gdp = "NY.GDP.MKTP.KD", gdpPercap = "NY.GDP.PCAP.KD"),
+  start = 1960, extra = TRUE, cache = wdi_cache)
+```
+
+
+```{r}
+wdi_gdp %>% filter(country %in% asean) %>% drop_na(gdp, gdpPercap) %>% summary() 
+```
+
+Using the summary, decide the scaling of two variables, `gdpPercap` and `gdp`.
+
+```{r}
+wdi_gdp %>% drop_na(gdp, gdpPercap) %>%
+  filter(country %in% asean) %>%
+  ggplot() + 
+  geom_line(aes(x = year, y = gdpPercap, linetype = country)) + 
+  geom_line(aes(x = year, y = gdp/(10^7), col = country)) + 
+  coord_trans(x ="identity", y="log10") +
+  scale_y_continuous(sec.axis = sec_axis(~ . *(10^7), name = "gdp/(10^7)"))
+```
+
+### BRICs
+
+```{r}
+wdi_gdp %>% filter(country %in% brics) %>% drop_na(gdp, gdpPercap) %>% summary() 
+```
+
+Using the summary, decide the scaling of two variables, `gdpPercap` and `gdp`.
+
+```{r}
+wdi_gdp %>% drop_na(gdp, gdpPercap) %>%
+  filter(country %in% brics) %>%
+  ggplot() + 
+  geom_line(aes(x = year, y = gdpPercap, linetype = country)) + 
+  geom_line(aes(x = year, y = gdp/(10^9), col = country)) + 
+  coord_trans(x ="identity", y="log10") +
+  scale_y_continuous(sec.axis = sec_axis(~ . *(10^7), name = "gdp/(10^9)"))
+```
+
+### test
+
+```{r}
+wdi_gdp %>% filter(country == "Brazil") %>% ggplot() + geom_histogram(aes(x = gdp))
+```
+
+```{r}
+wdi_gdp %>% filter(country == "Brazil") %>% pull(gdp) %>% n()
+```
+
+
+```{r}
+df4 <- WDI(
+  country="all",
+  indicator = c("SP.POP.TOTL","MS.MIL.XPND.GD.ZS","MS.MIL.TOTL.P1","NY.GDP.MKTP.CD"),
+  start = 1960,
+  end = NULL,
+  extra = FALSE,
+  cache = NULL,
+  latest = NULL,
+  language = "en"
+)
+```
+
+```{r}
+colnames(df4) <- c("Country","iso2c","iso3c","Year","Population","Mil_Exp","Total_Mil_HC","GDP")
+df4
+```
+
+### Tali
+
+```{r}
+df_wdi_poverty <- WDI(
+  country = "all", 
+  indicator = c(national_poverty_rate = "SI.POV.NAHC", multidimentional_poverty_rate = "SI.POV.MDIM", gdpPercap = "NY.GDP.PCAP.KD", gini_indx = "SI.POV.GINI"), start = 1990,
+    end = 2021,
+  extra = TRUE
+)
+```
+
+```{r}
+df_wdi_poverty %>%  
+  group_by(country, year) %>%
+  mutate(mean_gdp_country = mean(gdpPercap)) %>%
+  mutate(mean_poverty_country= mean(national_poverty_rate)) %>%
+  ungroup() %>%
+    filter(!is.na(income)) %>%   filter(!(income=="Aggregates")) %>% ggplot(aes(x = log10(mean_gdp_country))) + geom_point(aes(y = mean_poverty_country, color = income)) +  labs(x = "GDP per capita", y = "poverty rate (% of population)", title = "Poverty rates and GDP per capita", subtitle="world countries, 1990-2021 average, by income level")
+```
+
+```{r}
+df_wdi_poverty %>%  
+  group_by(country, year) %>%
+  mutate(mean_gdp_country = mean(gdpPercap)) %>%
+  mutate(mean_multipoverty_country= mean(multidimentional_poverty_rate)) %>%
+  ungroup() %>%
+    filter(!(region=="Aggregates")) %>% filter(!is.na(region)) %>% ggplot(aes(x = log10(mean_gdp_country))) + geom_point(aes(y = mean_multipoverty_country, color = region)) +  labs(x = "GDP per capita", y = "Multidimentinal poverty rate (% of population)", title = "Multidimentional Poverty rates and GDP per capita", subtitle="world countries, 1990-2021 average, by region")
+```
+
+###
+
+```{r}
+UR_gdp <- WDI(
+  country = "all", 
+  indicator = c(UR = "SL.UEM.TOTL.ZS", gdpPercapg = "NY.GDP.PCAP.KD.ZG"),
+  start = 1960,
+  end = 2021,
+  extra = TRUE,
+  cache = wdi_cache
+)
+```
+
+
+```{r}
+UR <- WDI(
+  country = "all", 
+  indicator = "SL.UEM.TOTL.ZS",
+  start = 1960,
+  end = 2021,
+  extra = TRUE,
+  cache = wdi_cache
+)
+```
+
+```{r}
+UR %>% 
+  filter(income != "Aggregates", year %in% 2019:2021, !is.na(SL.UEM.TOTL.ZS)) %>%
+  filter(!income %in% c("Not classified")) %>%
+  ggplot(aes(SL.UEM.TOTL.ZS, fill = income)) +
+  geom_histogram(bins = 30, boundary = 1, alpha = 0.8) +
+  labs(title = "b. Unemployment rate of Countries of different income groups 2019-2021", x = "Unemployment Rate", y = "Percentage of countries in each income group")
+```
+
+Q I wanted to show the grouping of country income groups instead of countries on the line graph to compare how the unemployment rate changed according to those groups during the pandemic. However, I could not get the right way to do it even though I tried different types of commands. I am wondering the correct way to put income groups on a line graph.
+
+```{r}
+UR
+```
+
+```{r}
+UR %>% filter(income == "Aggregates") %>% filter(grepl('income', country)) %>% distinct(country)
+```
+
+```{r}
+UR %>% filter(income == "Aggregates") %>% filter(grepl('income', country)) %>% 
+  filter(year >= 2018) %>% ggplot() + geom_line(aes(x = year, y = SL.UEM.TOTL.ZS, color = country))
+```
+
+```{r}
+WDIsearch(string = "SP.URB.TOTL", field = "indicator")
+```
+
+```{r}
+WDIsearch(string = "fertilizer", field = "name")
+```
+
+```{r}
+df_spub <- WDI(
+  country = "all", 
+  indicator = c("SP.URB.TOTL")
+)
+```
+
+```{r}
+df_spub_fert <- WDI(
+  country = "all", 
+  indicator = c("CC.EAR.SFE")
+)
+```
+
+```{r}
+df_spub
+```
+
+```{r}
+df_spub_fert
+```
+
+```{r}
+df_spub_fert <- WDI(
+  country = "all", 
+  indicator = c("AG.CON.FERT.MT")
+)
+```
+
+
+```{r}
+df_spub_fert <- WDI(
+  country = "all", 
+  indicator = c("AG.CON.FERT.ZS")
+)
+```
+
+```{r}
+df_spub_fert
+```
+
+```{r}
+df_spub %>% filter(country %in% c("Pakistan", "India", "Bangladesh")) %>% distinct(country, iso2c)
+```
+
+### Ha
+
+```{r}
+df_infl <- WDI(
+  country = "all", 
+  indicator = c(inf = "FP.CPI.TOTL.ZG", oda = "DT.ODA.ODAT.PC.ZS", gdpPercap = "NY.GDP.PCAP.KD")
+)
+df_infl
+```
+
+  geom_text(aes(x = ...1, y = value, group = group, 
+            label = scales::label_percent(accuracy=1)(value)), 
+            position = position_dodge(width = 0.9)) + 
+
+```{r}
+df_infl %>% filter(year %in% c("2000", "2007", "2020"), country %in% c("Japan", "Vietnam", "China")) %>%
+  ggplot(aes(x = year, y = inf, color= country)) + 
+  geom_line() + geom_point() + 
+  geom_text(aes(label = scales::label_percent(accuracy=1)(inf)), nudge_y = 0.8) + 
+labs(title = "Inflation of Japan, Vietnam and China from 2000 to 2020", subtitle = "Data: WDI package", x = "", y = "Inflation, consumer prices (annual %)")
+```
+
+### Sirine
+
+```{r}
+lit_rate <- WDI(country = "all", indicator = "SE.ADT.1524.LT.FE.ZS", start = 1970, end = NULL, extra = TRUE, cache = NULL)
+```
+
+```{r}
+litrate_select <- lit_rate %>% drop_na(SE.ADT.1524.LT.FE.ZS) %>% filter(country %in% c("Lebanon", "South Africa", "Colombia", "Mexico", "World"))
+litrate_select
+```
+
+```{r}
+litrate_select %>% 
+  ggplot(aes(x = year, y = SE.ADT.1524.LT.FE.ZS, color = country)) +
+  geom_line() +
+  labs(title = "Female Literacy Rate",
+       subtitle = "Lebanon, South Africa, Colombia, Mexico and World",
+       x = "Year", y = "Literacy Rate")
+```
+
+```{r}
+litrate_select %>% filter(year %in% c(1980, 2000, 2020)) %>%
+  ggplot(aes(x = year, y = SE.ADT.1524.LT.FE.ZS, fill = country)) +
+  geom_col(position = "dodge") 
+```
+
+### Janina
+
+```{r}
+education_expenditure <- WDI(country = "all", indicator = "SE.XPD.TOTL.GD.ZS", start = 1960, end = NULL, extra = FALSE,
+    cache = NULL)
+education_expenditure
+```
+
+```{r}
+education_expenditure %>% drop_na(SE.XPD.TOTL.GD.ZS) %>% 
+  filter(country %in% c("World", "Japan", "United States", "China")) %>%
+  ggplot(aes(x = year, y = SE.XPD.TOTL.GD.ZS, color = country, linetype = country)) + 
+  geom_line()
+```
+
+### carlos
+
+```{r}
+womeninparl <- WDI(country = "all", indicator = "SG.GEN.PARL.ZS", start = 1997, end = NULL, extra = TRUE, cache = NULL)
+```
+
+```{r}
+womeninparl %>% drop_na(SG.GEN.PARL.ZS) %>%
+  ggplot(aes(x = SG.GEN.PARL.ZS)) + geom_histogram()
+```
+
+```{r}
+womeninparl %>% drop_na(SG.GEN.PARL.ZS) %>%
+  ggplot(aes(x = SG.GEN.PARL.ZS)) + geom_histogram(binwidth = 5)
+```
+
+```{r}
+womeninparl %>% drop_na(SG.GEN.PARL.ZS) %>% filter(year == 2020) %>%
+  ggplot(aes(x = SG.GEN.PARL.ZS)) + geom_histogram(binwidth = 2)
+```
