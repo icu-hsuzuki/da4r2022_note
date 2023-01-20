@@ -2326,7 +2326,7 @@ co2pcap <- WDI(country = "all", indicator = "EN.ATM.CO2E.PC", start = 1960, end 
 write_csv(co2pcap, "data/co2pcap.csv")
 ```
 
-```{r echo=FALSE, message=FALSE}
+```{r echo=FALSE, message=FALSE, eval=FALSE}
 co2pcap <- read_csv("data/co2pcap.csv")
 ```
 
