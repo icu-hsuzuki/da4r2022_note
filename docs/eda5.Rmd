@@ -1,0 +1,251 @@
+---
+title: 'QALL401: Data Analysis for Researchers'
+output:
+  html_notebook:
+    number_sections: yes
+    toc: yes
+    toc_float: yes
+  html_document:
+    df_print: paged
+    number_sections: yes
+    toc: yes
+    toc_float: yes
+  beamer_presentation: default
+  ioslides_presentation: 
+    df_print: paged
+    smaller: yes
+    keep_md: yes
+  pdf_document:
+    number_sections: yes
+---
+
+## Course Contents {-}
+
+1. 2022.12.07: Introduction: About the course [lead by TK]
+    - An introduction to open and public data, and data science
+2. 2022-12-14: Exploratory Data Analysis (EDA) 1 [lead by hs]  
+    - R Basics with RStudio and/or RStudio.cloud; Toy Data
+3. 2022-12-21: Exploratory Data Analysis (EDA) 2 [lead by hs]   
+    - R Markdown, `tidyverse` I: `dplyr`; `gapminder`
+4. 2023-01-11: Exploratory Data Analysis (EDA) 3 [lead by hs]  
+    - `tidyverse`II: `readr`, `ggplot2`; Public Data, WDI, WIR, etc
+5. 2023-01-18: Exploratory Data Analysis (EDA) 4 [lead by hs]  
+    - `tidyverse` III: `tidyr`, etc.; WDI, WIR, etc
+6. **2023-01-25: Exploratory Data Analysis (EDA) 5 [lead by hs] ** 
+    - `tidyverse` IV; WDI, WIR, etc
+7. 2023-02-01: Introduction to PPDAC         
+    - Problem-Plan-Data-Analysis-Conclusion Cycle: [lead by TK]
+8. 2023-02-08: Model building I [lead by TK]    
+    - Collecting and visualizing data and Introduction to WDI  
+         (World Development Indicators by World Bank)
+9. 2023-02-15: Model building II [lead by TK]    
+    - Analyzing data and communications
+10. 2023-02-22: Project Presentation
+
+
+# Exploratory Data Analysis (EDA) I
+
+# Exploratory Data Analysis II
+
+# Exploratory Data Analysis III  
+
+# Exploratory Data Analysis (EDA) IV  
+
+# Exploratory Data Analysis (EDA) V  
+
+## Modeling
+
+> “Tidy data sets are all alike; but every messy data set is messy in its own way.” — Hadley Wickham
+
+> “all happy families are all alike; each unhappy family is unhappy in its own way” - Tolstoy's Anna Karenina
+
+
+Correlation
+
+```{r}
+iris %>% select(-5) %>% cor()
+```
+
+Galton's data. Regression.
+
+
+Normalization, standalization
+
+SDGs Academy
+
+Trend
+
+
+```{r}
+df4 <- WDI(
+  country="all",
+  indicator = c("SP.POP.TOTL","MS.MIL.XPND.GD.ZS","MS.MIL.TOTL.P1","NY.GDP.MKTP.CD"),
+  start = 1960,
+  end = NULL,
+  extra = FALSE,
+  cache = NULL,
+  latest = NULL,
+  language = "en"
+)
+```
+
+```{r}
+colnames(df4) <- c("Country","iso2c","iso3c","Year","Population","Mil_Exp","Total_Mil_HC","GDP")
+df4
+```
+
+### Regression Line
+
+```{r}
+df_wdi_poverty <- WDI(
+  country = "all", 
+  indicator = c(national_poverty_rate = "SI.POV.NAHC", multidimentional_poverty_rate = "SI.POV.MDIM", gdpPercap = "NY.GDP.PCAP.KD", gini_indx = "SI.POV.GINI"), start = 1990,
+    end = 2021,
+  extra = TRUE
+)
+```
+
+```{r}
+df_wdi_poverty %>%  
+  group_by(country, year) %>%
+  mutate(mean_gdp_country = mean(gdpPercap)) %>%
+  mutate(mean_poverty_country= mean(national_poverty_rate)) %>%
+  ungroup() %>%
+    filter(!is.na(income)) %>%   filter(!(income=="Aggregates")) %>% ggplot(aes(x = log10(mean_gdp_country))) + geom_point(aes(y = mean_poverty_country, color = income)) +  labs(x = "GDP per capita", y = "poverty rate (% of population)", title = "Poverty rates and GDP per capita", subtitle="world countries, 1990-2021 average, by income level")
+```
+
+```{r}
+df_wdi_poverty %>%  
+  group_by(country, year) %>%
+  mutate(mean_gdp_country = mean(gdpPercap)) %>%
+  mutate(mean_multipoverty_country= mean(multidimentional_poverty_rate)) %>%
+  ungroup() %>%
+    filter(!(region=="Aggregates")) %>% filter(!is.na(region)) %>% ggplot(aes(x = log10(mean_gdp_country))) + geom_point(aes(y = mean_multipoverty_country, color = region)) +  labs(x = "GDP per capita", y = "Multidimentinal poverty rate (% of population)", title = "Multidimentional Poverty rates and GDP per capita", subtitle="world countries, 1990-2021 average, by region")
+```
+
+index sdg, ghi, academy
+
+moocs
+
+R4DS: Model basics
+  https://r4ds.had.co.nz/model-basics.html
+modelr: https://modelr.tidyverse.org
+
+Tidymodels: https://www.tidymodels.org
+
+(Modern Dive: https://moderndive.com/index.html
+  pakcage: moderndive)
+
+Tidyverse Skills for Data Science
+https://jhudatascience.org/tidyversecourse/
+https://jhudatascience.org/tidyversecourse/model.html
+
+
+machine learning:A Gentle Introduction to tidymodels https://rviews.rstudio.com/2019/06/19/a-gentle-intro-to-tidymodels/
+
+Tidy Modeling with R
+https://www.tmwr.org
+
+
+### Other Examples
+
+## Roudups
+
+### R Markdown Revisited
+
+#### Literate Programming and Reproducible Research
+
+Importing Data: 
+
+1. Read a csv file: `read_csv("data/file_name.csv")`
+2. Download and import using a url of a csv file: `read_csv(url)`
+3. Read an Excel file: `readxl::read_excel("data/excel_file_name.xlsx")`
+4. Read from the clipboard: `read_delim(clipboard())`
+
+  - Not reproducible unless clearly explained.
+  
+#### Code Chunk Options
+
+https://yihui.org/knitr/options/
+
+* Chunk Name
+* Output: use document default
+  - Show code and output: echo=TRUE, eval=TRUE - Default
+  - Show output only: echo=FALSE
+  - Show nothing (run code): include=FALSE
+  - Show nothing (don't run code): include=FALSE, eval=FALSE
+* Show message: message=TRUE, FALSE
+* Show warning: warning=TRUE, FALSE
+* Use Paged Tables: paged.print=TRUE, FALSE
+* Use custom figure size: width and height in inch.
+
+#### Presentation and Paper
+
+1. Data Source
+2. Variables
+3. Problems
+4. Visualization
+5. Model
+6. Conclusions and Further Research
+ 
+   WDI, WIR, etc
+
+#### Word
+
+Custom Word templates: https://bookdown.org/yihui/rmarkdown-cookbook/word-template.html
+
+You can apply the styles defined in a Word template document to new Word documents generated from R Markdown. Such a template document is also called a “style reference document.” The key is that you have to create this template document from Pandoc first, and change the style definitions in it later. Then pass the path of this template to the reference_docx option of word_document
+
+```
+---
+ word_document:
+    reference_docx: "template.docx"
+---
+```
+
+#### PowerPoint
+
+PowerPoint presentation: https://bookdown.org/yihui/rmarkdown/powerpoint-presentation.html
+
+Custom templates: https://bookdown.org/yihui/rmarkdown/powerpoint-presentation.html#ppt-templates
+
+```
+---
+  powerpoint_presentation:
+    reference_doc: my-styles.pptx
+---
+```
+
+https://support.microsoft.com/en-us/office/create-and-save-a-powerpoint-template-ee4429ad-2a74-4100-82f7-50f8169c8aca
+
+YouTube: How To Create A PowerPoint Template
+
+
+## The Week Six Assignment - Assignment Four (in Moodle)
+
+
+* Create an R Notebook of a Data Analysis containing the following and submit the rendered HTML file (eg. `a3_123456.nb.html`  by replacing 123456 with your ID), and a PDF (or MS Word File).
+  1. create an R Notebook using the R Notebook Template in Moodle,  save as `a3_123456.Rmd`, 
+  2. write your name and ID and the contents, 
+  3. run each code block, 
+  4. preview to create `a3_123456.nb.html`,
+  5. submit  `a3_123456.nb.html` to Moodle.
+
+1. Choose a data with at least two categorical variables and at least two numerical variables.
+
+    - Information of the data: Name, Indicator, Description, Source, etc.
+    - Explain why you chose the indicator
+    - List questions you want to study
+
+---
+
+2. Explore the data using visualization using `ggplot2`
+
+    - Create various charts, and write observed comments
+    - Apply a model, and draw a regression line to at least one chart, and write your conclusion. 
+
+3. Observations based on your data visualization, and difficulties and questions encountered if any.
+
+**Due:** 2023-01-30 23:59:00. Submit your R Notebook file, and a PDF file (or a MS Word file) in Moodle (The Fifth Assignment). Due on Monday!
+
+

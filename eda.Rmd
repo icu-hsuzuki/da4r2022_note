@@ -2759,7 +2759,7 @@ library(tidyverse)
 library(readxl)
 ```
 
-```{r summary-data, cash = TRUE, eval = FALSE}
+```{r summary-data2, cash = TRUE, eval = FALSE}
 url_summary <- "https://wir2022.wid.world/www-site/uploads/2022/03/WIR2022TablesFigures-Summary.xlsx"
 download.file(url = url_summary, destfile = "data/WIR2022s.xlsx") 
 ```
@@ -2772,7 +2772,7 @@ excel_sheets("data/WIR2022s.xlsx")
 
 ### F1: Global income and wealth inequality, 2021
 
-```{r data-f1, cash = TRUE, message = FALSE}
+```{r data-f1-2, cash = TRUE, message = FALSE}
 df_f1 <- read_excel("data/WIR2022s.xlsx", sheet = "data-F1")
 df_f1
 ```
@@ -3927,7 +3927,29 @@ https://www.tmwr.org
 
 #### Literate Programming and Reproducible Research
 
-Clipboard
+Importing Data: 
+
+1. Read a csv file: `read_csv("data/file_name.csv")`
+2. Download and import using a url of a csv file: `read_csv(url)`
+3. Read an Excel file: `readxl::read_excel("data/excel_file_name.xlsx")`
+4. Read from the clipboard: `read_delim(clipboard())`
+
+  - Not reproducible unless clearly explained.
+  
+#### Code Chunk Options
+
+https://yihui.org/knitr/options/
+
+* Chunk Name
+* Output: use document default
+  - Show code and output: echo=TRUE, eval=TRUE - Default
+  - Show output only: echo=FALSE
+  - Show nothing (run code): include=FALSE
+  - Show nothing (don't run code): include=FALSE, eval=FALSE
+* Show message: message=TRUE, FALSE
+* Show warning: warning=TRUE, FALSE
+* Use Paged Tables: paged.print=TRUE, FALSE
+* Use custom figure size: width and height in inch.
 
 #### Presentation and Paper
 
@@ -3942,8 +3964,30 @@ Clipboard
 
 #### Word
 
-with template
+Custom Word templates: https://bookdown.org/yihui/rmarkdown-cookbook/word-template.html
+
+You can apply the styles defined in a Word template document to new Word documents generated from R Markdown. Such a template document is also called a “style reference document.” The key is that you have to create this template document from Pandoc first, and change the style definitions in it later. Then pass the path of this template to the reference_docx option of word_document
+
+```
+---
+ word_document:
+    reference_docx: "template.docx"
+---
+```
 
 #### PowerPoint
 
-with template
+PowerPoint presentation: https://bookdown.org/yihui/rmarkdown/powerpoint-presentation.html
+
+Custom templates: https://bookdown.org/yihui/rmarkdown/powerpoint-presentation.html#ppt-templates
+
+```
+---
+  powerpoint_presentation:
+    reference_doc: my-styles.pptx
+---
+```
+
+https://support.microsoft.com/en-us/office/create-and-save-a-powerpoint-template-ee4429ad-2a74-4100-82f7-50f8169c8aca
+
+YouTube: How To Create A PowerPoint Template
