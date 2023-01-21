@@ -1,0 +1,329 @@
+---
+title: "Japan as a part of the world"
+output:
+  html_notebook:
+    toc: yes
+    toc_float: yes
+    highlight: haddock
+    theme: cosmo
+    number_sections: yes
+  pdf_document:
+    toc: yes
+---
+
+> In this paper, we look at the data of the world and Japan using the World Development Indicators.
+
+# World Development Indicators
+
+## World Bank: WDI - World Development Indicaters
+
+* World Bank: https://www.worldbank.org
+* [Who we are](https://www.worldbank.org/en/who-we-are):
+  - To end extreme poverty: By reducing the share of the global population that lives in extreme poverty to 3 percent by 2030.
+  - To promote shared prosperity: By increasing the incomes of the poorest 40 percent of people in every country. 
+* World Bank Open Data: https://data.worldbank.org
+  - Data Bank, World Development Indicators, etc.
+* [World Development Indicators (WDI)](https://datatopics.worldbank.org/world-development-indicators/) : the World Bank’s premier compilation of cross-country comparable data on development; 1400 time series indicators
+  - Themes: Poverty and Inequality, People, Environment, Economy, States and Markets, Global Links
+  - Open Data & DataBank: Explore data, Query database
+  - Bulk Download: Excel, CSV
+  - API Documentation
+  
+---
+
+## R Package [WDI](https://CRAN.R-project.org/package=WDI)
+
+* [WDI](https://CRAN.R-project.org/package=WDI): World Development Indicators and Other World Bank Data
+* Search and download data from over 40 databases hosted by the World Bank, including the World Development Indicators ('WDI'), International Debt Statistics, Doing Business, Human Capital Index, and Sub-national Poverty indicators.
+* Version: 2.7.4
+* Materials:	[README](https://cran.r-project.org/web/packages/WDI/readme/README.html)   - _usage_
+  - [NEWS](https://cran.r-project.org/web/packages/WDI/news/news.html) - _version history_
+* Published: 2021-04-06
+* README: https://cran.r-project.org/web/packages/WDI/readme/README.html
+* Reference manual:	[WDI.pdf](https://cran.r-project.org/web/packages/WDI/WDI.pdf)
+
+# Set up
+
+```{r}
+library(tidyverse)
+library(WDI)
+library(readxl)
+```
+```{r cache = TRUE}
+wdi_cache <- WDIcache()
+```
+
+
+# World Development Indicators (WDI)
+
+## Setup
+
+
+## Indicators Used in Assignment Three
+
+* NY.GDP.PCAP.KD: GDP per capita (constant 2015 US$)
+* NY.GDP.MKTP.CD: GDP (current US$)
+* NY.GDP.PCAP.KD.ZG: GDP per capita growth (annual%)
+* SP.POP.TOTL: Total Population
+* IP.JRN.ARTC.SC: Scientific and technical journal articles
+* FP.CPI.TOTL.ZG: Inflation, consumer prices (% annual growth) 
+* DT.ODA.ODAT.PC.ZS: Net ODA received per capita (current US$)
+* BX.KLT.DINV.CD.WD: Foreign direct investment, net inflows (BoP, current US$)
+* MS.MIL.XPND.GD.ZS: Military expenditure (% of GDP)
+* MS.MIL.TOTL.P1: Total Armed Forces Personnel
+* SI.POV.MDIM: Multidimensional poverty headcount ratio (% of total population)
+* SI.POV.NAHC: Poverty headcount ratio at national poverty lines (% of population) 
+* SI.POV.GINI: Gini index
+* NY.GNS.ICTR.ZS: Gross savings (% of GDP)
+* SL.UEM.TOTL.ZS: Unemployment, total (% of total labor force) (modeled ILO estimate)
+* SP.URB.TOTL.IN.ZS (Urban population (% of total population))
+* AG.LND.AGRI.ZS: Agricultural land (% of land area)
+* SE.XPD.TOTL.GD.ZS: Government expenditure on education, total (% of GDP)
+* SG.GEN.PARL.ZS: Proportion of seats held by women in national parliaments (%)
+
+## WDIsearch
+
+
+```{r}
+x <- "SI.POV.MDIM"
+wdis <- function(x) WDIsearch(string = x, field = "indicator", short = FALSE, cache = wdi_cache)
+wdis(x)
+```
+
+
+```{r}
+library(broom)
+wdi_study <- c("NY.GDP.PCAP.KD", "NY.GDP.MKTP.CD", "NY.GDP.PCAP.KD.ZG", "SP.POP.TOTL", "IP.JRN.ARTC.SC", "FP.CPI.TOTL.ZG","DT.ODA.ODAT.PC.ZS", "BX.KLT.DINV.CD.WD","MS.MIL.XPND.GD.ZS", "MS.MIL.TOTL.P1", "SI.POV.MDIM", "SI.POV.NAHC", "SI.POV.GINI", "NY.GNS.ICTR.ZS", "SL.UEM.TOTL.ZS","SP.URB.TOTL.IN.ZS", "AG.LND.AGRI.ZS","SE.XPD.TOTL.GD.ZS", "SG.GEN.PARL.ZS")
+
+wdis <- function(x) WDIsearch(string = x, field = "indicator", short = FALSE, cache = wdi_cache) %>% head(1)
+
+sapply(wdi_study, wdis, simplify=TRUE) %>% as_tibble() %>% unnest()
+```
+
+```{r}
+wdis("NY.GDP.PCAP.KD")
+```
+
+
+```
+WDIsearch(string = "gdp", field = "name", short = TRUE, cache = NULL)
+```
+
+
+
+```{r}
+WDIsearch("NY.GNS.ICTR.ZS", "indicator")
+```
+* The simplest format 2.
+
+```{r}
+WDIsearch("Literacy rate", "name")
+```
+
+* Detailed with short = FALSE
+
+```{r}
+WDIsearch("IP.JRN.ARTC.SC", "indicator", FALSE)
+```
+* You can use `wdi_cache` downloaded above to use the updated meta data.
+
+```{r}
+WDIsearch("Government expenditure on education", "name", FALSE, wdi_cache)
+```
+
+
+## Importing Data Using WDI
+
+* The shortest form. The following is same as:
+`WDI(country = "all", indicator = "NY.GDP.PCAP.KD", start = 1960, end = NULL, extra = FALSE, cache = NULL, latest = NULL, language = "en)`
+
+```{r}
+WDI(indicator = "NY.GDP.PCAP.KD")
+```
+
+* In order to use the downloaded data, we need to assign a name to it. It can be `df` if you download and use only one data, but it is better to assign the data to be a more descriptive name.
+
+```{r cache = TRUE}
+df_gdppcap <- WDI(indicator = "NY.GDP.PCAP.KD")
+df_gdppcap
+```
+
+* If you want to use extra information such as `region`, `income`, `lending`, use `extra = TRUE`.
+
+```{r cache = TRUE}
+df_gdppcap_extra <- WDI(indicator = "NY.GDP.PCAP.KD", extra = TRUE)
+df_gdppcap_extra
+```
+
+## Writing and reading a csv file
+
+Since the data is generally huge, it is better to use a data saved in your computer.
+Before saving it check whether you have `data` folder (or directory) in you project folder. Use the `Files` tab of the right bottom pane. You should be able to see the project icon with Rproj at the end, your R Notebook file you are editing, and the `data` folder. Since `.csv` is automatically added, `write_csv(gdppcap_extra, "data/gdppcap_extra")` does the same as below.
+
+```{r eval = FALSE}
+write_csv(gdppcap_extra, "data/gdppcap_extra.csv")
+```
+
+To read the data, run the next code chunk. You do not have to run the code `df_gdppcap_extra <- WDI(indicator = "NY.GDP.PCAP.KD", extra = TRUE)` again.
+
+```{r eval = FALSE}
+gdppcap <- read_csv("data/gdppcap_extra.csv")
+```
+
+"data/gdpcap_extra.csv" is the way to express the name of the data `gdpcap_extra.csv` in csv format in the data folder. 
+
+## `country` argument
+
+If you want to import data for several countries, you can use `iso2c` codes of the countries.
+
+```{r cache = TRUE}
+ASEAN <- c("BN", "ID", "KH", "LA", "MM", "MY", "PH", "SG")
+df_gdppcap_asean <- WDI(ASEAN, "NY.GDP.PCAP.KD")
+df_gdppcap_asean %>% distinct(country) %>% pull()
+```
+
+
+```{r}
+wdi_cache$country %>% filter(iso2c %in% ASEAN) %>% distinct(country) %>% pull()
+```
+
+
+You can also use `wdi_cache$country`.
+
+```{r}
+wdi_cache$country
+```
+
+```{r}
+wdi_cache$country %>% filter(iso2c %in% ASEAN) %>% pull(country)
+```
+
+
+You can find iso2c codes from the downloaded data, or using wdi_cache$country
+
+```{r}
+wdi_cache$country %>% 
+  filter(country %in% c("Brunei Darussalam", "Indonesia", "Cambodia", "Lao PDR", "Myanmar", "Malaysia", "Philippines", "Singapore")) %>%
+  pull(iso2c)
+```
+
+You can also find countries in some category.
+
+```{r}
+wdi_cache$country %>% 
+  filter(region == "South Asia") %>%
+  pull(country)
+```
+
+
+```{r}
+wdi_cache$country %>% 
+  filter(income == "Lower middle income") %>%
+  pull(iso2c)
+```
+
+The following shows a list of indicators
+
+```{r}
+wdi_cache$series
+```
+
+The following is same as `WDIsearch("gdp per cap", "name")`. See WDIsearch help.
+
+```{r}
+wdi_cache$series %>% filter(grepl("gdp per cap", name, ignore.case = TRUE))
+```
+
+
+```{r cache = TRUE}
+wdi_cache$series %>% filter(indicator == "MS.MIL.XPND.GD.ZS") %>% pull(name)
+df_milxpnd <- WDI(indicator = c(milxpnd = "MS.MIL.XPND.GD.ZS"), extra = TRUE) %>%
+  drop_na(milxpnd)
+```
+
+
+Default of the number of bins is 30. Here I chose binwidth = 0.5 (%).
+
+```{r}
+df_milxpnd %>% filter(income != "Aggregates", year == 2021) %>% 
+  ggplot(aes(milxpnd, fill = income)) + geom_histogram(color = "black", binwidth = 0.5) + 
+  labs(title = "Military expenditure (% of GDP)")
+```
+
+```{r}
+df_milxpnd %>% filter(income != "Aggregates", income != "Not classified", year == 2021) %>% 
+  ggplot(aes(milxpnd, fill = income)) + geom_density(binwidth = 0.5, alpha = 0.3) + 
+  labs(title = "Military expenditure (% of GDP)")
+```
+
+
+```{r cache = TRUE}
+wdi_cache$series %>% filter(indicator == "SL.UEM.TOTL.ZS") %>% pull(name)
+df_ur <- WDI(indicator = c(ur = "SL.UEM.TOTL.ZS"), 
+             extra = TRUE, cache = wdi_cache) %>% drop_na(ur)
+```
+
+
+```{r}
+df_ur %>% filter(income == "Aggregates") %>% filter(grepl('income', country)) %>% 
+  filter(year >= 2018) %>% ggplot() + geom_line(aes(x = year, y = ur, color = country))
+```
+
+
+```{r cache = TRUE}
+wdi_cache$series %>% filter(indicator == "FP.CPI.TOTL.ZG") %>% pull(name)
+df_infl <- WDI(country = c("VN","CN","JP"), 
+               indicator = c(inf = "FP.CPI.TOTL.ZG"), extra = TRUE) %>% drop_na(inf)
+```
+
+```{r}
+df_infl_s <- df_infl %>% filter(year %in% c(2000, 2005, 2010, 2015, 2020), 
+                   country %in% c("Japan", "Vietnam", "China"))
+df_infl_s
+```
+```{r}
+df_infl_s %>%
+  ggplot(aes(x = year, y = inf, color= country)) + 
+  geom_line() + geom_point() + 
+  geom_text(aes(label = round(inf,2)), nudge_y = 0.8) + 
+labs(title = "Inflation of Japan, Vietnam and China from 2000 to 2020", 
+     x = "", y = "Inflation, consumer prices (annual %)")
+```
+
+List the name of countries of ASEAN and BRICs using `wdi_cache$country`.
+
+```{r}
+asean <- c("Brunei Darussalam", "Cambodia", "Lao PDR", "Myanmar", 
+           "Philippines", "Indonesia", "Malaysia", "Singapore")
+brics <- c("Brazil", "Russian Federation", "India", "China")
+```
+
+Find the `iso2c` of the countries using `wdi_cache$country`.
+
+```{r}
+wdi_cache$country %>% 
+  filter(country %in% 
+           c("Brunei Darussalam", "Cambodia", "Lao PDR", "Myanmar", 
+           "Philippines", "Indonesia", "Malaysia", "Singapore",
+           "Brazil", "Russian Federation", "India", "China")) %>% 
+  pull(iso2c)
+```
+
+Separate the iso3c's of the countries with commas and read data using `WDI`.
+
+```{r cache=TRUE}
+wdi_gdp <- WDI(
+  country = c("BR", "BN", "CN", "ID", "IN", "KH", "LA", "MM", "MY", "PH", "RU", "SG"),
+  indicator = c(gdp = "NY.GDP.MKTP.KD", gdpPercap = "NY.GDP.PCAP.KD"),
+  start = 1960, extra = TRUE, cache = wdi_cache)
+```
+
+
+```{r}
+wdi_gdp %>% filter(country %in% asean) %>% drop_na(gdp, gdpPercap) %>% summary() 
+```
+
+
+
+
+
