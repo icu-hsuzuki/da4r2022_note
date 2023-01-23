@@ -57,7 +57,7 @@ output:
 library(tidyverse)
 library(WDI)
 library(readxl)
-library()
+library(broom)
 ```
 
 ## Modeling
@@ -100,6 +100,79 @@ Correlation
 ```{r}
 iris %>% select(-5) %>% cor()
 ```
+
+```{r}
+library(modelr)
+t_cars <- as_tibble(cars)
+(mod <- lm(dist ~ speed, data = t_cars))
+```
+
+```{r}
+t_cars %>% add_predictions(mod) %>% add_residuals(mod)
+```
+
+```{r}
+augment(mod)
+```
+
+```{r}
+glance(mod)
+```
+
+```{r}
+tidy(mod)
+```
+
+```{r}
+mod %>% glance()
+```
+
+
+```{r echo = FALSE}
+summary(mod)
+```
+
+```{r}
+ggplot(t_cars, aes(speed, dist)) + geom_point() +
+  geom_abline(slope = coef(mod)[[2]], intercept = coef(mod)[[1]])
+```
+
+```{r message = FALSE}
+ggplot(t_cars, aes(speed, dist)) + geom_jitter() +
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+### Predictions $\hat{y} = a_1 + a_2x$ and Residuals $y - \hat{y}$
+
+```{r}
+(mod_table <- t_cars %>% add_predictions(mod) %>% add_residuals(mod, var = "resid"))
+```
+
+```{r}
+mod_table %>% ggplot() + geom_jitter(aes(speed, resid)) + geom_hline(yintercept = 0)
+```
+
+### geom_jitter()
+
+```{r}
+t_cars %>% group_by(speed, dist) %>% 
+  summarize(count = n()) %>% arrange(desc(count))
+```
+
+
+### Useful Mathematical Formula
+
+* Let $x = c(x_1, x_2, \ldots, x_n)$ be the independent variable, i.e., Sepal.L
+* Let $y = c(y_1, y_2, \ldots, y_n)$ be the dependent variable, i.e., Sepal.W
+* Let $\mbox{pred} = c(\hat{y}_1, \hat{y}_2, \ldots, \hat{y}_n)$ be the predicted values by linear regression.
+$$
+\begin{aligned}
+\mbox{slope of the regression line}  &= \frac{cov(x,y)}{var(x)} = \frac{cor(x,y)\sqrt{var(y)}}{\sqrt{var(x)}}\\
+\mbox{total sum of squares} &= SS_{tot} = sum((y-mean(y))^2)\\
+\mbox{residual sum of squares} &= SS_{res} = sum((y-\mbox{pred})^2)\\
+\mbox{R squared} = R^2 & = 1 - \frac{SS_{res}}{SS_{tot}} = cor(x,y)^2
+\end{aligned}
+$$
 
 Galton's data. Regression.
 https://icu-hsuzuki.github.io/da4r2021/model.html
@@ -185,6 +258,26 @@ Galtons: DA4R2021: C.3.2.3 Galton’s Example
 
 
 ### Other Examples
+
+### Linear Regression Quick Reference
+
+* DataCamp: 
+  - https://www.datacamp.com/community/tutorials/linear-regression-R
+    1. What is a linear regression?
+    2.  Creating a linear regression in R.
+    3. Learn the concepts of coefficients and residuals.
+    4. How to test if your linear model has a good fit?
+    5. Detecting influential points.
+  - DataCamp Top: https://www.datacamp.com - to be introduced
+
+* r-statistics.co by Selva Prabhakaran: 
+  - http://r-statistics.co/Linear-Regression.html
+    + The aim of linear regression is to model a continuous variable Y as a mathematical function of one or more X variable(s), so that we can use this regression model to predict the Y when only the X is known. This mathematical equation can be generalized as follows:
+    + $Y = \beta_1 + \beta_2 X + \varepsilon$
+  - r-statistics.co Top: http://r-statistics.co
+    + An educational resource for those seeking knowledge related to machine learning and statistical computing in R.
+
+
 
 ## Roudups
 
