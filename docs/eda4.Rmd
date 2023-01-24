@@ -1,8 +1,10 @@
 ---
 title: 'QALL401: Data Analysis for Researchers'
 output:
-  pdf_document:
+  html_notebook:
     number_sections: yes
+    toc: yes
+    toc_float: yes
   html_document:
     df_print: paged
     number_sections: yes
@@ -13,10 +15,8 @@ output:
     df_print: paged
     smaller: yes
     keep_md: yes
-  html_notebook:
+  pdf_document:
     number_sections: yes
-    toc: yes
-    toc_float: yes
 ---
 
 ## Course Contents {-}
