@@ -1046,13 +1046,14 @@ YouTube: How To Create A PowerPoint Template
 
 ## The Week Six Assignment - Assignment Five (in Moodle)
 
+* Choose a public data. Clearly state how you obtained the data. Even if you are able to give the URL to download the data, explain the steps you reached and obtained the data. 
 * Create an R Notebook of a Data Analysis containing the following and submit the rendered HTML file (eg. `a5_123456.nb.html`  by replacing 123456 with your ID), and a PDF (or MS Word File).
   1. create an R Notebook using the R Notebook Template in Moodle,  save as `a3_123456.Rmd`, 
   2. write your name and ID and the contents, 
   3. run each code block, 
   4. preview to create `a5_123456.nb.html`,
   5. render (or knit) PDF, or Word (and then PDF)
-  5. submit  `a5_123456.nb.html` and PDF (or Word) to Moodle.
+  6. submit  `a5_123456.nb.html` and PDF (or Word) to Moodle.
 
 1. Choose a data with at least two numerical variables. One of them can be the year.
 
