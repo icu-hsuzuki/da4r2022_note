@@ -1,20 +1,20 @@
 ---
 title: 'QALL401: Data Analysis for Researchers'
 output:
-  ioslides_presentation: 
-    df_print: paged
-    smaller: yes
-    keep_md: yes
+  html_notebook:
+    number_sections: yes
+    toc: yes
+    toc_float: yes
   html_document:
     df_print: paged
     number_sections: yes
     toc: yes
     toc_float: yes
   beamer_presentation: default
-  html_notebook:
-    number_sections: yes
-    toc: yes
-    toc_float: yes
+  ioslides_presentation: 
+    df_print: paged
+    smaller: yes
+    keep_md: yes
   pdf_document:
     number_sections: yes
 ---
