@@ -678,7 +678,7 @@ by_country %>%
 
 
 ```r
-wdi_cache <- read_rds("data/wdi_cache.RData")
+wdi_cache <- read_rds("./data/wdi_cache.RData")
 ```
 
 
@@ -959,18 +959,18 @@ Format of Presentation - R Notebook is fine and slide presentation in various fo
 
 Importing Data: 
 
-1. Read a csv file: `read_csv("data/file_name.csv")`
+1. Read a csv file: `read_csv("./data/file_name.csv")`
 2. Download and import using a url of a csv file: `read_csv(url)`
-3. Read an Excel file: `readxl::read_excel("data/excel_file_name.xlsx")`
+3. Read an Excel file: `readxl::read_excel("./data/excel_file_name.xlsx")`
 4. Read from the clipboard: `read_delim(clipboard())`
 
 * zip file:
   - copy the url
   - wir1to10 <- "https://wir2022.wid.world/www-site/uploads/2022/03/WIR2022TablesFigures-Chapter.zip"
-  - download.file(wir1to10, destfile = "data/wir1to10.zip")
-  - unzip("data/wir1to10.zip", exdir = "data")
-  - list.files("data/WIR2022TablesFigures-Chapter")
-  - excel_sheets("data/WIR2022TablesFigures-Chapter/WIR2022TablesFigures-Chapter1.xlsx")
+  - download.file(wir1to10, destfile = "./data/wir1to10.zip")
+  - unzip("./data/wir1to10.zip", exdir = "./data")
+  - list.files("./data/WIR2022TablesFigures-Chapter")
+  - excel_sheets("./data/WIR2022TablesFigures-Chapter/WIR2022TablesFigures-Chapter1.xlsx")
 
   - df <- read_delim(clipboard()); df
   - Not reproducible unless clearly explained.

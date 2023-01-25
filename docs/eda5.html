@@ -4997,7 +4997,7 @@ by_country %&gt;%
 
 <h3>Government Expenditure, (% of GDP)</h3>
 
-<pre class = 'prettyprint lang-r'>wdi_cache &lt;- read_rds(&quot;data/wdi_cache.RData&quot;)</pre>
+<pre class = 'prettyprint lang-r'>wdi_cache &lt;- read_rds(&quot;./data/wdi_cache.RData&quot;)</pre>
 
 <pre class = 'prettyprint lang-r'>WDIsearch(&quot;expenditure&quot;, &quot;name&quot;, cache = wdi_cache) %&gt;% 
   inner_join(WDIsearch(&quot;% of GDP&quot;, &quot;name&quot;, cache = wdi_cache))</pre>
@@ -5199,9 +5199,9 @@ by_country %&gt;%
 <p>Importing Data:</p>
 
 <ol>
-<li>Read a csv file: <code>read_csv(&quot;data/file_name.csv&quot;)</code></li>
+<li>Read a csv file: <code>read_csv(&quot;./data/file_name.csv&quot;)</code></li>
 <li>Download and import using a url of a csv file: <code>read_csv(url)</code></li>
-<li>Read an Excel file: <code>readxl::read_excel(&quot;data/excel_file_name.xlsx&quot;)</code></li>
+<li>Read an Excel file: <code>readxl::read_excel(&quot;./data/excel_file_name.xlsx&quot;)</code></li>
 <li>Read from the clipboard: <code>read_delim(clipboard())</code></li>
 </ol>
 
@@ -5211,10 +5211,10 @@ by_country %&gt;%
 <ul>
 <li><p>copy the url</p></li>
 <li><p>wir1to10 &lt;- &ldquo;<a href='https://wir2022.wid.world/www-site/uploads/2022/03/WIR2022TablesFigures-Chapter.zip' title=''>https://wir2022.wid.world/www-site/uploads/2022/03/WIR2022TablesFigures-Chapter.zip</a>&rdquo;</p></li>
-<li><p>download.file(wir1to10, destfile = &ldquo;data/wir1to10.zip&rdquo;)</p></li>
-<li><p>unzip(&ldquo;data/wir1to10.zip&rdquo;, exdir = &ldquo;data&rdquo;)</p></li>
-<li><p>list.files(&ldquo;data/WIR2022TablesFigures-Chapter&rdquo;)</p></li>
-<li><p>excel_sheets(&ldquo;data/WIR2022TablesFigures-Chapter/WIR2022TablesFigures-Chapter1.xlsx&rdquo;)</p></li>
+<li><p>download.file(wir1to10, destfile = &ldquo;./data/wir1to10.zip&rdquo;)</p></li>
+<li><p>unzip(&ldquo;./data/wir1to10.zip&rdquo;, exdir = &ldquo;./data&rdquo;)</p></li>
+<li><p>list.files(&ldquo;./data/WIR2022TablesFigures-Chapter&rdquo;)</p></li>
+<li><p>excel_sheets(&ldquo;./data/WIR2022TablesFigures-Chapter/WIR2022TablesFigures-Chapter1.xlsx&rdquo;)</p></li>
 <li><p>df &lt;- read_delim(clipboard()); df</p></li>
 <li><p>Not reproducible unless clearly explained.</p></li>
 </ul></li>
