@@ -153,7 +153,6 @@ Added `drop_na(variable)` and changed `bins.`
 ```{r}
 wdi_ed_budget %>% drop_na(SE.XPD.TOTL.GD.ZS) %>%
   ggplot(aes(x = SE.XPD.TOTL.GD.ZS)) + geom_histogram(bins = 10)
-
 ```
 
 We should see the variation using other visualization.
