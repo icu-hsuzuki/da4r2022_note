@@ -6,6 +6,8 @@ output:
   html_notebook: null
 ---
 
+> Revised on January 25
+
 # About
 
 I try to investigate the education of the world using the data from UN, WIR and WDI.
@@ -47,15 +49,16 @@ un_ed
 ```
 
 As for an Excel data, you need to download first. It will be written in the `data` folder.
+_You need to add ./ before data._
 
 ```{r}
-download.file(url = wir2022, destfile = "data/wir2022.xlsx")
+download.file(url = wir2022, destfile = "./data/wir2022.xlsx")
 ```
 
 The package `readxl` is installed with `tidyverse` package but not loaded with `tidyverse`. Add `library(readxl)` if it is not in Setup.
 
 ```{r}
-wir_df1 <- read_excel("data/wir2022.xlsx", sheet = 1)
+wir_df1 <- read_excel("./data/wir2022.xlsx", sheet = 1)
 ```
 
 ```{r}
@@ -65,11 +68,11 @@ wir_df1
 By the following `excel_sheets` you can get a list of sheets. There are 32 sheets.
 
 ```{r}
-excel_sheets("data/wir2022.xlsx")
+excel_sheets("./data/wir2022.xlsx")
 ```
 
 ```{r}
-df_F1 <- read_excel("data/wir2022.xlsx", sheet = "data-F1"); df_F1
+df_F1 <- read_excel("./data/wir2022.xlsx", sheet = "data-F1"); df_F1
 ```
 
 ## WDI Package
@@ -92,17 +95,33 @@ wdi_cache$country
 
 If you cannot resolve an error, you can include the code chunk. I may be able to help you.
 
-```{r}
-wite_csv(wdi_cache, "data_directory/cache.csv")
+```{r eval=FALSE}
+wite_csv(wdi_cache, "./data_directory/cache.csv")
 ```
 
 *Typo and wrong directory name.*
 
-```{r}
-write_csv(wdi_cache, "data/cache.csv")
+```{r eval=FALSE}
+write_csv(wdi_cache, "./data/cache.csv")
 ```
 
 `wdi_cache` is a list, you cannot use `write_csv.`
+
+```{r}
+write_rds(wdi_cache, "./data/wdi_cache")
+```
+
+```{r}
+wdi_cache2 <- read_rds("./data/wdi_cache")
+```
+
+```{r}
+wdi_cache2
+```
+
+```{r}
+identical(wdi_cache, wdi_cache2)
+```
 
 ## WDI: Government expenditure on education, total (% of GDP)
 
