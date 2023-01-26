@@ -3818,7 +3818,7 @@ df_f8 %>%
 2. Explore the data using visualization using `ggplot2`
 
     - Create various charts
-    - Create at least one chart with at least two categocial variables and at least one numerical variable.
+    - Create at least one chart with at least two categorical variables and at least one numerical variable.
     - Create at least one chart with at least two numerical variables and at least one categorical variable.
 
 3. Observations based on your data visualization, and difficulties and questions encountered if any.
