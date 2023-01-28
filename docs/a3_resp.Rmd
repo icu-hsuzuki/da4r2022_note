@@ -221,7 +221,7 @@ df_gdppcap_extra
 ## Writing and reading a csv file
 
 Since the data is generally huge, it is better to use a data saved in your computer.
-Before saving it check whether you have `data` folder (or directory) in you project folder. Use the `Files` tab of the right bottom pane. You should be able to see the project icon with Rproj at the end, your R Notebook file you are editing, and the `data` folder. Since `.csv` is automatically added, `write_csv(gdppcap_extra, "data/gdppcap_extra")` does the same as below.
+Before saving it check whether you have `data` folder (or directory) in you project folder. Use the `Files` tab of the right bottom pane. You should be able to see the project icon with Rproj at the end, your R Notebook file you are editing, and the `data` folder. Since `.csv` is automatically added, `write_csv(gdppcap_extra, "./data/gdppcap_extra")` does the same as below.
 
 ```{r eval = FALSE}
 write_csv(gdppcap_extra, "./data/gdppcap_extra.csv")
@@ -233,7 +233,7 @@ To read the data, run the next code chunk. You do not have to run the code `df_g
 gdppcap <- read_csv("./data/gdppcap_extra.csv")
 ```
 
-"data/gdpcap_extra.csv" is the way to express the name of the data `gdpcap_extra.csv` in csv format in the data folder. 
+"./data/gdpcap_extra.csv" is the way to express the name of the data `gdpcap_extra.csv` in csv format in the data folder. 
 
 ## `country` argument
 
