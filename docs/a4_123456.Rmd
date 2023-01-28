@@ -52,7 +52,7 @@ As for an Excel data, you need to download first. It will be written in the `dat
 _You need to add ./ before data._
 
 ```{r}
-download.file(url = wir2022, destfile = "./data/wir2022.xlsx")
+download.file(url = wir2022, destfile = "./data/wir2022.xlsx", mode = "wb")
 ```
 
 The package `readxl` is installed with `tidyverse` package but not loaded with `tidyverse`. Add `library(readxl)` if it is not in Setup.
