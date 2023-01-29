@@ -1,22 +1,22 @@
 ---
 title: 'QALL401: Data Analysis for Researchers'
 output:
-  html_notebook:
+  pdf_document:
     number_sections: yes
-    toc: yes
-    toc_float: yes
   html_document:
     df_print: paged
     number_sections: yes
     toc: yes
     toc_float: yes
-  beamer_presentation: default
   ioslides_presentation: 
     df_print: paged
     smaller: yes
     keep_md: yes
-  pdf_document:
+  html_notebook:
     number_sections: yes
+    toc: yes
+    toc_float: yes
+  beamer_presentation: default
 ---
 
 ## Course Contents {-}
@@ -71,11 +71,11 @@ library(readxl)
 
 ```{r summary-data, cash = TRUE, eval = FALSE}
 url_summary <- "https://wir2022.wid.world/www-site/uploads/2022/03/WIR2022TablesFigures-Summary.xlsx"
-download.file(url = url_summary, destfile = "data/WIR2022s.xlsx") 
+download.file(url = url_summary, destfile = "./data/WIR2022s.xlsx", mode = "wb") 
 ```
 
 ```{r}
-excel_sheets("data/WIR2022s.xlsx")
+excel_sheets("./data/WIR2022s.xlsx")
 ```
 
 ---
@@ -83,7 +83,7 @@ excel_sheets("data/WIR2022s.xlsx")
 ### F1: Global income and wealth inequality, 2021
 
 ```{r data-f1, cash = TRUE, message = FALSE}
-df_f1 <- read_excel("data/WIR2022s.xlsx", sheet = "data-F1")
+df_f1 <- read_excel("./data/WIR2022s.xlsx", sheet = "data-F1")
 df_f1
 ```
 
@@ -148,7 +148,7 @@ Data can come in a variety of formats, but one format is easier to use in R than
 ### `tidyr` Basics
 
 ```{r, echo=FALSE, out.width="100%"}
-knitr::include_graphics("data/tidy-1.png")
+knitr::include_graphics("./data/tidy-1.png")
 ```
 
 1. Each variable is in its own column
@@ -215,7 +215,7 @@ df_f1_rev %>% filter(group != "Top 1%") %>%
 ### F2: The poorest half lags behind: Bottom 50%, middle 40% and top 10% income shares across the world in 2021
 
 ```{r}
-df_f2 <- read_excel("data/WIR2022s.xlsx", sheet = "data-F2")
+df_f2 <- read_excel("./data/WIR2022s.xlsx", sheet = "data-F2")
 df_f2
 ```
 
@@ -275,7 +275,7 @@ F4 and F13 are similar. Please use `pivot_longer` to tidy the data and create ch
 
 
 ```{r}
-df_f3 <- read_excel("data/WIR2022s.xlsx", sheet = "data-F3")
+df_f3 <- read_excel("./data/WIR2022s.xlsx", sheet = "data-F3")
 df_f3
 ```
 
@@ -284,7 +284,7 @@ df_f3
 ### F3: Top 10/Bottom 50 income gaps across the world, 2021 - Original
 
 ```{r, echo=FALSE, out.width="100%"}
-knitr::include_graphics("data/F3.png")
+knitr::include_graphics("./data/F3.png")
 ```
 
 ---
@@ -458,7 +458,7 @@ Check `dplyr` cheat sheet, and Posit Primers Tidy Data.
 ### F5: Global income inequality: T10/B50 ratio, 1820-2020
 
 ```{r data-f5, cash = TRUE}
-(df_f5 <- read_excel("data/WIR2022s.xlsx", sheet = "data-F5"))
+(df_f5 <- read_excel("./data/WIR2022s.xlsx", sheet = "data-F5"))
 ```
 
 ---
@@ -472,7 +472,7 @@ df_f5 %>% ggplot(aes(x = y, y = t10b50)) + geom_line() + geom_smooth(span=0.25, 
 ### F9: Average annual wealth growth rate, 1995-2021 - fit curve + alpha
 
 ```{r data-f9, cash = TRUE}
-df_f9 <- read_excel("data/WIR2022s.xlsx", sheet = "data-F9"); df_f9
+df_f9 <- read_excel("./data/WIR2022s.xlsx", sheet = "data-F9"); df_f9
 ```
 
 ---
@@ -487,7 +487,7 @@ df_f9 %>%
 ### F7: Global income inequality, 1820-2020 - pivot + fit curve
 
 ```{r data-f7, cash = TRUE}
-df_f7 <- read_excel("data/WIR2022s.xlsx", sheet = "data-F7"); df_f7
+df_f7 <- read_excel("./data/WIR2022s.xlsx", sheet = "data-F7"); df_f7
 ```
 
 ---
@@ -504,7 +504,7 @@ df_f7 %>%
 ### F10: The share of wealth owned by the global 0.1% and billionaires, 2021 - pivot + fit curve
 
 ```{r data-f10, cash = TRUE}
-df_f10 <- read_excel("data/WIR2022s.xlsx", sheet = "data-F10"); df_f10
+df_f10 <- read_excel("./data/WIR2022s.xlsx", sheet = "data-F10"); df_f10
 ```
 
 ---
@@ -530,7 +530,7 @@ df_f10 %>%
 ### F6: Global income inequality: Between vs. Within country inequality (Theil index), 1820-2020 - pivot + area
 
 ```{r data-f6, cash = TRUE}
-df_f6 <- read_excel("data/WIR2022s.xlsx", sheet = "data-F6"); df_f6
+df_f6 <- read_excel("./data/WIR2022s.xlsx", sheet = "data-F6"); df_f6
 ```
 
 ---
@@ -594,7 +594,7 @@ df_f6 %>% select(year = "...1", 2:3) %>%
 ### F11: Top 1% vs bottom 50% wealth shares in Western Europe and the US, 1910-2020 - pivot name_sep + fit curve
 
 ```{r data-f11, cash = TRUE}
-df_f11 <- read_excel("data/WIR2022s.xlsx", sheet = "data-F11"); df_f11
+df_f11 <- read_excel("./data/WIR2022s.xlsx", sheet = "data-F11"); df_f11
 ```
 
 ---
@@ -697,7 +697,7 @@ df_f11 %>%
 ### F8: The rise of private versus the decline of public wealth in rich countries, 1970-2020 - rename + pivot + pivot + fit curve
 
 ```{r data-f8, cash = TRUE}
-df_f8 <- read_excel("data/WIR2022s.xlsx", sheet = "data-F8"); df_f8
+df_f8 <- read_excel("./data/WIR2022s.xlsx", sheet = "data-F8"); df_f8
 ```
 
 ---
@@ -871,7 +871,7 @@ df_f8 %>%
 ### F15: Per capita emissions acriss the world, 2019 - add row names + dodge
 
 ```{r data-f15, cash = TRUE}
-df_f15 <- read_excel("data/WIR2022s.xlsx", sheet = "data-F15"); df_f15
+df_f15 <- read_excel("./data/WIR2022s.xlsx", sheet = "data-F15"); df_f15
 ```
 
 ---
@@ -989,24 +989,24 @@ Assign a name you can recall easily when you import data. You may need to reload
 
   * WDI, wir, eurostat, etc/
   * `wdi_shortname <- WDI(indicator = "indicator's name", ... )
-  * Store the data and use it: `write_csv(wdi_shortname, "data/wdi_shortname.csv")`
-  * `wdi_shortname <- read_csv("data/wdi_shortname.csv")`
+  * Store the data and use it: `write_csv(wdi_shortname, "./data/wdi_shortname.csv")`
+  * `wdi_shortname <- read_csv("./data/wdi_shortname.csv")`
   
 3.2. Use `readr` to read from `data`, your data folder
 
-  * `df1_shortname <- read_csv("data/file_name.csv")`
+  * `df1_shortname <- read_csv("./data/file_name.csv")`
 
 ---
 
 3.3. Use `readr` to read using the url of the data
 
   * `df2_shortname <- read_csv("url_of_the_data")`
-  * Store the data and use it: `write_csv(df2_shortname, "data/df2_shortname.csv")`
-  * `df2_shortname <- read_csv("data/df2_shortname.csv")`
+  * Store the data and use it: `write_csv(df2_shortname, "./data/df2_shortname.csv")`
+  * `df2_shortname <- read_csv("./data/df2_shortname.csv")`
   
 3.5. Use `readxl` to read Excel data. Add `library(readxl)` in the setup and run.
 
-  * `df4 <- read_excel("data/file_name.xlsx", sheet = 1)`
+  * `df4 <- read_excel("./data/file_name.xlsx", sheet = 1)`
   
 References: Cheat Sheet - `readr`, [readr](https://readr.tidyverse.org), [readxl](https://readxl.tidyverse.org)
 

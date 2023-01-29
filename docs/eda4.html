@@ -4551,9 +4551,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; }
 <pre class = 'prettyprint lang-r'>library(readxl)</pre>
 
 <pre class = 'prettyprint lang-r'>url_summary &lt;- &quot;https://wir2022.wid.world/www-site/uploads/2022/03/WIR2022TablesFigures-Summary.xlsx&quot;
-download.file(url = url_summary, destfile = &quot;data/WIR2022s.xlsx&quot;) </pre>
+download.file(url = url_summary, destfile = &quot;./data/WIR2022s.xlsx&quot;, mode = &quot;wb&quot;) </pre>
 
-<pre class = 'prettyprint lang-r'>excel_sheets(&quot;data/WIR2022s.xlsx&quot;)</pre>
+<pre class = 'prettyprint lang-r'>excel_sheets(&quot;./data/WIR2022s.xlsx&quot;)</pre>
 
 <pre >##  [1] &quot;Index&quot;     &quot;F1&quot;        &quot;F2&quot;        &quot;F3&quot;        &quot;F4&quot;        &quot;F5.&quot;      
 ##  [7] &quot;F6&quot;        &quot;F7&quot;        &quot;F8&quot;        &quot;F9&quot;        &quot;F10&quot;       &quot;F11&quot;      
@@ -4566,7 +4566,7 @@ download.file(url = url_summary, destfile = &quot;data/WIR2022s.xlsx&quot;) </pr
 
 <h3>F1: Global income and wealth inequality, 2021</h3>
 
-<pre class = 'prettyprint lang-r'>df_f1 &lt;- read_excel(&quot;data/WIR2022s.xlsx&quot;, sheet = &quot;data-F1&quot;)
+<pre class = 'prettyprint lang-r'>df_f1 &lt;- read_excel(&quot;./data/WIR2022s.xlsx&quot;, sheet = &quot;data-F1&quot;)
 df_f1</pre>
 
 <div data-pagedtable="false">
@@ -4702,7 +4702,7 @@ df_f1</pre>
 
 <h3>F2: The poorest half lags behind: Bottom 50%, middle 40% and top 10% income shares across the world in 2021</h3>
 
-<pre class = 'prettyprint lang-r'>df_f2 &lt;- read_excel(&quot;data/WIR2022s.xlsx&quot;, sheet = &quot;data-F2&quot;)
+<pre class = 'prettyprint lang-r'>df_f2 &lt;- read_excel(&quot;./data/WIR2022s.xlsx&quot;, sheet = &quot;data-F2&quot;)
 df_f2</pre>
 
 <div data-pagedtable="false">
@@ -4767,7 +4767,7 @@ df_f2</pre>
 
 <h3>F3: Top 10/Bottom 50 income gaps across the world, 2021</h3>
 
-<pre class = 'prettyprint lang-r'>df_f3 &lt;- read_excel(&quot;data/WIR2022s.xlsx&quot;, sheet = &quot;data-F3&quot;)
+<pre class = 'prettyprint lang-r'>df_f3 &lt;- read_excel(&quot;./data/WIR2022s.xlsx&quot;, sheet = &quot;data-F3&quot;)
 df_f3</pre>
 
 <div data-pagedtable="false">
@@ -4947,7 +4947,7 @@ world_map_wir$region[world_map_wir$region==&quot;Tobago&quot;]&lt;- &quot;Trinid
 
 <h3>F5: Global income inequality: T10/B50 ratio, 1820-2020</h3>
 
-<pre class = 'prettyprint lang-r'>(df_f5 &lt;- read_excel(&quot;data/WIR2022s.xlsx&quot;, sheet = &quot;data-F5&quot;))</pre>
+<pre class = 'prettyprint lang-r'>(df_f5 &lt;- read_excel(&quot;./data/WIR2022s.xlsx&quot;, sheet = &quot;data-F5&quot;))</pre>
 
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
@@ -4966,7 +4966,7 @@ world_map_wir$region[world_map_wir$region==&quot;Tobago&quot;]&lt;- &quot;Trinid
 
 <h3>F9: Average annual wealth growth rate, 1995-2021 - fit curve + alpha</h3>
 
-<pre class = 'prettyprint lang-r'>df_f9 &lt;- read_excel(&quot;data/WIR2022s.xlsx&quot;, sheet = &quot;data-F9&quot;); df_f9</pre>
+<pre class = 'prettyprint lang-r'>df_f9 &lt;- read_excel(&quot;./data/WIR2022s.xlsx&quot;, sheet = &quot;data-F9&quot;); df_f9</pre>
 
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
@@ -4986,7 +4986,7 @@ world_map_wir$region[world_map_wir$region==&quot;Tobago&quot;]&lt;- &quot;Trinid
 
 <h3>F7: Global income inequality, 1820-2020 - pivot + fit curve</h3>
 
-<pre class = 'prettyprint lang-r'>df_f7 &lt;- read_excel(&quot;data/WIR2022s.xlsx&quot;, sheet = &quot;data-F7&quot;); df_f7</pre>
+<pre class = 'prettyprint lang-r'>df_f7 &lt;- read_excel(&quot;./data/WIR2022s.xlsx&quot;, sheet = &quot;data-F7&quot;); df_f7</pre>
 
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
@@ -5006,7 +5006,7 @@ world_map_wir$region[world_map_wir$region==&quot;Tobago&quot;]&lt;- &quot;Trinid
 
 <h3>F10: The share of wealth owned by the global 0.1% and billionaires, 2021 - pivot + fit curve</h3>
 
-<pre class = 'prettyprint lang-r'>df_f10 &lt;- read_excel(&quot;data/WIR2022s.xlsx&quot;, sheet = &quot;data-F10&quot;); df_f10</pre>
+<pre class = 'prettyprint lang-r'>df_f10 &lt;- read_excel(&quot;./data/WIR2022s.xlsx&quot;, sheet = &quot;data-F10&quot;); df_f10</pre>
 
 <pre >## New names:
 ## • `` -&gt; `...4`
@@ -5043,7 +5043,7 @@ world_map_wir$region[world_map_wir$region==&quot;Tobago&quot;]&lt;- &quot;Trinid
 
 <h3>F6: Global income inequality: Between vs. Within country inequality (Theil index), 1820-2020 - pivot + area</h3>
 
-<pre class = 'prettyprint lang-r'>df_f6 &lt;- read_excel(&quot;data/WIR2022s.xlsx&quot;, sheet = &quot;data-F6&quot;); df_f6</pre>
+<pre class = 'prettyprint lang-r'>df_f6 &lt;- read_excel(&quot;./data/WIR2022s.xlsx&quot;, sheet = &quot;data-F6&quot;); df_f6</pre>
 
 <pre >## New names:
 ## • `` -&gt; `...1`</pre>
@@ -5086,7 +5086,7 @@ world_map_wir$region[world_map_wir$region==&quot;Tobago&quot;]&lt;- &quot;Trinid
 
 <h3>F11: Top 1% vs bottom 50% wealth shares in Western Europe and the US, 1910-2020 - pivot name_sep + fit curve</h3>
 
-<pre class = 'prettyprint lang-r'>df_f11 &lt;- read_excel(&quot;data/WIR2022s.xlsx&quot;, sheet = &quot;data-F11&quot;); df_f11</pre>
+<pre class = 'prettyprint lang-r'>df_f11 &lt;- read_excel(&quot;./data/WIR2022s.xlsx&quot;, sheet = &quot;data-F11&quot;); df_f11</pre>
 
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
@@ -5172,7 +5172,7 @@ world_map_wir$region[world_map_wir$region==&quot;Tobago&quot;]&lt;- &quot;Trinid
 
 <h3>F8: The rise of private versus the decline of public wealth in rich countries, 1970-2020 - rename + pivot + pivot + fit curve</h3>
 
-<pre class = 'prettyprint lang-r'>df_f8 &lt;- read_excel(&quot;data/WIR2022s.xlsx&quot;, sheet = &quot;data-F8&quot;); df_f8</pre>
+<pre class = 'prettyprint lang-r'>df_f8 &lt;- read_excel(&quot;./data/WIR2022s.xlsx&quot;, sheet = &quot;data-F8&quot;); df_f8</pre>
 
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
@@ -5292,7 +5292,7 @@ world_map_wir$region[world_map_wir$region==&quot;Tobago&quot;]&lt;- &quot;Trinid
 
 <h3>F15: Per capita emissions acriss the world, 2019 - add row names + dodge</h3>
 
-<pre class = 'prettyprint lang-r'>df_f15 &lt;- read_excel(&quot;data/WIR2022s.xlsx&quot;, sheet = &quot;data-F15&quot;); df_f15</pre>
+<pre class = 'prettyprint lang-r'>df_f15 &lt;- read_excel(&quot;./data/WIR2022s.xlsx&quot;, sheet = &quot;data-F15&quot;); df_f15</pre>
 
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
@@ -5422,14 +5422,14 @@ world_map_wir$region[world_map_wir$region==&quot;Tobago&quot;]&lt;- &quot;Trinid
 <ul>
 <li>WDI, wir, eurostat, etc/</li>
 <li>`wdi_shortname &lt;- WDI(indicator = &ldquo;indicator’s name&rdquo;, … )</li>
-<li>Store the data and use it: <code>write_csv(wdi_shortname, &quot;data/wdi_shortname.csv&quot;)</code></li>
-<li><code>wdi_shortname &lt;- read_csv(&quot;data/wdi_shortname.csv&quot;)</code></li>
+<li>Store the data and use it: <code>write_csv(wdi_shortname, &quot;./data/wdi_shortname.csv&quot;)</code></li>
+<li><code>wdi_shortname &lt;- read_csv(&quot;./data/wdi_shortname.csv&quot;)</code></li>
 </ul>
 
 <p>3.2. Use <code>readr</code> to read from <code>data</code>, your data folder</p>
 
 <ul>
-<li><code>df1_shortname &lt;- read_csv(&quot;data/file_name.csv&quot;)</code></li>
+<li><code>df1_shortname &lt;- read_csv(&quot;./data/file_name.csv&quot;)</code></li>
 </ul>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
@@ -5438,14 +5438,14 @@ world_map_wir$region[world_map_wir$region==&quot;Tobago&quot;]&lt;- &quot;Trinid
 
 <ul>
 <li><code>df2_shortname &lt;- read_csv(&quot;url_of_the_data&quot;)</code></li>
-<li>Store the data and use it: <code>write_csv(df2_shortname, &quot;data/df2_shortname.csv&quot;)</code></li>
-<li><code>df2_shortname &lt;- read_csv(&quot;data/df2_shortname.csv&quot;)</code></li>
+<li>Store the data and use it: <code>write_csv(df2_shortname, &quot;./data/df2_shortname.csv&quot;)</code></li>
+<li><code>df2_shortname &lt;- read_csv(&quot;./data/df2_shortname.csv&quot;)</code></li>
 </ul>
 
 <p>3.5. Use <code>readxl</code> to read Excel data. Add <code>library(readxl)</code> in the setup and run.</p>
 
 <ul>
-<li><code>df4 &lt;- read_excel(&quot;data/file_name.xlsx&quot;, sheet = 1)</code></li>
+<li><code>df4 &lt;- read_excel(&quot;./data/file_name.xlsx&quot;, sheet = 1)</code></li>
 </ul>
 
 <p>References: Cheat Sheet - <code>readr</code>, <a href='https://readr.tidyverse.org' title=''>readr</a>, <a href='https://readxl.tidyverse.org' title=''>readxl</a></p>

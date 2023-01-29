@@ -11,12 +11,12 @@ output:
     toc: yes
     toc_float: yes
   beamer_presentation: default
-  pdf_document:
-    number_sections: yes
   html_notebook:
     number_sections: yes
     toc: yes
     toc_float: yes
+  pdf_document:
+    number_sections: yes
 ---
 
 ## Course Contents {-}
@@ -87,12 +87,12 @@ library(readxl)
 
 ```r
 url_summary <- "https://wir2022.wid.world/www-site/uploads/2022/03/WIR2022TablesFigures-Summary.xlsx"
-download.file(url = url_summary, destfile = "data/WIR2022s.xlsx") 
+download.file(url = url_summary, destfile = "./data/WIR2022s.xlsx", mode = "wb") 
 ```
 
 
 ```r
-excel_sheets("data/WIR2022s.xlsx")
+excel_sheets("./data/WIR2022s.xlsx")
 ```
 
 ```
@@ -110,7 +110,7 @@ excel_sheets("data/WIR2022s.xlsx")
 
 
 ```r
-df_f1 <- read_excel("data/WIR2022s.xlsx", sheet = "data-F1")
+df_f1 <- read_excel("./data/WIR2022s.xlsx", sheet = "data-F1")
 df_f1
 ```
 
@@ -183,7 +183,7 @@ Data can come in a variety of formats, but one format is easier to use in R than
 
 ### `tidyr` Basics
 
-<img src="data/tidy-1.png" width="100%" />
+<img src="./data/tidy-1.png" width="100%" />
 
 1. Each variable is in its own column
 2. Each observation is in its own row
@@ -258,7 +258,7 @@ df_f1_rev %>% filter(group != "Top 1%") %>%
 
 
 ```r
-df_f2 <- read_excel("data/WIR2022s.xlsx", sheet = "data-F2")
+df_f2 <- read_excel("./data/WIR2022s.xlsx", sheet = "data-F2")
 df_f2
 ```
 
@@ -337,7 +337,7 @@ F4 and F13 are similar. Please use `pivot_longer` to tidy the data and create ch
 
 
 ```r
-df_f3 <- read_excel("data/WIR2022s.xlsx", sheet = "data-F3")
+df_f3 <- read_excel("./data/WIR2022s.xlsx", sheet = "data-F3")
 df_f3
 ```
 
@@ -351,7 +351,7 @@ df_f3
 
 ### F3: Top 10/Bottom 50 income gaps across the world, 2021 - Original
 
-<img src="data/F3.png" width="100%" />
+<img src="./data/F3.png" width="100%" />
 
 ---
 
@@ -566,7 +566,7 @@ Check `dplyr` cheat sheet, and Posit Primers Tidy Data.
 
 
 ```r
-(df_f5 <- read_excel("data/WIR2022s.xlsx", sheet = "data-F5"))
+(df_f5 <- read_excel("./data/WIR2022s.xlsx", sheet = "data-F5"))
 ```
 
 <div data-pagedtable="false">
@@ -594,7 +594,7 @@ df_f5 %>% ggplot(aes(x = y, y = t10b50)) + geom_line() + geom_smooth(span=0.25, 
 
 
 ```r
-df_f9 <- read_excel("data/WIR2022s.xlsx", sheet = "data-F9"); df_f9
+df_f9 <- read_excel("./data/WIR2022s.xlsx", sheet = "data-F9"); df_f9
 ```
 
 <div data-pagedtable="false">
@@ -623,7 +623,7 @@ df_f9 %>%
 
 
 ```r
-df_f7 <- read_excel("data/WIR2022s.xlsx", sheet = "data-F7"); df_f7
+df_f7 <- read_excel("./data/WIR2022s.xlsx", sheet = "data-F7"); df_f7
 ```
 
 <div data-pagedtable="false">
@@ -650,7 +650,7 @@ df_f7 %>%
 
 
 ```r
-df_f10 <- read_excel("data/WIR2022s.xlsx", sheet = "data-F10"); df_f10
+df_f10 <- read_excel("./data/WIR2022s.xlsx", sheet = "data-F10"); df_f10
 ```
 
 ```
@@ -700,7 +700,7 @@ df_f10 %>%
 
 
 ```r
-df_f6 <- read_excel("data/WIR2022s.xlsx", sheet = "data-F6"); df_f6
+df_f6 <- read_excel("./data/WIR2022s.xlsx", sheet = "data-F6"); df_f6
 ```
 
 ```
@@ -754,7 +754,7 @@ df_f6 %>% select(year = "...1", 2:3) %>%
 
 
 ```r
-df_f11 <- read_excel("data/WIR2022s.xlsx", sheet = "data-F11"); df_f11
+df_f11 <- read_excel("./data/WIR2022s.xlsx", sheet = "data-F11"); df_f11
 ```
 
 <div data-pagedtable="false">
@@ -860,7 +860,7 @@ df_f11 %>%
 
 
 ```r
-df_f8 <- read_excel("data/WIR2022s.xlsx", sheet = "data-F8"); df_f8
+df_f8 <- read_excel("./data/WIR2022s.xlsx", sheet = "data-F8"); df_f8
 ```
 
 <div data-pagedtable="false">
@@ -1010,7 +1010,7 @@ df_f8 %>%
 
 
 ```r
-df_f15 <- read_excel("data/WIR2022s.xlsx", sheet = "data-F15"); df_f15
+df_f15 <- read_excel("./data/WIR2022s.xlsx", sheet = "data-F15"); df_f15
 ```
 
 <div data-pagedtable="false">
@@ -1127,24 +1127,24 @@ Assign a name you can recall easily when you import data. You may need to reload
 
   * WDI, wir, eurostat, etc/
   * `wdi_shortname <- WDI(indicator = "indicator's name", ... )
-  * Store the data and use it: `write_csv(wdi_shortname, "data/wdi_shortname.csv")`
-  * `wdi_shortname <- read_csv("data/wdi_shortname.csv")`
+  * Store the data and use it: `write_csv(wdi_shortname, "./data/wdi_shortname.csv")`
+  * `wdi_shortname <- read_csv("./data/wdi_shortname.csv")`
   
 3.2. Use `readr` to read from `data`, your data folder
 
-  * `df1_shortname <- read_csv("data/file_name.csv")`
+  * `df1_shortname <- read_csv("./data/file_name.csv")`
 
 ---
 
 3.3. Use `readr` to read using the url of the data
 
   * `df2_shortname <- read_csv("url_of_the_data")`
-  * Store the data and use it: `write_csv(df2_shortname, "data/df2_shortname.csv")`
-  * `df2_shortname <- read_csv("data/df2_shortname.csv")`
+  * Store the data and use it: `write_csv(df2_shortname, "./data/df2_shortname.csv")`
+  * `df2_shortname <- read_csv("./data/df2_shortname.csv")`
   
 3.5. Use `readxl` to read Excel data. Add `library(readxl)` in the setup and run.
 
-  * `df4 <- read_excel("data/file_name.xlsx", sheet = 1)`
+  * `df4 <- read_excel("./data/file_name.xlsx", sheet = 1)`
   
 References: Cheat Sheet - `readr`, [readr](https://readr.tidyverse.org), [readxl](https://readxl.tidyverse.org)
 
