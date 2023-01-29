@@ -381,14 +381,16 @@ mod1 %>% summary() %>% glimpse()
 * Let $y = c(y_1, y_2, \ldots, y_n)$ be the dependent variable, i.e., Sepal.W
 * Let $\mbox{pred} = c(\hat{y}_1, \hat{y}_2, \ldots, \hat{y}_n)$ be the predicted values by linear regression.
 
-\begin{align}
+$$
+\begin{aligned}
 \mbox{slope of the regression line}  &= \frac{cov(x,y)}{var(x)} = \frac{cor(x,y)\sqrt{var(y)}}{\sqrt{var(x)}}\\
 \mbox{total sum of squares} &= SS_{tot} = \sum_{i}(y_i-mean(y))^2\\
 \mbox{residual sum of squares} &= SS_{res} = \sum_{i}(y_i-\mbox{pred}_i)^2 = \sum_{i}(y_i-\hat{y}_i)^2\\
 \mbox{R squared} = R^2 & = 1 - \frac{SS_{res}}{SS_{tot}} = cor(x,y)^2
-\end{align}
+\end{aligned}
+$$
 
-
+---
 
 ### Adjusted R Squared
 

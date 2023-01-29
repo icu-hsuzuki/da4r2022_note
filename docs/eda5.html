@@ -4789,7 +4789,16 @@ augment(mod1) %&gt;% ggplot() + geom_point(aes(x,y)) + geom_smooth(aes(x,y), for
 <li>Let \(\mbox{pred} = c(\hat{y}_1, \hat{y}_2, \ldots, \hat{y}_n)\) be the predicted values by linear regression.</li>
 </ul>
 
-<p></p>
+<p>\[
+\begin{aligned}
+\mbox{slope of the regression line}  &amp;= \frac{cov(x,y)}{var(x)} = \frac{cor(x,y)\sqrt{var(y)}}{\sqrt{var(x)}}\\
+\mbox{total sum of squares} &amp;= SS_{tot} = \sum_{i}(y_i-mean(y))^2\\
+\mbox{residual sum of squares} &amp;= SS_{res} = \sum_{i}(y_i-\mbox{pred}_i)^2 = \sum_{i}(y_i-\hat{y}_i)^2\\
+\mbox{R squared} = R^2 &amp; = 1 - \frac{SS_{res}}{SS_{tot}} = cor(x,y)^2
+\end{aligned}
+\]</p>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
 <h3>Adjusted R Squared</h3>
 
