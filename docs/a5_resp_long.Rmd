@@ -50,7 +50,7 @@ library(WDI)
 
 The following is useful when you use WDI.
 
-```{r cache = TRUE, eval = FALSE}
+```{r cache = TRUE}
 wdi_cache <- WDIcache()
 ```
 
@@ -352,5 +352,12 @@ forest %>% filter(region %in% c("East Asia & Pacific", "Europe & Central Asia", 
 ```
 
 
-
+```{r}
+region_list <- wdi_cache$country %>% filter(region != "Aggregates") %>% distinct(region) %>% pull()
+REGION <- wdi_cache$country %>% filter(country %in% region_list)  %>% pull(iso2c)
+# data.frame(region = region_list, iso2c = REGION)
+region_list
+REGION
+wdi_cache$country %>% filter(iso2c %in% REGION) %>% distinct(country)
+```
 
