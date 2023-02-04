@@ -283,6 +283,9 @@ owid_search("internet") %>% as_tibble()
 
 Get a dataset used in an OWID chart.
 
+```{r}
+owid("share-of-individuals-using-the-internet") %>% top_n(1)
+```
 
 ```{r}
 internet <- owid("share-of-individuals-using-the-internet", rename = "internet_use")
@@ -303,24 +306,34 @@ view_chart(internet)
 
 <iframe src="https://ourworldindata.org/grapher/share-of-individuals-using-the-internet" loading="lazy" style="width: 100%; height: 600px; border: 0px none;"></iframe>
 
-Plot an owid dataset
+Plot an owid dataset.  The first is the simplest, and the second uses oied theme.
 
 ```{r}
-owid_plot(internet, filter = "World") +
-  labs(title = "Share of the World Population using the Internet") +
+internet %>% filter(entity == "World") %>%
+  ggplot(aes(year, internet_use))+ geom_line() 
+```
+
+```{r}
+internet %>% filter(entity == "World") %>%
+  ggplot(aes(year, internet_use))+ geom_line() +
+  labs(title = "Share of the World Population \nusing the Internet",
+       y = "Individuals using the Internet \n(% of population)") +
   scale_y_continuous(limits = c(0, 100))+
-  theme_owid()
+  theme_owid() # color, background, etc., are set in owid format.
 ```
-
 
 ```{r}
-owid_plot(internet, summarise = FALSE, filter = c("United Kingdom", "Spain", "Russia", "Egypt", "Nigeria")) +
-  labs(title = "Share of Population with Using the Internet") +
-  scale_y_continuous(limits = c(0, 100), labels = scales::label_number(suffix = "%")) # The labels argument allows you to make it clear that the value is a percentage
+internet %>% 
+  filter(entity %in% c("United Kingdom", "Spain", "Russia", "Egypt", "Nigeria")) %>% 
+  ggplot(aes(year, internet_use, color =  entity)) + geom_line() +
+  labs(title = "Share of Population with Using the Internet",
+       y = "Individuals using the Internet \n(% of population)",
+       color = "country") +
+  scale_y_continuous(limits = c(0, 100), labels = scales::label_number(suffix = "%"))  +
+  theme_owid() # The labels argument allows you to make it clear that the value is a percentage
 ```
 
-
-creating a choropleth map 
+Creating a choropleth map.
 
 ```{r}
 owid_map(internet, year = 2017) +
@@ -331,6 +344,10 @@ owid_map(internet, year = 2017) +
 
 ```{r}
 owid_search("democrac") %>% as_tibble()
+```
+
+```{r}
+owid("electoral-democracy") %>% top_n(1)
 ```
 
 ```{r}
@@ -348,12 +365,13 @@ owid_map(democracy, year = 2015, palette = "YlGn") +
 ```
 
 ```{r}
-owid_plot(democracy, summarise = FALSE, filter = c("United Kingdom", "Spain", "Russia", "Egypt", "Nigeria")) +
-  labs(title = "electoral-democracy") +
-  scale_y_continuous(limits = c(0, 1), labels = scales::label_number(suffix = "%")) # The labels argument allows you to make it clear that the value is a percentage
-#> Warning: 'scale_colour_owid' is deprecated.
-#> See help("Deprecated")
+democracy %>% 
+  filter(entity %in% c("United Kingdom", "Spain", "Russia", "Egypt", "Nigeria")) %>%
+  ggplot(aes(year, electoral_democracy, color = entity)) + geom_line() +
+  labs(title = "Electoral Democracy", y = "", color = "country") +
+  scale_y_continuous(limits = c(0, 1), labels = scales::label_number(suffix = "%"))
 ```
+
 
 ```{r}
 gdp <- owid("gdp-per-capita-worldbank", rename = "gdp")
@@ -392,8 +410,7 @@ data %>%
   ggplot(aes(internet_use, electoral_democracy)) +
   geom_point(colour = "#57677D", na.rm = TRUE) +
   geom_smooth(method = "lm", colour = "#DC5E78", na.rm = TRUE) +
-  labs(title = "Relationship Between Internet Use and electoral_democracy", x = "Internet Use", y = "electoral_democracy") +
-  theme_owid()
+  labs(title = "Relationship Between Internet Use \nand electoral_democracy", x = "Internet Use", y = "electoral_democracy")
 ```
 
 
