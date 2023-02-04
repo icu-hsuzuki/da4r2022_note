@@ -318,8 +318,7 @@ internet %>% filter(entity == "World") %>%
   ggplot(aes(year, internet_use))+ geom_line() +
   labs(title = "Share of the World Population \nusing the Internet",
        y = "Individuals using the Internet \n(% of population)") +
-  scale_y_continuous(limits = c(0, 100))+
-  theme_owid() # color, background, etc., are set in owid format.
+  scale_y_continuous(limits = c(0, 100))
 ```
 
 ```{r}
@@ -329,8 +328,7 @@ internet %>%
   labs(title = "Share of Population with Using the Internet",
        y = "Individuals using the Internet \n(% of population)",
        color = "country") +
-  scale_y_continuous(limits = c(0, 100), labels = scales::label_number(suffix = "%"))  +
-  theme_owid() # The labels argument allows you to make it clear that the value is a percentage
+  scale_y_continuous(limits = c(0, 100), labels = scales::label_number(suffix = "%"))
 ```
 
 Creating a choropleth map.
