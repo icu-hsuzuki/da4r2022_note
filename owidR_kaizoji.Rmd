@@ -1,0 +1,782 @@
+---
+title: "Our World in Data"
+output:
+  html_notebook: 
+    toc: yes
+    toc_float: yes
+    highlight: tango
+    theme: cerulean
+    number_sections: yes
+  pdf_document:
+    toc: yes
+---
+
+# Set up
+
+```{r}
+library(tidyverse)
+library(readxl) # for excel files
+library(WDI)
+```
+
+
+## World Development Indicator - WDI
+
+The following is useful when you use WDI.
+
+```{r cache = TRUE}
+wdi_cache <- WDIcache()
+```
+
+
+# Our World in Data - Introduction to Our World in Data
+
+## R Package owidR 
+web: https://cran.r-project.org/web/packages/owidR/readme/README.html
+
+This package acts as an interface to Our World in Data datasets, allowing for an easy way to search through data used in over 3,000 charts and load them into the R environment.
+
+## Installation
+
+To install from CRAN:
+
+```{r eval=FALSE}
+install.packages("owidR")
+```
+
+
+### 2.1 Function owidR: Our World in Data
+
+```{r}
+library(owidR)
+```
+
+
+### Example
+
+Lets use the core functions to get data on how human rights have changed over time. First by searching for charts on human rights.
+
+```{r}
+owid_search("human rights") %>% as_tibble()
+
+```
+Let’s use the human rights protection dataset.
+
+```{r}
+rights <- owid("human-rights-protection")
+rights
+```
+
+ggplot2 makes it easy to visualise our data.
+
+
+```{r}
+rights %>% 
+  filter(entity %in% c("United Kingdom", "France", "United States", "Japan")) %>%  
+  ggplot(aes(year, `Human rights protection`, colour = entity)) +
+  geom_line()
+```
+
+
+# An example of how to use owidR
+
+The research question: does higher internet use lead to higher levels of democracy? 
+
+To begin we’ll load owidR using the library() function. We’ll also load tidyverse which we’ll be using to do the analysis.
+
+```{r}
+# library(owidR) 
+# library(dplyr) # in tidyverse
+# library(ggplot2) # in tidyverse
+# library(plm) # Linear Models for Panel Data
+# library(texreg) # Conversion of R Regression Output to LaTeX or HTML Tables
+```
+
+```{r}
+owid_search("internet") %>% as_tibble()
+```
+
+Get a dataset used in an OWID chart.
+
+
+```{r}
+internet <- owid("share-of-individuals-using-the-internet", rename = "internet_use")
+internet
+```
+
+Get source information on an OWID dataset
+
+```{r}
+owid_source(internet)
+```
+
+A function that opens the original OWID chart in your browser.
+
+```{r}
+view_chart(internet)
+```
+
+Plot an owid dataset
+
+```{r}
+owid_plot(internet, filter = "World") +
+  labs(title = "Share of the World Population using the Internet") +
+  scale_y_continuous(limits = c(0, 100))+
+  theme_owid()
+```
+
+
+```{r}
+owid_plot(internet, summarise = FALSE, filter = c("United Kingdom", "Spain", "Russia", "Egypt", "Nigeria")) +
+  labs(title = "Share of Population with Using the Internet") +
+  scale_y_continuous(limits = c(0, 100), labels = scales::label_number(suffix = "%")) # The labels argument allows you to make it clear that the value is a percentage
+```
+
+
+creating a choropleth map 
+
+```{r}
+owid_map(internet, year = 2017) +
+  labs(title = "Share of Population Using the Internet, 2017")
+```
+
+The second variable
+
+```{r}
+owid_search("democrac") %>% as_tibble()
+```
+
+```{r}
+democracy <- owid("electoral-democracy", rename = c("electoral_democracy", "vdem_high", "vdem_low"))
+democracy
+```
+
+```{r}
+owid_source(democracy)
+```
+
+```{r}
+owid_map(democracy, year = 2015, palette = "YlGn") +
+  labs(title = "Electoral Democracy")
+```
+
+```{r}
+owid_plot(democracy, summarise = FALSE, filter = c("United Kingdom", "Spain", "Russia", "Egypt", "Nigeria")) +
+  labs(title = "electoral-democracy") +
+  scale_y_continuous(limits = c(0, 1), labels = scales::label_number(suffix = "%")) # The labels argument allows you to make it clear that the value is a percentage
+#> Warning: 'scale_colour_owid' is deprecated.
+#> See help("Deprecated")
+```
+
+```{r}
+gdp <- owid("gdp-per-capita-worldbank", rename = "gdp")
+
+gov_exp <- owid("total-gov-expenditure-gdp-wdi", rename = "gov_exp")
+
+age_dep <- owid("age-dependency-ratio-of-working-age-population", rename = "age_dep")
+
+unemployment <- owid("unemployment-rate", rename = "unemp")
+```
+
+Mutating joins
+
+left_join(): includes all rows in x.
+
+```{r}
+data <- internet %>% 
+  left_join(democracy) %>% 
+  left_join(gdp) %>% 
+  left_join(gov_exp) %>% 
+  left_join(age_dep) %>% 
+  left_join(unemployment)
+```
+
+Drawing scatter plot
+
+```{r message=FALSE, warning=FALSE}
+data %>% 
+  filter(year == 2015) %>% 
+  ggplot(aes(internet_use, electoral_democracy)) +
+  geom_point(colour = "#57677D", na.rm = TRUE) +
+  geom_smooth(method = "lm", colour = "#DC5E78", na.rm = TRUE) +
+  labs(title = "Relationship Between Internet Use and electoral_democracy", x = "Internet Use", y = "electoral_democracy") +
+  theme_owid()
+```
+
+
+```{r message=FALSE, warning=FALSE}
+data %>% 
+  filter(year == 2015) %>% 
+  ggplot(aes(gdp, internet_use)) +
+  geom_point(colour = "blue") +
+  geom_smooth(method = "gam", colour = "red", level = 0.0) +
+  labs(title = "Relationship Between Internet Use and GDP", x = "GDP", y = "Internet Use")
+```
+
+
+```{r}
+model1 <- lm(electoral_democracy ~ internet_use, data)
+summary(model1)
+```
+```{r message=FALSE, warning=FALSE}
+model2 <- lm(gdp ~ internet_use, data)
+summary(model2)
+```
+
+Creating a table of the results of the regression analysis
+
+```{r}
+library(texreg)
+```
+
+
+```{r}
+models <- list("Model 1" = model1,
+               "Model 2" = model2)
+screenreg(models, stars = NULL)
+```
+
+
+# Where do the emissions from our food come from?
+
+Food production is responsible for one-quarter of the world’s greenhouse gas emissions.
+
+What can you do to really reduce the carbon footprint of your breakfast, lunches, and dinner?
+‘Eating local’ is a recommendation you hear often – even from prominent sources, including the United Nations. While it might make sense intuitively – after all, transport does lead to emissions – it is one of the most misguided pieces of advice.
+
+GHG emissions from transportation make up a very small amount of the emissions from food and what you eat is far more important than where your food traveled from.
+
+```{r}
+# library(tidyverse)
+# library(owidR)
+# library(texreg)
+```
+
+```{r}
+owid_search("Food: greenhouse gas emissions across the supply chain")
+```
+
+## Food: greenhouse gas emissions across the supply chain
+
+Greenhouse gas emissions are measured in carbon dioxide-equivalents (CO₂eq) per kilogram of food.
+
+
+```{r}
+dff <- owid("food-emissions-supply-chain")
+dff
+```
+
+### structures of the data
+
+
+```{r}
+str(dff)
+```
+
+### Get source information
+
+```{r}
+owid_source(dff)
+```
+
+### The range of years covered.
+
+```{r}
+range(dff$year)
+```
+
+```{r}
+unique(dff$entity)
+```
+
+
+### A function that opens the original OWID chart in your browser.
+
+```{r}
+view_chart(dff)
+```
+
+## Bar chart
+
+### A food-emissions-supply-chain : Farm
+
+
+```{r}
+food <-  c("Beef (beef herd)" ,  "Palm Oil", "Cheese",  "Eggs",  "Fish (farmed)" ,  "Milk" ,  "Nuts", "Peas",  "Rice")
+dff %>% filter(entity %in% food) %>% 
+  ggplot(aes(x = entity, y = Farm)) + 
+  geom_col() + 
+  labs(x = "food", y = "food-emissions-supply-chain", title = "A food-emissions-supply-chain : Farm") 
+```
+
+### Bar chart : Land use change
+
+```{r}
+food <-  c("Beef (beef herd)" ,  "Palm Oil", "Cheese",  "Eggs",  "Fish (farmed)" ,  "Milk" ,  "Nuts", "Peas",  "Rice")
+dff %>% filter(entity %in% food) %>% 
+  ggplot(aes(x = entity, y = `Land use change`)) + 
+  geom_col() + 
+  labs(x = "food", y = "food-emissions-supply-chain", title = "A food-emissions-supply-chain : Land use change") 
+```
+
+### Bar chart : Transport
+
+```{r}
+food <-  c("Beef (beef herd)" ,  "Palm Oil", "Cheese",  "Eggs",  "Fish (farmed)" ,  "Milk" ,  "Nuts", "Peas",  "Rice")
+dff %>% filter(entity %in% food) %>% 
+  ggplot(aes(x = entity, y = Transport)) + 
+  geom_col() + 
+  labs(x = "food", y = "food-emissions-supply-chain", title = "A food-emissions-supply-chain : Transport") 
+```
+
+### Bar chart : All of Supply Chain
+
+```{r}
+dff %>% 
+  ggplot(aes(x = entity, y = Farm)) + 
+  geom_col() +
+  labs(x = "food", y = "food-emissions-supply-chain", title = "A food-emissions-supply-chain") 
+```
+
+
+## Which countries are gaining, and which are losing forest?
+
+Before we look at trends in deforestation across the world specifically, it’s useful to understand the net change in forest cover. The net change in forest cover measures any gains in forest cover – either through natural forest expansion or afforestation through tree-planting – minus deforestation.
+
+This map shows the net change in forest cover across the world. Countries with a positive change (shown in green) are regrowing forest faster than they’re losing it. Countries with a negative change (shown in red) are losing more than they’re able to restore.
+
+```{r}
+# library(tidyverse)
+# library(owidR)
+# library(texreg)
+```
+
+```{r}
+owid_search("Annual change in forest area") %>% as_tibble()
+```
+
+### Annual change in forest area, 2015
+
+Net change in forest area measures forest expansion (either through afforestation or natural expansion) minus deforestation
+
+
+```{r}
+df0 <- owid("annual-change-forest-area", rename = "change_in_forest_area")
+df0
+```
+structures of the data
+
+
+```{r}
+str(df0)
+```
+
+Get source information on Net change in forest area
+
+```{r}
+owid_source(df0)
+```
+
+The range of years covered.
+
+```{r}
+range(df0$year)
+```
+
+```{r}
+unique(df0$entity)
+```
+
+
+A function that opens the original OWID chart in your browser.
+
+```{r}
+view_chart(df0)
+```
+
+2.3 Set a Country
+
+ggplot 
+
+```{r}
+df0 %>% filter(entity == "Brazil") %>% 
+  ggplot() + 
+  geom_line(aes(x = year, y = change_in_forest_area))+ 
+  labs(title = "Annual change in forest area")
+```
+
+
+```{r}
+country <-  c("Brazil", "Tanzania", "Indonesia", "China", "India")
+df0 %>% filter(entity %in% country) %>% 
+  ggplot() + 
+  geom_line(aes(x = year, y = change_in_forest_area, color = entity))+ 
+  labs(x = "year", y = "change_in_forest_area", title = "Annual change in forest area")
+```
+
+```{r}
+country <-  c("Brazil", "Tanzania", "Indonesia", "China", "India")
+df0 %>% filter(entity %in% country) %>% 
+  ggplot() + 
+  geom_line(aes(x = year, y = change_in_forest_area, color = entity))+ 
+  facet_wrap(vars(entity)) +
+  labs(x = "year", y = "change_in_forest_area", title = "Annual change in forest area")
+```
+
+
+### Box plot
+
+
+```{r}
+country <-  c("Brazil", "Tanzania", "Indonesia", "China", "India")
+df0 %>% filter(entity %in% country) %>% 
+  ggplot() + 
+  geom_boxplot(aes(x = year, y = change_in_forest_area, color = entity))+ 
+  facet_wrap(vars(entity)) +
+  labs(x = "year", y = "change_in_forest_area", title = "Annual change in forest area")
+```
+
+```{r}
+country <-  c("United Kingdom", "Spain", "Russia", "Egypt", "Nigeria")
+internet %>% filter(entity %in% country) %>% 
+  ggplot() + 
+  geom_boxplot(aes(x = entity, y = internet_use)) +
+ labs(x = "year", y = "internet use (%)", title = "Share of the Population using the Internet")
+```
+
+
+```{r}
+country <-  c("Brazil", "Tanzania", "Indonesia", "China", "India")
+df0 %>% filter(entity %in% country & year == 2010) %>% 
+  ggplot(aes(x = entity, y = change_in_forest_area, fill = entity)) + 
+  geom_bar(stat = "identity") +
+  scale_fill_brewer(palette='Set1')+
+  labs(x = "country", y = "change_in_forest_area", title = "Annual change in forest area in 2010") 
+```
+
+
+## Histgram 
+
+```{r}
+  df0 %>% filter(year == "2015") %>% 
+  ggplot() + 
+  geom_histogram(aes(x = change_in_forest_area)) + 
+  labs(title = "Annual change in forest area in 2015")
+```
+
+* _ERROR_
+
+```{r eval=FALSE}
+  country <-  c("United Kingdom", "Spain", "Russia", "Egypt", "Nigeria")
+  internet %>% filter(entity %in% country) %>% 
+  ggplot() + 
+  geom_histogram(aes(aes(x = entity, fill = entity)x = internet_use, fill = entity)) + 
+  labs(title = "Share of the Population using the Internet")
+```
+
+```{r}
+  country <-  c("United Kingdom", "Spain", "Russia", "Egypt", "Nigeria")
+  internet %>% filter(entity %in% country) %>% 
+  ggplot() + 
+  geom_histogram(aes(y = internet_use, fill = entity)) + 
+  labs(title = "Share of the Population using the Internet")
+```
+
+creating a choropleth map 
+
+```{r}
+  owid_map(df0, year = 2015, palette = "Set4") +
+  labs(title = "Annual change in forest area in 2015")
+```
+
+```{r}
+owid_map(df0, year = 2010, palette = "Set4") +
+  labs(title = "Annual change in forest area in 2010")
+```
+
+```{r}
+owid_map(df0, year = 2000, palette = "Set4") +
+  labs(title = "Annual change in forest area in 2000")
+```
+
+```{r}
+owid_map(df0, year = 1990, palette = "Set4") +
+  labs(title = "Annual change in forest area in 1990")
+```
+
+# How much deforestation occurs each year?
+
+Net forest loss is not the same as deforestation – it measures deforestation plus any gains in forest over a given period.
+
+Over the decade since 2010, the net loss in forests globally was 4.7 million hectares per year.1 However, deforestation rates were much significantly higher.
+
+The UN FAO estimate that 10 million hectares of forest were cut down each year.
+
+This interactive map shows deforestation rates across the world.
+
+```{r}
+owid_search("Annual deforestation") %>% as_tibble()
+```
+
+```{r}
+df1 <- owid("annual-deforestation")
+df1
+```
+
+```{r}
+owid_source(df1)
+```
+
+```{r}
+owid_map(df1, year = 2015, palette = "Set3") +
+  labs(title = "Annual deforestation rate")
+```
+
+### How can we put an end to our long history of deforestation?
+
+In fact, the world may have already passed ‘peak agricultural land’ [we will look at this in more detail in an upcoming post]. And with the growth of technological innovations such as lab-grown meat and substitute products, there is the real possibility that we can continue to enjoy meat or meat-like foods while freeing up the massive amounts of land we use to raise livestock. 
+
+If we can take advantage of these innovations, we can bring deforestation to an end. A future with more people and more forest is possible.
+
+# Do rich countries import deforestation from overseas?
+
+There is a marked divide in the state of the world’s forests. In most rich countries, across Europe, North America and East Asia, forest cover is increasing, whilst in many low-to-middle income countries it’s decreasing.
+
+But, it would be wrong to think that the only impact rich countries have on global forests is through changes in their domestic forests. They also contribute to global deforestation through the foods they import from poorer countries.
+
+Today, most deforestation occurs in the tropics. 71% of this is driven by demand in domestic markets, and the remaining 29% for the production of products that are traded. 40% of traded deforestation ends up in high-income countries, meaning they are responsible for 12% of deforestation.29
+
+Let’s take a look at which countries are causing deforestation overseas and the size of this impact.
+
+
+### Which countries are causing deforestation overseas?
+
+High-income countries were the largest ‘importers’ of deforestation, accounting for 40% of it. This means they were responsible for 12% of global deforestation.31 It is therefore true that rich countries are causing deforestation in poorer countries.
+
+
+
+```{r}
+owid_search("deforestation abroad")
+```
+
+```{r}
+df3 <- owid("net-deforestation-in-trade")
+df3
+```
+
+```{r}
+range(df3$year)
+```
+
+
+```{r}
+unique(df3$entity)
+```
+
+```{r}
+owid_source(df3)
+```
+
+```{r}
+country <-  c("India", "Germany", "France", "Australia", "Brazil")
+df3 %>% filter(entity %in% country) %>% 
+  ggplot() + 
+  geom_line(aes(x = year, y = `Net deforestation embedded in trade`, color = entity))+ 
+  labs(x = "year", y = "net-deforestation-in-trade", title = "Who is contributing to deforestation abroad?")
+```
+
+```{r}
+owid_map(df3, year = 2010, palette = "Set4") +
+  labs(title = "Who is contributing to deforestation abroad?")
+```
+
+
+## Are countries importing more deforestation than they’re regrowing domestically?
+
+
+
+```{r}
+owid_search("Change in domestic forest area") %>% as_tibble()
+```
+
+```{r}
+df4 <- owid("domestic-forest-change-vs-imported-deforestation")
+df4
+```
+
+```{r}
+owid_search("deforestation embedded in imported goods")
+```
+
+
+
+
+
+```{r}
+df4 <- owid("domestic-forest-change-vs-imported-deforestation")
+df4
+```
+
+
+```{r}
+range(df4$year)
+```
+
+
+```{r}
+unique(df4$entity)
+```
+
+```{r}
+owid_source(df4)
+```
+
+```{r}
+country <-  c("South America", "Northern America", "Africa", "World", "Eastern Asia" , "Western Europe", "Southeast Asia")
+df4 %>% filter(entity %in% country) %>% 
+  ggplot() + 
+  geom_line(aes(x = year, y =`Annual change in forest area`, color = entity))+ 
+  labs(x = "year", y = "Annual change in forest areaa", title = "Annual change in forest area")
+ 
+```
+
+```{r}
+df4
+```
+
+```{r}
+owid_search("Agricultural land per capita")
+```
+
+```{r}
+df_a <- owid("agricultural-area-per-capita")
+```
+
+```{r eval=FALSE}
+country <-  c("South America", "Northern America", "Africa", "World", "Eastern Asia" , "Western Europe", "Southeast Asia")
+df4 %>% filter(entity %in% country) %>% 
+  ggplot() + 
+  geom_line(aes(x = year, y = `Agricultural land per capita`, color = entity))+ 
+  labs(x = "year", y = "agricultural-area-per-capita", title = "Agricultural-area-per-capita")
+ df4$`Annual change in forest area`
+```
+
+```{r}
+df_a
+```
+
+_ERROR_ 
+
+```{r eval=FALSE}
+country <-  c("South America", "Northern America", "Africa", "World", "Eastern Asia" , "Western Europe", "Southeast Asia")
+df4 %>% filter(entity %in% country) %>% 
+  ggplot() + 
+  geom_line(aes(x = year, y = `Agricultural land per capita`, color = entity))+ 
+  labs(x = "year", y = "agricultural-area-per-capita", title = "Agricultural-area-per-capita")
+ df4$`Annual change in forest area`
+```
+
+
+```{r}
+country <-  c("South America", "Northern America", "Africa", "World", "Eastern Asia" , "Western Europe", "Southeast Asia")
+df_a %>% filter(entity %in% country) %>% 
+  ggplot() + 
+  geom_line(aes(x = year, y = `Agricultural land per capita`, color = entity))+ 
+  labs(x = "year", y = "agricultural-area-per-capita", title = "Agricultural-area-per-capita")
+ df4$`Annual change in forest area`
+```
+
+```{r eval=FALSE}
+owid_map(df2, year = 2010, palette = "Set3") +
+  labs(title = "Agricultural land per capita")
+```
+
+
+```{r}
+owid_map(df_a, year = 2010, palette = "Set3") +
+  labs(title = "Agricultural land per capita")
+```
+
+```{r eval=FALSE}
+owid_map(df4, year = 2010, palette = "Set3") +
+  labs(title = "Agricultural land per capita")
+```
+
+
+```{r}
+owid_plot(democracy, summarise = FALSE, filter = c("United Kingdom", "Spain", "Russia", "Egypt", "Nigeria")) +
+  labs(title = "electoral-democracy") +
+  scale_y_continuous(limits = c(0, 1), labels = scales::label_number(suffix = "%")) # The labels argument allows you to make it clear that the value is a percentage
+#> Warning: 'scale_colour_owid' is deprecated.
+#> See help("Deprecated")
+```
+
+```{r}
+gdp <- owid("gdp-per-capita-worldbank", rename = "gdp")
+
+gov_exp <- owid("total-gov-expenditure-gdp-wdi", rename = "gov_exp")
+
+age_dep <- owid("age-dependency-ratio-of-working-age-population", rename = "age_dep")
+
+unemployment <- owid("unemployment-rate", rename = "unemp")
+```
+
+Mutating joins
+
+left_join(): includes all rows in x.
+
+```{r}
+data <- internet %>% 
+  left_join(democracy) %>% 
+  left_join(gdp) %>% 
+  left_join(gov_exp) %>% 
+  left_join(age_dep) %>% 
+  left_join(unemployment)
+```
+
+Drawing scatter plot
+
+```{r message=FALSE, warning=FALSE}
+data %>% 
+  filter(year == 2015) %>% 
+  ggplot(aes(internet_use, electoral_democracy)) +
+  geom_point(colour = "#57677D", na.rm = TRUE) +
+  geom_smooth(method = "lm", colour = "#DC5E78", na.rm = TRUE) +
+  labs(title = "Relationship Between Internet Use and electoral_democracy", x = "Internet Use", y = "electoral_democracy") +
+  theme_owid()
+```
+
+
+```{r message=FALSE, warning=FALSE}
+data %>% 
+  filter(year == 2015) %>% 
+  ggplot(aes(gdp, internet_use)) +
+  geom_point(colour = "blue") +
+  geom_smooth(method = "gam", colour = "red", level = 0.0) +
+  labs(title = "Relationship Between Internet Use and GDP", x = "GDP", y = "Internet Use")
+```
+
+
+```{r}
+model1 <- lm(electoral_democracy ~ internet_use, data)
+summary(model1)
+```
+```{r message=FALSE, warning=FALSE}
+model2 <- lm(gdp ~ internet_use, data)
+summary(model2)
+```
+
+Creating a table of the results of the regression analysis
+
+```{r}
+library(texreg)
+```
+
+
+```{r}
+models <- list("Model 1" = model1,
+               "Model 2" = model2)
+screenreg(models, stars = NULL)
+```
+
+
