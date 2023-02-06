@@ -1,0 +1,135 @@
+---
+title: "OECD and R Package `OECD`"
+output:
+  html_notebook: 
+    toc: yes
+    toc_float: yes
+    highlight: tango
+    theme: cerulean
+    number_sections: yes
+  pdf_document:
+    toc: yes
+---
+
+# OECD Data
+
+* https://data.oecd.org/
+
+
+> In this note, we study the R package `OECD` for searching and extracting data from the OECD.
+
+# References
+
+The package official site contains other links. When you quote the package, use the link to the official site.
+
+* Package Official Site: https://CRAN.R-project.org/package=OECD 
+  - ReadMe: https://github.com/expersso/OECD#introduction
+  - Manual: https://cran.r-project.org/web/packages/OECD/OECD.pdf
+
+In general, README gives a short introduction to the package, and a Manual, the comprehensive descriptions of each function.
+
+# Introduction
+
+>The OECD package allows the user to download data from the OECD’s API in a dynamic and reproducible way.
+
+## Setup
+
+### Installation
+
+Run the following for the first time
+
+```{r eval=FALSE}
+install.packages("OECD")
+```
+
+### Load the package
+
+```{r}
+library(OECD)
+library(tidyverse) 
+```
+
+### How to use the package
+
+Unless you know the exact code of the series you’re looking for, the best way to start is by downloading a dataframe with all the available datasets and their descriptions, and then run searches on it. The search string can be a regular expression and is case-insensitive by default.
+
+```{r}
+dataset_list <- get_datasets()
+```
+
+```{r}
+search_dataset("unemployment", data = dataset_list)
+```
+
+```{r}
+dataset <- "DUR_D"
+dstruc <- get_data_structure(dataset)
+str(dstruc, max.level = 1)
+```
+
+```{r}
+browse_metadata("DUR_D")
+```
+
+```{r}
+df <- get_dataset("EPL_OV")
+```
+
+```{r}
+df
+```
+
+```{r}
+df1 <- get_dataset("EPL_OV", 
+            filter = list(c("DEU", "FRA"), 
+            c("EPRC_V1", "EPRC_V2")), 
+            start_time = 2008, end_time = 2010)
+df1
+```
+
+```{r}
+df0 <- get_dataset("DUR_D")
+df0
+```
+
+```{r}
+df2 <- get_dataset("PATS_REGION", 
+               filter = "PCT_A.INVENTORS.BEL+BE10+BE21.TOTAL+BIOTECH+ICT",
+               start_time = 2008, end_time = 2010, pre_formatted = TRUE)
+df2
+```
+
+```{r}
+searchResults <- search_dataset('status', data = get_datasets(), ignore.case = TRUE)
+ALFS_EMP <- get_dataset("ALFS_EMP_ARCHIVE", filter = list(c("AUS")),
+                        start_time = 2008, end_time = 2020)
+ALFS_EMP
+```
+
+## Examples
+
+### Unemployment
+
+<iframe src="https://data.oecd.org/chart/6Yna" width="860" height="645" style="border: 0" mozallowfullscreen="true" webkitallowfullscreen="true" allowfullscreen="true"><a href="https://data.oecd.org/chart/6Yna" target="_blank">OECD Chart: Unemployment rate, Total, % of labour force, Monthly, Jan 2005 – Dec 2022</a></iframe>
+
+
+```
+https://data.oecd.org/unemp/unemployment-rate.htm
+```
+
+```{r}
+unemp <- read_csv("./data/DP_LIVE_04022023153241675.csv")
+unemp
+```
+```{r}
+summary(unemp)
+```
+
+```{r}
+unique(unemp$SUBJECT)
+```
+
+```{r}
+dataset_list %>% search_dataset("unemployment rate", .)
+```
+

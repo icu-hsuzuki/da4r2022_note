@@ -1,5 +1,7 @@
 ---
 title: "Our World in Data"
+author: "Taisei Kaizoji"
+date: "`r Sys.Date()`"
 output:
   html_notebook: 
     toc: yes
@@ -779,4 +781,119 @@ models <- list("Model 1" = model1,
 screenreg(models, stars = NULL)
 ```
 
+# Note of HS
 
+## Models
+
+### Generalized Additive Model (GAM)
+
+In statistics, a generalized additive model (GAM) is a generalized linear model in which the linear response variable depends linearly on unknown smooth functions of some predictor variables, and interest focuses on inference about these smooth functions.
+
+The model relates a univariate response variable, Y, to some predictor variables, xi. An exponential family distribution is specified for Y (for example normal, binomial or Poisson distributions) along with a link function g (for example the identity or log functions) relating the expected value of Y to the predictor variables via a structure such as
+
+$$g(\operatorname {E}(Y))=\beta _{0}+f_{1}(x_{1})+f_{2}(x_{2})+\cdots +f_{m}(x_{m}).$$
+
+The functions $f_i$ may be functions with a specified parametric form (for example a polynomial, or an un-penalized regression spline of a variable) or may be specified non-parametrically, or semi-parametrically, simply as 'smooth functions', to be estimated by non-parametric means. So a typical GAM might use a scatterplot smoothing function, such as a locally weighted mean, for $f_1(x_1)$, and then use a factor model for $f_2(x_2)$. This flexibility to allow non-parametric fits with relaxed assumptions on the actual relationship between response and predictor, provides the potential for better fits to data than purely parametric models, but arguably with some loss of interpretability.
+
+### Model Summary
+
+```{r}
+data
+```
+
+```
+model1 <- lm(electoral_democracy ~ internet_use, data)
+model2 <- lm(gdp ~ internet_use, data)
+```
+
+```{r}
+data_rev <- data %>% pivot_longer(-(1:4), names_to = "ind", values_to = "value")
+data_rev
+```
+
+```{r}
+by_ind <- data_rev %>% group_by(ind) %>% nest()
+by_ind
+```
+
+```{r}
+by_ind$data[[1]]
+```
+
+```{r}
+ind_model <- function(df) {
+  lm(internet_use ~ value, data = df)
+}
+```
+
+```{r}
+by_ind$data[[2]] %>% ind_model()
+model1
+```
+
+```{r}
+models <- map(by_ind$data, ind_model)
+```
+
+```{r}
+models
+```
+
+```{r}
+by_ind <- by_ind %>% mutate(model = map(data, ind_model))
+by_ind
+```
+
+```{r}
+glance <- by_ind %>% 
+  mutate(glance = map(model, broom::glance)) %>% 
+  unnest(glance, .drop = TRUE)
+glance
+```
+
+```{r}
+glance %>% arrange(desc(r.squared))
+```
+
+```{r}
+tidy <- by_ind %>% 
+  mutate(tidy = map(model, broom::tidy)) %>% 
+  unnest(tidy, .drop = TRUE)
+tidy
+```
+
+```{r}
+models[[1]]$coefficients %>% as.list() %>% as_tibble()%>% rename(c("intercept" = "(Intercept)", "slope" = "value" ))
+```
+
+```{r}
+coeff <- function(m) {
+  rename(as_tibble(as.list(m$coefficients)), "intercept" = "(Intercept)", "slope" = "value")
+}
+```
+
+```{r}
+coeff(lm(cars))
+```
+```{r}
+rename(as_tibble(as.list(lm(cars)$coefficients)), "intercept"="(Intercept)")
+```
+```{r}
+lm(cars)$coefficients
+```
+
+```{r}
+as_tibble(as.list(lm(cars)$coefficients))
+```
+
+```{r}
+broom::tidy(lm(cars)) %>% select(1:2) %>% pivot_wider(names_from = term, values_from = estimate)
+```
+
+```{r}
+model_quality <- by_ind %>% 
+  mutate(glance = map(model, broom::glance)) %>% 
+  mutate()
+  unnest(glance, .drop = TRUE)
+glance
+```
