@@ -1,0 +1,641 @@
+---
+title: "Maps Test"
+author: "Hiroshi Suzuki"
+output:
+  html_notebook: default
+  html_document:
+    df_print: paged
+---
+
+```{r}
+library(tidyverse)
+library(sf)
+library(rnaturalearth)
+library(rnaturalearthdata)
+```
+
+# `geom_map`
+
+```
+map_data(map, region = ".", exact = FALSE, ...)
+```
+
+```{r}
+map_data('world') %>% as_tibble()
+```
+
+```{r}
+world0 <- map_data('world')
+world0 %>%
+  ggplot() +
+  geom_map(aes(long, lat, map_id = region), map = world0, fill = "gray", col = "black", size = 0.1) 
+```
+
+```{r}
+library(maps)
+iso.expand("JP")
+iso3166
+```
+
+```{r}
+library(WDI)
+wdi_cache <- WDIcache()
+wdi_cache
+```
+
+```{r}
+world0 <- map_data('world')
+wdi_income <- wdi_cache$country %>% select(iso2c, income)
+world_income <- world0 %>% mutate(iso2c = iso.alpha(region, n=2)) %>%
+  left_join(wdi_income, by = "iso2c") 
+world_income
+```
+
+```{r}
+world_income %>% 
+  mutate(income_level = factor(income, levels = c("High income", "Upper middle income", "Lower middle income", "Low income", "Not classified", NA))) %>%
+  ggplot() +
+  geom_map(aes(long, lat, map_id = region, fill = income_level), map = world_income, col = "black", size = 0.1) 
+```
+
+```{r}
+world0 %>% left_join(iso3166, by = c("region" = "mapname")) 
+```
+
+```{r}
+wdi_cache$country
+```
+
+
+```{r}
+eastasia <- map_data('world', region = c("Japan", "South Korea", "North Korea", "China", "Mongolia", "Taiwan")) %>%
+  mutate(iso2c = iso.alpha(region, n=2))
+eastasia %>%
+  ggplot() +
+  geom_map(aes(long, lat, map_id = region), map = eastasia, fill = "gray", col = "black", size = 0.1) 
+```
+
+```{r}
+eastasia <- map_data('world', region = c("Japan", "South Korea", "North Korea", "China", "Mongolia", "Taiwan")) %>% mutate(iso2c = iso.alpha(region, n=2))
+eastasia %>% left_join(wdi_income, by = "iso2c") %>% 
+  mutate(income_level = factor(income, levels = c("High income", "Upper middle income", "Lower middle income", "Low income", "Not classified", NA))) %>%
+  ggplot() +
+  geom_map(aes(long, lat, map_id = region, fill = income_level), map = eastasia, col = "black", size = 0.1) 
+```
+
+```{r}
+china <- map_data('world', region = c("China"))
+china %>%
+  ggplot() +
+  geom_map(aes(long, lat, map_id = region, fill = subregion), map = china, col = "black", size = 0.1) 
+```
+
+```{r}
+ea <- map_data('world', region = c("Japan", "South Korea", "North Korea", "China", "Mongolia", "Taiwan"))
+ea %>%
+  ggplot() +
+  geom_map(aes(long, lat, map_id = region, fill = region), map = ea, col = "black", size = 0.1) +
+  labs(x = "", y = "") + 
+  theme(legend.position="none", panel.grid = element_blank(), 
+        axis.text.x=element_blank(), axis.ticks.x=element_blank(),
+        axis.text.y=element_blank(), axis.ticks.y=element_blank())
+```
+
+```{r}
+map_data('world') %>% ggplot(aes(long, lat)) + geom_polygon(aes(group = group, fill = region), col = "black", linewidth = 0.1) + theme(legend.position="none")
+```
+
+```{r}
+map_data('world2') %>% ggplot(aes(long, lat)) + geom_polygon(aes(group = group, fill = region), col = "black", linewidth = 0.1) + theme(legend.position="none")
+```
+
+```{r}
+world1 <- sf::st_as_sf(map('world', plot = FALSE, fill = TRUE))
+ggplot() + geom_sf(data = world1)
+```
+
+
+```{r}
+world_sf <- sf::st_as_sf(map('world', plot = FALSE, fill = TRUE)) %>% 
+  mutate(iso2c = iso.alpha(ID, n=2)) %>% 
+  left_join(wdi_income, by = "iso2c") 
+world_sf %>% as_tibble()
+```
+
+```{r}
+world_sf %>% 
+  mutate(income_level = factor(income, levels = c("High income", "Upper middle income", "Lower middle income", "Low income", "Not classified", NA))) %>%
+  ggplot() +
+  geom_sf(aes(fill = income_level)) 
+```
+
+```{r}
+world2 <- sf::st_transform(
+  world1,
+  "+proj=laea +y_0=0 +lon_0=155 +lat_0=-90 +ellps=WGS84 +no_defs"
+)
+ggplot() + geom_sf(data = world2)
+```
+
+### Volcano Data
+
+https://datavizpyr.com/how-to-make-world-map-with-ggplot2-in-r/
+
+```{r}
+volcano <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-12/volcano.csv")
+volcano
+```
+
+```{r}
+ggplot() +
+  geom_map(
+    data = world0, map = world0,
+    aes(long, lat, map_id = region),
+    color = "white", fill = "lightgray", size = 0.1
+  ) +
+  geom_point(
+    data = volcano,
+    aes(longitude, latitude, color = primary_volcano_type),
+    alpha = 0.7
+  ) 
+```
+
+
+## `annotation_map`
+
+```{r}
+df <- data.frame(
+  name = c("Charlotte", "Raleigh", "Greensboro"),
+  lat = c(35.227, 35.772, 36.073),
+  long = c(-80.843, -78.639, -79.792)
+)
+
+p <- ggplot(df, aes(x = long, y = lat)) +
+  annotation_map(
+    map_data("state"),
+    fill = "antiquewhite", colour = "darkgrey"
+  ) +
+  geom_point(color = "blue") +
+  geom_text(
+    aes(label = name),
+    hjust = 1.105, vjust = 1.05, color = "blue"
+  )
+
+p + xlim(-84, -76) + ylim(34, 37.2)
+```
+
+```{r}
+p +
+  coord_sf(
+    crs = sf::st_crs(3347),
+    default_crs = sf::st_crs(4326),  # data is provided as long-lat
+    xlim = c(-84, -76),
+    ylim = c(34, 37.2)
+  )
+```
+
+```{r}
+nc <- sf::st_read(system.file("shape/nc.shp", package = "sf"), quiet = TRUE)
+p +
+  geom_sf(
+    data = nc, inherit.aes = FALSE,
+    fill = NA, color = "black", linewidth = 0.1
+  ) +
+  coord_sf(crs = sf::st_crs(3347), default_crs = sf::st_crs(4326))
+```
+
+# `geom_sf`
+
+See also, `coord_sf`, `geom_sf_label`, `geom_sf_text`, `stat_sf`.
+
+> This set of geom, stat, and coord are used to visualise simple feature (sf) objects. For simple plots, you will only need geom_sf() as it uses stat_sf() and adds coord_sf() for you. geom_sf() is an unusual geom because it will draw different geometric objects depending on what simple features are present in the data: you can get points, lines, or polygons. For text and labels, you can use geom_sf_text() and geom_sf_label().
+
+```
+geom_sf(
+  mapping = aes(),
+  data = NULL,
+  stat = "sf",
+  position = "identity",
+  na.rm = FALSE,
+  show.legend = NA,
+  inherit.aes = TRUE,
+  ...
+)
+```
+
+```{r}
+# map_data {ggplot2}
+# Easily turn data from the maps package into a data frame suitable for plotting with ggplot2.
+world_map <- map_data("world")
+```
+
+
+```{r}
+library(maps)
+world1 <- sf::st_as_sf(map('world', plot = FALSE, fill = TRUE))
+ggplot() + geom_sf(data = world1)
+```
+
+```{r}
+world_map <- map('world', plot = FALSE)
+glimpse(world_map)
+```
+
+# `geom_polygon`
+
+```{r}
+# When using geom_polygon, you will typically need two data frames:
+# one contains the coordinates of each polygon (positions),  and the
+# other the values associated with each polygon (values).  An id
+# variable links the two together
+
+ids <- factor(c("1.1", "2.1", "1.2", "2.2", "1.3", "2.3"))
+
+values <- data.frame(
+  id = ids,
+  value = c(3, 3.1, 3.1, 3.2, 3.15, 3.5)
+)
+
+positions <- data.frame(
+  id = rep(ids, each = 4),
+  x = c(2, 1, 1.1, 2.2, 1, 0, 0.3, 1.1, 2.2, 1.1, 1.2, 2.5, 1.1, 0.3,
+  0.5, 1.2, 2.5, 1.2, 1.3, 2.7, 1.2, 0.5, 0.6, 1.3),
+  y = c(-0.5, 0, 1, 0.5, 0, 0.5, 1.5, 1, 0.5, 1, 2.1, 1.7, 1, 1.5,
+  2.2, 2.1, 1.7, 2.1, 3.2, 2.8, 2.1, 2.2, 3.3, 3.2)
+)
+
+# Currently we need to manually merge the two together
+datapoly <- merge(values, positions, by = c("id"))
+
+p <- ggplot(datapoly, aes(x = x, y = y)) +
+  geom_polygon(aes(fill = value, group = id))
+p
+```
+
+```{r}
+# Which seems like a lot of work, but then it's easy to add on
+# other features in this coordinate system, e.g.:
+
+set.seed(1)
+stream <- data.frame(
+  x = cumsum(runif(50, max = 0.1)),
+  y = cumsum(runif(50,max = 0.1))
+)
+
+p + geom_line(data = stream, colour = "grey30", linewidth = 5)
+```
+
+```{r}
+# And if the positions are in longitude and latitude, you can use
+# coord_map to produce different map projections.
+
+  # As of R version 3.6 geom_polygon() supports polygons with holes
+  # Use the subgroup aesthetic to differentiate holes from the main polygon
+
+  holes <- do.call(rbind, lapply(split(datapoly, datapoly$id), function(df) {
+    df$x <- df$x + 0.5 * (mean(df$x) - df$x)
+    df$y <- df$y + 0.5 * (mean(df$y) - df$y)
+    df
+  }))
+  datapoly$subid <- 1L
+  holes$subid <- 2L
+  datapoly <- rbind(datapoly, holes)
+
+  p <- ggplot(datapoly, aes(x = x, y = y)) +
+    geom_polygon(aes(fill = value, group = id, subgroup = subid))
+  p
+```
+
+# Natural Earth Data 
+
+https://www.naturalearthdata.com
+
+Get natural earth world country polygons
+
+Manual: https://cran.r-project.org/web/packages/rnaturalearth/rnaturalearth.pdf
+
+## `ne_countries`
+
+```
+ne_countries(
+  scale = 110,
+  type = "countries",
+  continent = NULL,
+  country = NULL,
+  geounit = NULL,
+  sovereignty = NULL,
+  returnclass = c("sp", "sf")
+)
+```
+
+### Arguments
+
+* scale: scale of map to return, one of 110, 50, 10 or 'small', 'medium', 'large'
+* type: country type, one of 'countries', 'map_units', 'sovereignty', 'tiny_countries'
+* continent: a character vector of continent names to get countries from.
+* country: a character vector of country names.
+* geounit: a character vector of geounit names.
+* sovereignty: a character vector of sovereignty names.
+* returnclass: 'sp' default or 'sf' for Simple Features
+
+```{r}
+ne_countries(scale = "large", returnclass = "sf") %>%
+  ggplot() +   geom_sf()
+```
+
+```{r}
+ne_countries(scale = "small", returnclass = "sf") %>%
+  ggplot() +   geom_sf()
+```
+
+```{r}
+world <- ne_countries(scale = "medium", returnclass = "sf")
+```
+
+```{r}
+class(world)
+```
+
+```{r}
+world %>% as_tibble()
+```
+```{r}
+world %>% colnames()
+```
+
+```{r}
+world %>% ggplot() +   geom_sf()
+```
+
+```{r}
+world %>% ggplot() +   geom_sf(aes(fill = income_grp))
+```
+
+```{r}
+world %>% filter(subregion == "South-Eastern Asia") %>%
+  ggplot() +   geom_sf(aes(fill = income_grp))
+```
+
+### `type` argument
+
+```{r}
+ne_countries(type = "countries", country = "Japan", scale = "medium", returnclass = "sf") %>%
+  ggplot() + geom_sf()
+```
+
+```{r}
+ne_countries(type = "map_units", country = "Japan", scale = "medium", returnclass = "sf") %>%
+  ggplot() + geom_sf()
+```
+
+```{r}
+library(sp)
+  sf_world <- ne_countries(returnclass = "sf")
+  plot(sf_world)
+spdf_tiny_countries <- ne_countries(type = "tiny_countries", scale = 50)
+  plot(spdf_tiny_countries)
+```
+
+
+## `ne_states`
+
+Get natural earth world state (admin level 1) polygons
+
+**Description**: returns state polygons (administrative level 1) for specified countries
+
+### Usage
+
+```
+ne_states(
+  country = NULL,
+  geounit = NULL,
+  iso_a2 = NULL,
+  spdf = NULL,
+  returnclass = c("sp", "sf")
+)
+```
+
+### Arguments
+
+* country: a character vector of country names.
+
+* geounit: a character vector of geounit names.
+
+* iso_a2: a character vector of iso_a2 country codes
+
+* spdf: an optional alternative states map
+
+* returnclass: 'sp' default or 'sf' for Simple Features
+
+### Value
+
+* SpatialPolygons DataFrame or sf
+
+```{r}
+world_admin1 <- ne_states(returnclass = "sf")
+```
+
+```{r}
+class(world_admin1)
+```
+
+```{r}
+world_admin1 %>% colnames()
+```
+
+```{r}
+world_admin1 |> as_tibble()
+```
+
+```{r}
+world_admin1 |> glimpse()
+```
+
+```{r}
+world_admin1 %>% as_tibble() %>% 
+  filter(iso_a2 != "-1") %>% arrange(admin) %>%
+  distinct(iso_a2, admin)
+```
+
+```{r}
+world_admin1 %>% pull(FCLASS_JP) %>% unique()
+```
+
+```{r}
+japan <- world_admin1[world_admin1$admin == "Japan",]
+```
+
+```{r}
+japan |> as_tibble()
+```
+
+```{r}
+ggplot() +   geom_sf(data = japan) +   theme_minimal()
+```
+
+```{r}
+country <- "Japan"
+world_admin1 %>% filter(admin == country) %>% 
+  ggplot() + geom_sf()
+```
+
+```{r}
+iso2 <- "ID"
+world_admin1 %>% filter(iso_a2 == iso2) %>% 
+  ggplot() +   geom_sf()
+```
+
+```{r}
+iso2s <- c("IN","PK","BD","LK")
+world_admin1 %>% filter(iso_a2 %in% iso2s) %>% 
+  ggplot() +   geom_sf(aes(fill = admin))
+```
+
+```{r}
+regions <- c("Tohoku")
+world_admin1 %>% filter(region %in% regions) %>% 
+  ggplot() +   geom_sf()
+```
+
+```{r}
+world_admin1 %>% filter(iso_a2 == "JP") %>%
+  ggplot() +   geom_sf(aes(fill = region))
+```
+
+```{r}
+world_admin1 %>% filter(iso_a2 == "JP") %>%
+  ggplot() +   geom_sf(aes(fill = name_local))
+```
+
+```{r}
+world_admin1 %>% filter(iso_a2 == "JP") %>%
+  ggplot() +   geom_sf(aes(fill = name_local)) +
+  theme(legend.position = "none")
+```
+
+```{r}
+world_admin1 %>% arrange(admin) %>% pull(admin) %>% unique()
+```
+
+
+## `ne_download`
+
+download data from Natural Earth and (optionally) read into R
+
+```{r}
+ne_download(scale = 110, type = "countries", returnclass = "sf") %>%
+  ggplot() + geom_sf()
+```
+
+```{r}
+# for raster, here an example with Manual Shaded Relief (MSR) download & load
+
+rst <- ne_download(scale = 50, type = "MSR_50M", category = "raster")
+
+# load after having downloaded
+rst <- ne_load(
+  scale = 50, type = "MSR_50M", category = "raster", destdir =
+    getwd()
+)
+
+# plot
+library(terra)
+terra::plot(rst)
+# end dontrun
+```
+
+# geodata
+
+```{r}
+library(geodata)
+tokyo_prefecture <- gadm("JPN", level = 2, path = "Tokyo")
+tokyo <- st_as_sf(tokyo_prefecture)
+```
+```{r}
+tokyo %>% as_tibble()
+```
+
+```{r}
+tokyo %>% colnames()
+```
+
+```{r}
+tokyo %>% filter(NAME_1 == "Kanagawa") %>% 
+  ggplot() + geom_sf(aes(fill = NAME_2)) + theme(legend.position = "none")
+```
+
+# Miscellaneous
+
+
+```{r}
+vietnam <- world_admin1 %>% filter(admin == "Vietnam")
+```
+
+```{r}
+glimpse(vietnam)
+```
+
+```{r}
+ggplot() +   geom_sf(data = vietnam) +   theme_minimal()
+```
+
+```{r}
+world %>% arrange(region_wb) %>% pull(region_wb) %>% unique()
+```
+
+```{r}
+southasia <- world %>% filter(region_wb == "South Asia")
+ggplot() +   geom_sf(data = southasia) +   theme_minimal()
+```
+
+```{r}
+southasia <- world %>% filter(region_wb == "Sub-Saharan Africa")
+ggplot() +   geom_sf(data = southasia, aes(fill = admin)) +   theme(legend.position="none")
+```
+
+
+```{r}
+world %>% arrange(region_wb) %>% pull(region_un) %>% unique()
+```
+
+
+```{r}
+ggplot() +   geom_sf(data = world, aes(fill = admin)) +   theme(legend.position="none") +
+  facet_wrap(.~region_wb)
+```
+
+```{r}
+library(readxl)
+gini_vietnam <- read_excel('le/DataVN.xls')
+```
+
+```{r}
+glimpse(gini_vietnam)
+```
+
+```{r}
+vietnam %>% arrange(name_alt) %>% distinct(name_alt)
+```
+
+```{r}
+gini_vietnam %>% arrange(province) %>% distinct()
+```
+
+```{r}
+vietnam %>% anti_join(gini_vietnam, by = c('name_alt' = 'province')) %>% arrange(name_alt) %>% distinct(name_alt)
+```
+
+```{r}
+gini_vietnam %>% drop_na(gini) %>% anti_join(vietnam, by = c('province'= 'name_alt')) %>% arrange(province) %>% distinct(province)
+```
+
+```{r}
+vietnam_gini <- vietnam %>% left_join(gini_vietnam, by = c("name_alt" = "province"))
+```
+
+
+```{r}
+library(sf)
+jpn <- st_read(system.file("extdata", "jpn.geojson", package = "sf"))
+```
+

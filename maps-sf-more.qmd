@@ -1,0 +1,196 @@
+---
+title: "maps"
+author: "H. Suzuki"
+format: html
+editor: visual
+---
+
+```{r}
+#| include: false
+library(tidyverse)
+library(maps)
+```
+
+## Package Map
+
+-   Site: [https://CRAN.R-project.org/package=maps](https://cran.r-project.org/package=maps)
+
+    -   Supports class SpatialPolygons or SpatialLines
+
+    -   Use Help: map
+
+-   mapproj: Map Projections
+
+    -   Site:  [https://CRAN.R-project.org/package=mapproj](https://cran.r-project.org/package=mapproj)
+
+-   ggplot2::geom_map: Display polygons as a map. This is meant as annotation, so it does not affect position scales. Note that this function predates the [`geom_sf()`](http://127.0.0.1:25659/help/library/ggplot2/help/geom_sf) framework and does not work with sf geometry columns as input. However, it can be used in conjunction with `geom_sf()` layers and/or [`coord_sf()`](http://127.0.0.1:25659/help/library/ggplot2/help/coord_sf)
+
+-   ggplot2::geom_sf: This set of geom, stat, and coord are used to visualise simple feature (sf) objects. For simple plots, you will only need `geom_sf()` as it uses `stat_sf()` and adds `coord_sf()` for you. `geom_sf()` is an unusual geom because it will draw different geometric objects depending on what simple features are present in the data: you can get points, lines, or polygons. For text and labels, you can use `geom_sf_text()` and `geom_sf_label()`.
+
+-   sf:  [https://CRAN.R-project.org/package=sf](https://cran.r-project.org/package=sf)
+
+    -   Create sf, which extends data.frame-like objects with a simple feature list column
+
+-   raster: Geographic Data Analysis and Modeling
+
+    -   [https://CRAN.R-project.org/package=raster](https://cran.r-project.org/package=raster)
+
+    -   This package has been superseded by the "terra" package 
+
+-   terra: Spatial Data Analysis
+
+    -    [https://CRAN.R-project.org/package=terra](https://cran.r-project.org/package=terra)
+
+    -   [Spatial Data Science with R and "terra"](https://rspatial.org/index.html)
+
+    -   Suggests: parallel, [tinytest](https://cran.r-project.org/web/packages/tinytest/index.html), [ncdf4](https://cran.r-project.org/web/packages/ncdf4/index.html), [sf](https://cran.r-project.org/web/packages/sf/index.html) (≥ 0.9-8), [deldir](https://cran.r-project.org/web/packages/deldir/index.html), [XML](https://cran.r-project.org/web/packages/XML/index.html), [leaflet](https://cran.r-project.org/web/packages/leaflet/index.html), [htmlwidgets](https://cran.r-project.org/web/packages/htmlwidgets/index.html)
+
+-   rnaturalearth: World Map Data from Natural Earth
+
+    -   [https://CRAN.R-project.org/package=rnaturalearth](https://cran.r-project.org/package=rnaturalearth)
+
+    -   [Introduction to rnaturalearth](https://cran.r-project.org/web/packages/rnaturalearth/vignettes/rnaturalearth.html)
+
+### Example: Geom_Map
+
+```{r}
+library(maps)
+crimes <- data.frame(state = tolower(rownames(USArrests)), USArrests)
+
+# Equivalent to crimes %>% tidyr::pivot_longer(Murder:Rape)
+vars <- lapply(names(crimes)[-1], function(j) {
+    data.frame(state = crimes$state, variable = j, value = crimes[[j]])
+  })
+  crimes_long <- do.call("rbind", vars)
+
+  states_map <- map_data("state")
+
+# without geospatial coordinate system, the resulting plot
+# looks weird
+ggplot(crimes, aes(map_id = state)) +
+    geom_map(aes(fill = Murder), map = states_map) +
+    expand_limits(x = states_map$long, y = states_map$lat)
+```
+
+```{r}
+nc <- sf::st_read(system.file("shape/nc.shp", package = "sf"), quiet = TRUE)
+ggplot(nc) +
+  geom_sf(aes(fill = AREA))
+```
+
+```{r}
+nc_3857 <- sf::st_transform(nc, 3857)
+ggplot() +
+  geom_sf(data = nc) +
+  geom_sf(data = nc_3857, colour = "red", fill = NA)
+```
+
+```{r}
+nc_3857$mid <- sf::st_centroid(nc_3857$geometry)
+ggplot(nc_3857) +
+  geom_sf(colour = "white") +
+  geom_sf(aes(geometry = mid, size = AREA), show.legend = "point")
+```
+
+```{r}
+ggplot(nc_3857) +
+  geom_sf() +
+  annotate("point", x = -80, y = 35, colour = "red", size = 4) +
+  coord_sf(default_crs = sf::st_crs(4326))
+```
+
+```{r}
+ggplot(nc_3857[1:3, ]) +
+   geom_sf(aes(fill = AREA)) +
+   geom_sf_label(aes(label = NAME))
+```
+
+```{r}
+world1 <- sf::st_as_sf(map('world', plot = FALSE, fill = TRUE))
+ggplot() + geom_sf(data = world1)
+```
+
+```{r}
+world2 <- sf::st_transform(
+  world1,
+  "+proj=laea +y_0=0 +lon_0=155 +lat_0=-90 +ellps=WGS84 +no_defs"
+)
+ggplot() + geom_sf(data = world2)
+```
+
+```{r}
+library(terra)
+## terra 1.7.23
+p <- vect(system.file("ex/lux.shp", package="terra"))
+p
+```
+
+```{r}
+plot(p)
+```
+
+```{r}
+class(p)
+plot(p, c("NAME_1", "NAME_2"), col=rainbow(25))
+```
+
+# Map of Japan
+
+```{r}
+countries = c("Japan", "South Korea", "North Korea")
+jp_extended = map_data("world", region = countries)
+ggplot(jp_extended, aes(x=long, y=lat, group=group, fill=factor(group))) + geom_polygon(col="white") + theme(legend.position="none")
+```
+
+## GADM maps and data
+
+https://gadm.org/
+
+### [raster](https://CRAN.R-project.org/package=raster): Geographic Data Analysis and Modeling
+
+-   [manual of raster](https://cran.r-project.org/web/packages/raster/raster.pdf): Reading, writing, manipulating, analyzing and modeling of spatial data. This package has been superseded by the \`\`terra'' package \<https://CRAN.R-project.org/package=terra\>.
+
+### [terra](https://cran.r-project.org/web/packages/terra/index.html): Spatial Data Analysis
+
+-   [manual of terra](https://cran.r-project.org/web/packages/terra/terra.pdf): Methods for spatial data analysis with vector (points, lines, polygons) and raster (grid) data. Methods for vector data include geometric operations such as intersect and buffer. Raster methods include local, focal, global, zonal and geometric operations. The predict and interpolate methods facilitate the use of regression type (interpolation, machine learning) models for spatial prediction, including with satellite remote sensing data. Processing of very large files is supported. See the manual and tutorials on to get started. 'terra' replaces the 'raster' package ('terra' can do more, and it is faster and easier to use).
+
+-   [Spatial Data Science with R and "terra"](https://rspatial.org/index.html)
+
+```{r}
+library(raster)
+japan1 = getData("GADM", country="Japan", level=1)
+class(japan1)
+```
+
+```{r}
+ggplot(data=japan1, aes(x=long, y=lat, group=group)) + geom_polygon(aes(fill=id), col="black", linewidth = 0.1, show.legend=F)
+```
+
+```{r}
+ggplot(data=japan1, aes(x=long, y=lat, group=group)) + geom_polygon(aes(fill=id), show.legend=F)
+```
+
+## GPT4 Suggestions
+
+```{r}
+library(tidyverse)
+library(sf)
+library(rnaturalearth)
+library(rnaturalearthdata)
+```
+
+```{r}
+# Download country boundaries (admin level 0)
+world <- ne_countries(scale = "medium", returnclass = "sf")
+# Download admin level 1 boundaries (e.g., provinces, states)
+world_admin1 <- ne_states(scale = "medium", returnclass = "sf")
+```
+
+```{r}
+# Filter data for a specific country, e.g., Japan
+japan <- world_admin1[world_admin1$admin == "Japan",]
+# Plot the map using ggplot2
+ggplot() +
+  geom_sf(data = japan) +
+  theme_minimal()
+```

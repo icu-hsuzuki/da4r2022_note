@@ -1,0 +1,261 @@
+---
+title: "Comments on Gini Map of Vietnam"
+author: "Hiroshi Suzuki"
+output:
+  html_notebook: default
+---
+
+# Setup
+
+I tried to use a smallest set of packages to understand the functionality of each package clearly. 
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(maps)
+library(sf)
+```
+
+## Gini Data
+
+## Import GINI of the World Data
+
+The following is my personal memo:
+
+> Gini index
+> Gini index measures the extent to which the distribution of income (or, in some cases, consumption expenditure) among individuals or households within an economy deviates from a perfectly equal distribution. A Lorenz curve plots the cumulative percentages of total income received against the cumulative number of recipients, starting with the poorest individual or household. The Gini index measures the area between the Lorenz curve and a hypothetical line of absolute equality, expressed as a percentage of the maximum area under the line. Thus a Gini index of 0 represents perfect equality, while an index of 100 implies perfect inequality. https://data.worldbank.org/indicator/SI.POV.GINI
+
+```{r}
+gini_world <- read_excel('Giniworld.xlsx')
+gini_world
+```
+
+## World Map
+
+See class note.
+
+```{r}
+world_map <- map_data("world")
+world_map_rev <- world_map %>% 
+  mutate(region = case_when(region == "Macedonia" ~ "North Macedonia",
+                            region == "Ivory Coast"  ~ "Cote d'Ivoire",
+                            region == "Democratic Republic of the Congo"  ~ "Congo, Dem. Rep.",
+                            region == "Republic of Congo" ~  "Congo, Rep.",
+                            region == "UK" ~  "United Kingdom",
+#                            region == "USA" ~  "United States",
+                            region == "Laos" ~  "Lao PDR",
+                            region == "Slovakia" ~  "Slovak Republic",
+                            region == "Saint Lucia" ~  "St. Lucia",
+                            region == "Kyrgyzstan"  ~  "Kyrgyz Republic",
+                            region == "Micronesia" ~ "Micronesia, Fed. Sts.",
+                            region == "Swaziland"  ~ "Eswatini", 
+                            region == "Virgin Islands"  ~ "Virgin Islands (U.S.)", 
+#                            region == "Russia" ~ "Russian Federation", 
+                            region == "Egypt" ~ "Egypt, Arab Rep.",
+                            region == "South Korea" ~ "Korea, Rep.",
+                            region == "North Korea" ~ "Korea, Dem. People's Rep.",
+                            region == "Iran" ~ "Iran, Islamic Rep.",
+                            region == "Brunei" ~ "Brunei Darussalam",
+                            region == "Venezuela" ~ "Venezuela, RB",
+                            region == "Yemen" ~ "Yemen, Rep.",
+                            region == "Bahamas" ~ "Bahamas, The",
+                            region == "Syria" ~ "Syrian Arab Republic",
+                            region == "Turkey" ~ "Turkiye",
+                            region == "Cape Verde" ~ "Cabo Verde",
+                            region == "Gambia" ~ "Gambia, The",
+                            region == "Czech Republic" ~ "Czechia",
+                            TRUE ~ region))
+```
+
+
+## Import Gini of Viet Nam Data
+
+Used your data.
+
+```{r}
+gini_vietnam <- read_excel('DataVN.xls')
+gini_vietnam
+```
+
+```{r}
+colnames(gini_vietnam)
+```
+# Gini Map of the World
+
+```{r}
+gini_world %>% arrange(country)
+```
+
+
+```{r}
+world_map_rev %>% distinct(region) %>% 
+  anti_join(gini_world, by = c("region" = "country")) %>% as_tibble()
+```
+
+* There are many missing countries in world map. If you use it please check carefully.
+
+
+```{r echo=FALSE}
+gini_world %>%
+  ggplot(aes(map_id = country)) + 
+  geom_map(aes(fill = Gini), map = world_map_rev) + expand_limits(x = world_map_rev$long, y = world_map_rev$lat) +
+  labs(title = "Gini of the World")
+```
+
+
+# Gini Map of Vietnam, Part I
+
+I used a different map data (in spatial format) of Vietnam in the following.
+
+Source: https://rpubs.com/Linh-LTP/890658
+
+```{r}
+link <- "https://data.opendevelopmentmekong.net/dataset/999c96d8-fae0-4b82-9a2b-e481f6f50e12/resource/2818c2c5-e9c3-440b-a9b8-3029d7298065/download/diaphantinhenglish.geojson?fbclid=IwAR1coUVLkuEoJRsgaH81q6ocz1nVeGBirqpKRBN8WWxXQIJREUL1buFi1eE"
+
+vn_spatial <- st_read(link)
+```
+
+## Test
+
+```{r}
+ggplot() + 
+  geom_sf(data = vn_spatial) + 
+  labs(title = "Vietnam Map - Provinces")
+```
+
+## Compare with Gini Data of Vietnam
+
+```{r}
+vn_spatial %>% as_tibble() %>% arrange(Name)
+```
+
+```{r}
+gini_vietnam %>% arrange(province)
+```
+
+```{r}
+vn_spatial %>% anti_join(gini_vietnam, by = c("Name" = "province")) %>% as_tibble()
+```
+
+```{r}
+vn_spatial <- vn_spatial %>% mutate(Name = case_when(
+  Name == "Ba Ria - Vung Tau" ~ "Ba Ria Vung Tau",
+  Name == "Thua Thien - Hue" ~ "Thua Thien Hue",
+  Name == "TP. Ho Chi Minh" ~ "Ho Chi Minh City",
+  TRUE ~ Name))
+```
+
+## Join Two Datasets
+
+```{r}
+vietnam_gini_map <- vn_spatial %>% left_join(gini_vietnam, by = c("Name" = "province"))
+vietnam_gini_map
+```
+
+## Gini Map of Vietnam by Province
+
+```{r echo=FALSE}
+vietnam_gini_map %>% ggplot() + geom_sf(aes(fill = gini)) + 
+  labs(title = "Gini of Viet Nam")
+```
+
+## Review
+
+* There seems to be missing data, i.e., the regions colored gray. Please check the map data as well.
+
+
+# Gini Map of Vietnam, Part II
+
+## Get map data of Vietnam from GADM
+
+
+```{r}
+library(geodata)
+map_vietnam0 <- gadm(country="VNM", level=1, path=tempdir())
+class(map_vietnam0)
+```
+
+
+```{r}
+plot(map_vietnam0)
+```
+
+
+```{r}
+map_vietnam0
+```
+
+
+```{r}
+map_vietnam00 <- st_as_sf(map_vietnam0, row.names=NULL, optional=FALSE, geom=NULL)
+map_vietnam00
+```
+
+```{r}
+vietnam_gini_map00 <- map_vietnam00 %>% left_join(gini_vietnam, by = c("VARNAME_1" = "province"))
+vietnam_gini_map00
+```
+
+```{r echo=FALSE}
+vietnam_gini_map00 %>% ggplot() + geom_sf(aes(fill = gini)) + 
+  labs(title = "Gini of Viet Nam")
+```
+
+
+# Gini Map of Vietnam, Part III - Your Code
+
+```{r}
+mapvn0 <- gadm(country = "VNM", path = tempdir(), level = 1)
+plot(mapvn0)
+```
+
+
+```{r}
+mapvn <- st_as_sf(mapvn0) #the data was already saved as data frames after this command
+```
+
+
+```{r}
+head(mapvn)
+```
+
+
+```{r}
+write.csv(mapvn,"mapvn.csv",row.names=TRUE)
+names(mapvn)
+```
+
+```{r}
+mapvn_gini <- mapvn %>% left_join(gini_vietnam, by = c("VARNAME_1" = "province"))
+mapvn_gini
+```
+
+
+```{r echo=FALSE}
+mapvn_gini %>% ggplot() + geom_sf(aes(fill = gini)) + 
+  labs(title = "Gini of Viet Nam")
+```
+
+### Review
+
+* You should check the province name with those in the map data as I did in my first try. I leave this process to you.
+
+
+### Convert Geometry data into long/lat data???
+
+I supposed that if I can convert geometry data into long/lat data, the map can be drawn.
+
+I tried some solutions on the internet and the followings are one of them, but it did not work correctly.
+
+# References: (same as yours)
+
+1. https://stackoverflow.com/questions/47661354/converting-geometry-to-longitude-latitude-coordinates-in-r
+2. https://community.rstudio.com/t/convert-geometry-column-with-lists-of-longitude-latitude-coordinates/67114/7
+3. https://rstudio-pubs-static.s3.amazonaws.com/647153_88833beacf2c4107ad76bc3bc7bc8b9d.html
+4. https://rdrr.io/cran/terra/man/as.data.frame.html
+This one: https://stackoverflow.com/questions/73825468/converting-spatvector-objects-to-data-frames-for-use-in-ggplot2
+
+
+
+
+

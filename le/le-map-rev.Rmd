@@ -1,0 +1,200 @@
+---
+title: "Map_Thesis Review by HS"
+author: Nguyen Thi Le
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+# library(ggplot2)
+# library(sp)
+# library(raster)
+# library(rgdal)
+# library(viridis)
+library(readxl)
+library(maps)
+# library(geodata)
+# library("writexl")
+# library(rvest)
+# library(lubridate)
+# library(magrittr)
+# library (ggmap)
+# library(stringr)
+```
+
+# WORLD's MAP with country's Gini
+## Get world map
+
+```{r}
+map.world <- map_data("world")
+map.world
+```
+
+### One color version
+
+```{r}
+map.world %>% 
+  ggplot(aes(x = long, y = lat, group = group)) +
+  geom_polygon(fill = "lightgray", colour = "blue", size = 0.1)
+```
+
+### Colorful version
+
+```{r}
+p = ggplot(data=map.world, aes(x=long, y=lat, group=group, fill=factor(group))) 
+p + geom_polygon(col="white") + theme(legend.position="none")
+
+```
+
+
+
+## Import GINI_world data
+
+```{r}
+giniw = read_excel('Giniworld.xlsx')
+print(giniw)
+```
+
+## Join 2 datasets together
+
+```{r}
+map.world_joined <- left_join(map.world, giniw, by = c('region' = 'country'))
+print(map.world_joined)
+write.csv(map.world_joined,"map.world_joined.csv",row.names=TRUE)
+```
+
+
+```{r}
+ggplot(data=map.world_joined, aes(x=long, y=lat, group=group)) + geom_polygon(aes(fill=Gini), show.legend = T) + scale_fill_gradientn(colours = c("lightblue", "darkblue")) + labs(x="Longitude", y="Latitude")
+```
+
+### Other Method
+
+The following is my memo:
+
+> Gini index
+> Gini index measures the extent to which the distribution of income (or, in some cases, consumption expenditure) among individuals or households within an economy deviates from a perfectly equal distribution. A Lorenz curve plots the cumulative percentages of total income received against the cumulative number of recipients, starting with the poorest individual or household. The Gini index measures the area between the Lorenz curve and a hypothetical line of absolute equality, expressed as a percentage of the maximum area under the line. Thus a Gini index of 0 represents perfect equality, while an index of 100 implies perfect inequality.
+
+```{r echo=FALSE}
+giniw %>%
+  ggplot(aes(map_id = country)) + 
+  geom_map(aes(fill = Gini), map = map.world) + expand_limits(x = map.world$long, y = map.world$lat) +
+  labs(title = "Gini")
+```
+
+Use the following map introduced in our class.
+
+```{r}
+world_map0 <- world_map %>% 
+  mutate(region = case_when(region == "Macedonia" ~ "North Macedonia",
+                            region == "Ivory Coast"  ~ "Cote d'Ivoire",
+                            region == "Democratic Republic of the Congo"  ~ "Congo, Dem. Rep.",
+                            region == "Republic of Congo" ~  "Congo, Rep.",
+                            region == "UK" ~  "United Kingdom",
+#                            region == "USA" ~  "United States",
+                            region == "Laos" ~  "Lao PDR",
+                            region == "Slovakia" ~  "Slovak Republic",
+                            region == "Saint Lucia" ~  "St. Lucia",
+                            region == "Kyrgyzstan"  ~  "Kyrgyz Republic",
+                            region == "Micronesia" ~ "Micronesia, Fed. Sts.",
+                            region == "Swaziland"  ~ "Eswatini", 
+                            region == "Virgin Islands"  ~ "Virgin Islands (U.S.)", 
+#                            region == "Russia" ~ "Russian Federation", 
+                            region == "Egypt" ~ "Egypt, Arab Rep.",
+                            region == "South Korea" ~ "Korea, Rep.",
+                            region == "North Korea" ~ "Korea, Dem. People's Rep.",
+                            region == "Iran" ~ "Iran, Islamic Rep.",
+                            region == "Brunei" ~ "Brunei Darussalam",
+                            region == "Venezuela" ~ "Venezuela, RB",
+                            region == "Yemen" ~ "Yemen, Rep.",
+                            region == "Bahamas" ~ "Bahamas, The",
+                            region == "Syria" ~ "Syrian Arab Republic",
+                            region == "Turkey" ~ "Turkiye",
+                            region == "Cape Verde" ~ "Cabo Verde",
+                            region == "Gambia" ~ "Gambia, The",
+                            region == "Czech Republic" ~ "Czechia",
+                            TRUE ~ region))
+```
+
+
+```{r}
+map0_url <- "https://icu-hsuzuki.github.io/da4r2022_note/data/world_map0.csv"
+map.world0 <- read_csv(map0_url)
+```
+```{r echo=FALSE}
+giniw %>%
+  ggplot(aes(map_id = country)) + 
+  geom_map(aes(fill = Gini), map = map.world0) + expand_limits(x = map.world0$long, y = map.world0$lat) +
+  labs(title = "Gini")
+```
+
+# Vietnam
+
+## Get map data of Vietnam from GADM
+
+OR
+```{r}
+#library(terra)
+#mapvn0 <- gadm(country="VNM", level=1, path=tempdir())
+#plot(mapvn0)
+#mapvn0
+#mapvn = as.data.frame(mapvn, row.names=NULL, optional=FALSE, geom=NULL)
+
+```
+
+OR
+```{r}
+library(sf)
+library(tidyr)
+mapvn0 <- geodata::gadm(country = "VNM", path = tempdir(), level = 1)
+head(mapvn0)
+plot(mapvn0)
+mapvn <- st_as_sf(mapvn0) #the data was already saved as data frames after this command
+head(mapvn)
+write.csv(mapvn,"mapvn.csv",row.names=TRUE)
+names(mapvn)
+
+```
+
+### Convert Geometry data into long/lat data???
+
+I supposed that if I can convert geometry data into long/lat data, the map can be drawn.
+
+I tried some solutions on the internet and the followings are one of them, but it did not work correctly.
+
+Reference:
+https://stackoverflow.com/questions/47661354/converting-geometry-to-longitude-latitude-coordinates-in-r
+https://community.rstudio.com/t/convert-geometry-column-with-lists-of-longitude-latitude-coordinates/67114/7
+
+
+
+
+### Import Vietnam dataset (Gini, GDP...)
+
+
+```{r}
+datavn = read_excel('DataVN.xls')
+names(datavn)
+
+```
+
+### Join 2 dataset
+
+
+```{r}
+mapvn_joined <- left_join(mapvn, datavn, by = c('VARNAME_1' = 'province'))
+mapvn_joined
+summary(mapvn_joined)
+names(mapvn_joined)
+write.csv(mapvn_joined,"mapvn_joined.csv",row.names=TRUE)
+
+#ggplot(data=mapvn_joined, aes(x=long, y=lat, group=group)) + geom_polygon(aes(fill=gini), show.legend = T) + scale_fill_gradientn(colours = c("lightblue", "darkblue")) + labs(x="Longitude", y="Latitude")
+                
+
+```
+# Reference
+https://rstudio-pubs-static.s3.amazonaws.com/647153_88833beacf2c4107ad76bc3bc7bc8b9d.html
+https://rdrr.io/cran/terra/man/as.data.frame.html
+This one: https://stackoverflow.com/questions/73825468/converting-spatvector-objects-to-data-frames-for-use-in-ggplot2
+
+
