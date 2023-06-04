@@ -1,0 +1,132 @@
+---
+title: "Data Science for Macroeconomics"
+output: html_notebook
+---
+
+## The two scatterplots 
+
+下記の２つの散布図を講義に含めていただけるとありがたいです。
+
+### Setup 
+
+```{r}
+library(tidyverse)
+library(WDI)
+```
+
+
+### I. International Data on Inflation and Money Growth 
+Macroeonomics 7eds, Chapter 4: Money and Inflation　
+Figure 4-1 and Figure 4-2
+
+
+Scatter plots between Inflation rate (percent) and Money supply growth (percent)
+
+
+Indicator1: Broad money (current LCU)-a proxy to the money supply 
+
+FM.LBL.BMNY.CN 
+
+Broad money (IFS line 35L..ZK) is the sum of currency outside banks;  demand deposits other than those of the central government;　
+（図を描くために、変化率を計算する必要があります。）
+
+Indicator2: Inflation, consumer prices (annual %)　
+
+FP.CPI.TOTL.ZG 
+
+Inflation as measured by the consumer price index reflects the annual percentage change in the cost to the average consumer of acquiring a basket of goods and services that may be fixed or changed at specified intervals, such as yearly. The Laspeyres formula is generally used.　
+
+```{r cache = TRUE}
+df1 <- WDI("all", c(bmny = "FM.LBL.BMNY.CN", cpi = "FP.CPI.TOTL.ZG"), extra = TRUE)
+```
+
+```{r}
+glimpse(df1)
+```
+
+#### Figure 4.1 United States
+
+```{r}
+df1 %>% filter(iso3c == "USA") %>% 
+  filter(year %in% seq(1960, 2020, 5)) %>%
+  ggplot(aes(x = bmny, y = cpi, label = year)) + geom_point() + geom_label(nudge_y = 1)
+```
+
+```{r}
+df1 %>% filter(iso3c == "USA") %>% 
+  filter(year %in% seq(1960, 2020, 5)) %>%
+  mutate(mnyp = bmny / lag(bmny))  %>% drop_na(mnyp) %>%
+  ggplot(aes(x = mnyp, y = cpi, label = year)) + geom_point() + geom_label(nudge_x = 0.05) + labs(title = "Change in 5 year span")
+```
+
+```{r}
+library(plotly)
+ppp1 <- df1 %>% filter(iso3c == "USA") %>% 
+  filter(year %in% seq(1960, 2020, 5)) %>%
+  mutate(mnyp = bmny / lag(bmny))  %>% drop_na(mnyp) %>%
+  ggplot(aes(x = mnyp, y = cpi, label = year)) + geom_point()
+ggplotly(ppp1)
+```
+
+```{r}
+ppp2 <- df1 %>% filter(region != "Aggregates") %>% 
+  filter(country != "Angola") %>%
+  filter(year %in% c(1999, 2007)) %>%
+  group_by(country) %>% 
+  mutate(mnyp = bmny / lag(bmny))  %>% drop_na(mnyp) %>%
+  ggplot(aes(x = mnyp, y = cpi, label = country, col = income)) + geom_point() + 
+  scale_x_log10()
+ggplotly(ppp2)
+```
+
+
+
+### II. Okun's Law: The relationship between the change in the unemployment rate and the percent change in real GDP 
+Macroeonomics 7eds, Chapter 9: Introduction to Economic Fluctuations, 　
+Figure 9-4
+
+Indicator1: GDP growth (annual %) 
+
+NY.GDP.MKTP.KD.ZG 
+
+Annual percentage growth rate of GDP at market prices based on constant local currency. Aggregates are based on constant 2015 prices, expressed in U.S. dollars. GDP is the sum of gross value added by all resident producers in the economy plus any product taxes and minus any subsidies not included in the value of the products. It is calculated without making deductions for depreciation of fabricated assets or for depletion and degradation of natural resources. 
+
+Indicator2: Unemployment, total (% of total labor force) (modeled ILO estimate) 
+
+SL.UEM.TOTL.ZS 
+
+Unemployment refers to the share of the labor force that is without work but available for and seeking employment. 
+
+```{r cache = TRUE}
+df2 <- WDI("all", c(growth = "NY.GDP.MKTP.KD.ZG", unemploy = "SL.UEM.TOTL.ZS"), extra = TRUE)
+```
+
+```{r}
+glimpse(df2)
+```
+
+```{r}
+df2p <- df2 %>% filter(iso3c == "USA") %>% 
+  mutate(unemployp = unemploy/lag(unemploy)) %>%
+  drop_na(unemployp)
+df2p
+```
+
+#### Figure 9.4 United States
+
+```{r}
+df2p %>% 
+  ggplot(aes(x = unemployp, y = growth, label = year)) + geom_point() + geom_label(nudge_y = 1)
+```
+
+```{r}
+ppp3 <- df2p %>% 
+  ggplot(aes(x = unemployp, y = growth, label = year)) + geom_point() + geom_label(nudge_y = 1) + geom_smooth(method = "lm", formula = 'y~x', se = FALSE)
+ggplotly(ppp3)
+```
+
+```{r}
+df2p %>% lm(growth ~ unemployp, .) %>% summary()
+```
+
+
